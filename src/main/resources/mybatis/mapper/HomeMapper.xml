@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--회원가입-->
+<mapper namespace="com.example.first.mapper.HomeMapper">
+    <select id="signUp" parameterType="com.example.first.dto.UserRequestDto" resultType="com.example.first.dto.UserDto">
+        <![CDATA[
+        INSERT INTO postgres.first_project.users (user_id, user_email, user_name, user_nickname, user_password, user_phone_number)
+        VALUES ( #{userId}, #{email}, #{username}, #{nickname}, #{password}, #{phoneNumber})
+        ]]>
+    </select>
+
+<!--    개인정보 확인-->
+<!--    <select id="personalInfo"  resultType="com.example.first.dto.UserResponseDto">-->
+<!--        <![CDATA[-->
+<!--        SELECT sum(total_price) FROM sales total_price-->
+<!--        WHERE store_id = #{store_id}-->
+<!--          AND (ORDER_AT > LAST_DAY(NOW() - interval 1 month)-->
+<!--            AND ORDER_AT <= LAST_DAY(NOW()))-->
+<!--        ]]>-->
+<!--    </select>-->
+
+<!--    계정 중복확인-->
+    <select id="isUsernameUnique" parameterType="java.lang.String" resultType="java.lang.Boolean">
+    <![CDATA[
+        SELECT COUNT(*) = 0
+        FROM user
+        WHERE user_name = #{username}
+        ]]>
+    </select>
+</mapper>
