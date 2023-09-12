@@ -1,33 +1,92 @@
 package com.example.first.controller;
 
+import com.example.first.dto.TestDto;
 import com.example.first.dto.UserDto;
 import com.example.first.dto.UserRequestDto;
-import com.example.first.dto.UserResponseDto;
-import com.example.first.exception.UserException;
 import com.example.first.service.UserService;
-import com.example.first.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
-@RestController
+@Controller
 @Slf4j
 public class HomeController {
     private final UserService userService;
 //    private final BCryptPasswordEncoder encoder;
 
 
+    // 1. 회원가입 화면
+    @GetMapping("/register")
+    public String signupForm() {
+        return "register";
+    }
 
-    // 😊 1. 로그인
+    // 2. 회원가입
+    @PostMapping("/register")
+    @ResponseBody
+    public Map<String, Object> signup(@RequestBody MultiValueMap<String,Object> map) {
+        System.out.println("TEST");
+        System.out.println(map.get("username"));
+
+        Map<String,Object> resMap = new HashMap<>();
+        boolean success = true;
+        try{
+//            userService.signUp(userRequestDto);
+        }catch (Exception e){
+            e.printStackTrace();
+            resMap.put("msg" , "오류가 발생");
+            success = false;
+        }
+        if(success){
+            resMap.put("url" , "home");
+        }
+        resMap.put("success" , success);
+
+        return resMap;
+    }
+
+//    @PostMapping("/register")
+//    public String signup(@RequestParam Long userId,
+//                         @RequestParam String username,
+//                         @RequestParam String email,
+//                         @RequestParam String nickname,
+//                         @RequestParam String password,
+//                         @RequestParam String phoneNumber) {
+//        userService.signUp(userRequestDto);
+//        return "home";
+//    }
+
+    // 3. 로그인 화면
+    @GetMapping("/login")
+    public String loginForm() {
+        return "login";
+    }
+
+    // 4. 로그인
     @PostMapping("/login")
-    public ResponseEntity<UserResponseDto> loginTest(@RequestBody UserRequestDto userRequestDto) throws UserException {
+    public String login(UserRequestDto userRequestDto) {
+        userService.login(userRequestDto);
+        return "redirect:/home";
+    }
 
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
 
-        String password = userRequestDto.getPassword();
-        String username = userRequestDto.getUsername();
+//    // 😊 1. 로그인
+//    @PostMapping("/login")
+//    public ResponseEntity<UserResponseDto> loginTest(@RequestBody UserRequestDto userRequestDto) throws UserException {
+//
+//
+//        String password = userRequestDto.getPassword();
+//        String username = userRequestDto.getUsername();
 //        User retrievedUser = userRequestDto.findByUsername(username);
 //
 //
@@ -62,36 +121,36 @@ public class HomeController {
 //        UserResponseDto loginSuccessResponseDto = new UserResponseDto(accessToken);
 //
 //        return ResponseEntity.ok(loginSuccessResponseDto);
-
-        return ResponseEntity.ok(new UserResponseDto(password +"  +  " + username));
-    }
-
-
+//
+//        return ResponseEntity.ok(new UserResponseDto(password +"  +  " + username));
+//    }
 
 
 
-    // 😊 2. 회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody UserRequestDto userRequestDto) {
 
-//        UserDto userDto = userService.signUp(userRequestDto);
-        userService.signUp(userRequestDto);
-//        UserResponseDto userResponseDto = userDto.convertToUserResponseDto();
-//            userResponseDto.setMessage("회원가입이 완료되었습니다.");
-//        return ResponseEntity.ok(userResponseDto);
-        return ResponseEntity.ok("회원가입이 완료되었습니다.");
-    }
 
-    // 유저네임(이메일) 중복확인 - 230901 추가
-    @GetMapping("/check-username/{username}")
-    public ResponseEntity<UserResponseDto> checkUsername(@PathVariable String username) {
-        boolean isUsernameUnique = userService.isUsernameUnique(username);
-        if (isUsernameUnique) {
-            return ResponseEntity.ok(new UserResponseDto("이미 사용 중인 이메일 주소입니다.", "error"));
-        }else {
-            return ResponseEntity.ok(new UserResponseDto("사용 가능한 이메일 주소 입니다.", "success"));
-        }
-    }
+//    // 😊 2. 회원가입
+//    @PostMapping("/signup")
+//    public ResponseEntity<String> signUp(@RequestBody UserRequestDto userRequestDto) {
+//
+////        UserDto userDto = userService.signUp(userRequestDto);
+//        userService.signUp(userRequestDto);
+////        UserResponseDto userResponseDto = userDto.convertToUserResponseDto();
+////            userResponseDto.setMessage("회원가입이 완료되었습니다.");
+////        return ResponseEntity.ok(userResponseDto);
+//        return ResponseEntity.ok("회원가입이 완료되었습니다.");
+//    }
+//
+//    // 유저네임(이메일) 중복확인 - 230901 추가
+//    @GetMapping("/check-username/{username}")
+//    public ResponseEntity<UserResponseDto> checkUsername(@PathVariable String username) {
+//        boolean isUsernameUnique = userService.isUsernameUnique(username);
+//        if (isUsernameUnique) {
+//            return ResponseEntity.ok(new UserResponseDto("이미 사용 중인 이메일 주소입니다.", "error"));
+//        }else {
+//            return ResponseEntity.ok(new UserResponseDto("사용 가능한 이메일 주소 입니다.", "success"));
+//        }
+//    }
 
 
 
