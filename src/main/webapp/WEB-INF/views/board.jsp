@@ -14,13 +14,22 @@
 
     <!-- Your custom styles -->
     <style>
-        /* Add your custom styles here */
+        .center-title {
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
-    <h1 class="mt-5">게시판</h1>
+    <!-- 마이페이지 버튼 -->
+    <div class="text-right mt-2">
+        <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
+    </div>
+
+    <h2 class="center-title">게시판</h2>
+
+
 
     <!-- 로그인 사용자 이름 표시 -->
 <%--    <div class="text-right mt-2">--%>

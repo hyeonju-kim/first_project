@@ -7,8 +7,8 @@
 <!--회원가입-->
 <mapper namespace="com.example.first.mapper.HomeMapper">
     <select id="signUp" parameterType="com.example.first.dto.UserDto">
-        INSERT INTO postgres.first_project.users (user_email, user_name, user_nickname, user_password, user_password_confirm, user_phone_number)
-        VALUES ( #{email}, #{username}, #{nickname}, #{passwordConfirm}, #{password}, #{phoneNumber})
+        INSERT INTO postgres.first_project.users (user_email, user_name, user_nickname, user_password, user_password_confirm, user_phone_number, user_profile_picture, zipcode, street_adr, detail_adr)
+        VALUES ( #{email}, #{username}, #{nickname}, #{passwordConfirm}, #{password}, #{phoneNumber}, #{profilePicture} , #{zipcode}, #{streetAdr}, #{detailAdr})
     </select>
 
 <!--인증 번호 저장-->

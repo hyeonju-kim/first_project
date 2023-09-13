@@ -40,7 +40,9 @@ public class HomeController {
     @ResponseBody
     public void signup(@RequestBody UserDto userDto) {
         System.out.println("TEST");
-        System.out.printf("testDto == " + userDto.getEmail());
+        System.out.println("testDto == " + userDto.getEmail());
+        System.out.println("profilePicture == " + userDto.getProfilePicture());
+        System.out.println("streetAdr == " + userDto.getStreetAdr());
         try{
             // 회원가입 실시!
             userService.signUp(userDto);
@@ -56,7 +58,7 @@ public class HomeController {
     @PostMapping("/email-confirm")
     public void sendEmail(@RequestBody TempAuthInfo tempAuthInfo){
         // 메일로 인증번호 발송
-        System.out.printf("email === "+ tempAuthInfo.getEmail());
+        System.out.println("email === "+ tempAuthInfo.getEmail());
         userService.sendEmail(tempAuthInfo.getEmail());
     }
 

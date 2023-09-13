@@ -34,6 +34,12 @@ public class UserDto {
 
     private String authNumber;
 
+    private String profilePicture;
+
+    private String zipcode;
+    private String streetAdr;
+    private String detailAdr;
+
     public UserDto() {
     }
 

@@ -46,6 +46,41 @@
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
             <form  method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="username">이름</label>
+                        <input type="text" class="form-control" id="username" placeholder="홍길동" value="" required>
+                        <div class="invalid-feedback">
+                            이름을 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="nickname">별명</label>
+                        <input type="text" class="form-control" id="nickname" placeholder="별명" value="" required>
+                        <div class="invalid-feedback">
+                            별명을 입력해주세요.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 주소 입력 버튼 -->
+                <div class="mb-3">
+                    <button class="btn btn-primary" type="button" id="findAddr" onclick="findAddr()">주소 입력</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="zipcode">우편번호</label>
+                    <input type="text" name="zipcode" id="zipcode" class="form-control" placeholder="우편번호를 입력하세요" readonly onclick="findAddr()">
+                </div>
+                <div class="form-group">
+                    <label for="streetAdr">도로명 주소</label>
+                    <input type="text" name="streetAdr" id="streetAdr" class="form-control" placeholder="도로명 주소를 입력하세요" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="detailAdr">상세주소</label>
+                    <input type="text" name="detailAdr" id="detailAdr" class="form-control" placeholder="상세주소를 입력하세요">
+                </div>
+
                 <div class="mb-3">
                     <label for="email">이메일</label>
 <%--                    인증하기 버튼을 누르면 작성한 email이 사라지는 것을 방지하기 위해 readonly 추가 --%>
@@ -84,28 +119,20 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="username">이름</label>
-                        <input type="text" class="form-control" id="username" placeholder="홍길동" value="" required>
-                        <div class="invalid-feedback">
-                            이름을 입력해주세요.
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="nickname">별명</label>
-                        <input type="text" class="form-control" id="nickname" placeholder="별명" value="" required>
-                        <div class="invalid-feedback">
-                            별명을 입력해주세요.
-                        </div>
-                    </div>
-                </div>
 
                 <div class="mb-3">
                     <label for="phoneNumber">휴대폰 번호</label>
                     <input type="text" class="form-control" id="phoneNumber" placeholder="비밀번호를 다시 입력해주세요" required>
                     <div class="invalid-feedback">
                         휴대폰 번호를 입력해주세요.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="profilePicture">프로필 사진</label>
+                    <input type="file" class="form-control-file" id="profilePicture" accept="image/*">
+                    <div class="invalid-feedback">
+                        이미지 파일을 업로드해주세요.
                     </div>
                 </div>
 
@@ -126,31 +153,7 @@
 <%--                    <input type="text" class="form-control" id="address2" placeholder="상세주소를 입력해주세요.">--%>
 <%--                </div>--%>
 
-<%--                <div class="row">--%>
-<%--                    <div class="col-md-8 mb-3">--%>
-<%--                        <label for="root">가입 경로</label>--%>
-<%--                        <select class="custom-select d-block w-100" id="root">--%>
-<%--                            <option value=""></option>--%>
-<%--                            <option>검색</option>--%>
-<%--                            <option>카페</option>--%>
-<%--                        </select>--%>
-<%--                        <div class="invalid-feedback">--%>
-<%--                            가입 경로를 선택해주세요.--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                    <div class="col-md-4 mb-3">--%>
-<%--                        <label for="code">추천인 코드</label>--%>
-<%--                        <input type="text" class="form-control" id="code" placeholder="" required>--%>
-<%--                        <div class="invalid-feedback">--%>
-<%--                            추천인 코드를 입력해주세요.--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--                <hr class="mb-4">--%>
-<%--                <div class="custom-control custom-checkbox">--%>
-<%--                    <input type="checkbox" class="custom-control-input" id="aggrement" required>--%>
-<%--                    <label class="custom-control-label" for="aggrement">개인정보 수집 및 이용에 동의합니다.</label>--%>
-<%--                </div>--%>
+
                 <div class="mb-4"></div>
                 <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="test()">가입 완료</button>
             </form>
@@ -160,7 +163,9 @@
         <p class="mb-1">&copy; 2021 YD</p>
     </footer>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
     function test() {
@@ -173,6 +178,7 @@
             var password = $('#password').val()
             var passwordConfirm = $('#passwordConfirm').val()
             var phoneNumber = $('#phoneNumber').val()
+            var profilePicture = $('#profilePicture').val()
 
             console.log(username);
             console.log(nickname);
@@ -180,13 +186,8 @@
             console.log(password);
             console.log(passwordConfirm);
             console.log(phoneNumber);
+            console.log(profilePicture);
 
-            // aggrement: $('#aggrement').prop('checked')
-            // 폼 데이터 수집 -> 옛날 방식
-            // var formData = new FormData();
-            // formData.append("username", username);
-            // formData.append("nickname", nickname);
-            // formData.append("email", email);
 
            // 2. 가져온 정보를 data로 묶기
             let data = {
@@ -195,7 +196,8 @@
                 "email" : email,
                 "password" : password,
                 "passwordConfirm" : passwordConfirm,
-                "phoneNumber" : phoneNumber
+                "phoneNumber" : phoneNumber,
+                "profilePicture" : profilePicture
             }
 
             // 3. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
@@ -276,6 +278,57 @@
     }
 
 
+    function findAddr() {
+        console.log('주소찾기 메서드 findAddr() 실행')
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("detailAdr").value = extraAddr;
+                } else {
+                    document.getElementById("detailAdr").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('zipcode').value = data.zonecode;
+                document.getElementById("streetAdr").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("detailAdr").focus();
+            }
+        }).open();
+    }
+
+
 </script>
+
 </body>
 </html>
