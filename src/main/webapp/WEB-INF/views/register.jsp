@@ -65,7 +65,8 @@
 
                 <!-- 주소 입력 버튼 -->
                 <div class="mb-3">
-                    <button class="btn btn-primary" type="button" id="findAddr" onclick="findAddr()">주소 입력</button>
+                    <!-- 함수명이랑 id값이랑 같아서 계속 에러났었음.... -->
+                    <button class="btn btn-primary" type="button" id="findAddress" onclick="findAddr()">주소 입력</button>
                 </div>
 
                 <div class="form-group">
@@ -168,6 +169,7 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
+    // 가입완료 메서드
     function test() {
             // e.preventDefault(); // 폼 제출 방지
 
@@ -236,6 +238,7 @@
 
     }
 
+    // 메일전송 메소드
     function sendEmailVerification() {
         // 1. 작성한 이메일 주소 가져오기
         var email = $('#email').val();
@@ -250,7 +253,7 @@
             type: 'POST',
             url: '/email-confirm',
             data: JSON.stringify(data),
-            contentType: 'application/json', // JSON 형식의 데이터를 전송v
+            contentType: 'application/json', // JSON 형식의 데이터를 전송
             success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
                 console.log(response); //응답 body부 데이터
                 console.log(status); //"succes"로 고정인듯함
@@ -277,7 +280,7 @@
         });
     }
 
-
+    // 카카오 주소 api 사용해서 우편번호로 주소찾기 메서드
     function findAddr() {
         console.log('주소찾기 메서드 findAddr() 실행')
         new daum.Postcode({
@@ -293,6 +296,7 @@
                 } else { // 사용자가 지번 주소를 선택했을 경우(J)
                     addr = data.jibunAddress;
                 }
+                console.log('addr');
 
                 // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
                 if(data.userSelectedType === 'R'){
@@ -323,6 +327,31 @@
                 document.getElementById("streetAdr").value = addr;
                 // 커서를 상세주소 필드로 이동한다.
                 document.getElementById("detailAdr").focus();
+
+                // 주소 정보를 JavaScript 변수에 저장
+                var zipcode = data.zonecode;
+                var streetAdr = data.roadAddress;
+                var detailAdr = $("#detailAdr").val();
+
+                // 주소 정보를 서버로 전송
+                $.ajax({
+                    type: 'POST',
+                    // url: '/save-address', // 주소 정보를 저장하는 URL로 변경 (서버에서 처리해야 함)
+                    data: JSON.stringify({ zipcode: zipcode, streetAdr: streetAdr, detailAdr: detailAdr }),
+                    contentType: 'application/json',
+                    success: function(response, status, xhr) {
+                        if (xhr.status === 200) {
+                            alert('주소 정보가 저장되었습니다.');
+                        } else {
+                            alert('주소 정보 저장에 실패했습니다.');
+                        }
+                    },
+                    error: function(response, status, xhr) {
+                        console.log('실패했다...');
+                        console.log(response);
+                        alert('서버 요청 실패');
+                    }
+                });
             }
         }).open();
     }
