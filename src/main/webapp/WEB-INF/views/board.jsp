@@ -15,21 +15,17 @@
     <!-- Your custom styles -->
     <style>
         /* Add your custom styles here */
-        .center-title {
-            text-align: center;
-        }
     </style>
 </head>
 
 <body>
 <div class="container">
-    <!-- 로그인 및 회원가입 버튼 -->
-    <div class="text-right mt-2">
-        <a href="/login" class="btn btn-primary mr-2">로그인</a>
-        <a href="/register" class="btn btn-success">회원가입</a>
-    </div>
+    <h1 class="mt-5">게시판</h1>
 
-    <h2 class="center-title">게시판</h2>
+    <!-- 로그인 사용자 이름 표시 -->
+<%--    <div class="text-right mt-2">--%>
+<%--        <span id="userName"></span> 님 안녕하세요!--%>
+<%--    </div>--%>
 
     <!-- 글 작성 버튼 -->
     <a href="/write" class="btn btn-primary mb-3">글 작성</a>
@@ -69,7 +65,9 @@
 </div>
 
 <script>
-    // Add your JavaScript code here if needed
+    // 사용자 이름을 가져와서 화면에 표시
+    // var userName = "John"; // 여기에 실제 사용자 이름을 가져오는 코드를 추가해야 합니다.
+    // document.getElementById("userName").textContent = userName;
 </script>
 </body>
 

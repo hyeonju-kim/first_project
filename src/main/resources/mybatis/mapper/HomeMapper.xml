@@ -11,6 +11,14 @@
         VALUES ( #{email}, #{username}, #{nickname}, #{passwordConfirm}, #{password}, #{phoneNumber})
     </select>
 
+<!--인증 번호 저장-->
+    <select id="setAuth" parameterType="com.example.first.dto.TempAuthInfo">
+        INSERT INTO postgres.first_project.auth (user_email, auth_number)
+        VALUES ( #{email}, #{authNumber})
+    </select>
+
+<!--    사용자 메일로 사용자 가져오기-->
+
 <!--&lt;!&ndash;    사용자 아이디로 사용자 가져오는 메서드&ndash;&gt;-->
 <!--    <select id="findByUserId" resultType="com.example.model.User">-->
 <!--        SELECT * FROM users WHERE user_id = #{userId}-->

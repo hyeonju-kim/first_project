@@ -11,8 +11,11 @@ public interface UserService {
 
     void signUp(UserDto userDto);
 
-    // 로그인
-    void login(UserRequestDto userRequestDto);
+    //이메일 인증
+    void sendEmail(String email);
+
+//    // 로그인
+//    void login(UserDto userDto);
 
     // 개인정보 확인
 //    UserResponseDto personalInfo();

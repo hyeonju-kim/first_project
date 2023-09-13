@@ -32,6 +32,8 @@ public class UserDto {
     //잘못된경우에만
     private String message;
 
+    private String authNumber;
+
     public UserDto() {
     }
 

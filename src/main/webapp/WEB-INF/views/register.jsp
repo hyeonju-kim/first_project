@@ -48,9 +48,23 @@
             <form  method="post">
                 <div class="mb-3">
                     <label for="email">이메일</label>
-                    <input type="email" class="form-control" id="email" placeholder="weaver123@example.com" required>
+<%--                    인증하기 버튼을 누르면 작성한 email이 사라지는 것을 방지하기 위해 readonly 추가 --%>
+                    <input type="email" class="form-control" id="email" placeholder="weaver123@example.com" required >
                     <div class="invalid-feedback">
                         이메일을 입력해주세요.
+                    </div>
+                </div>
+                <!-- 이메일 인증 버튼 추가 -->
+                <div class="mb-3">
+                    <button class="btn btn-primary" type="button" id="emailVerificationButton" onclick="sendEmailVerification()">인증</button>
+                </div>
+
+                <!-- 인증번호 입력 칸 (숨겨진 상태로 시작) -->
+                <div class="mb-3" id="verificationCodeDiv" style="display: none;">
+                    <label for="verificationCode">인증번호</label>
+                    <input type="text" class="form-control" id="verificationCode" placeholder="인증번호를 입력하세요" required>
+                    <div class="invalid-feedback">
+                        인증번호를 입력해주세요.
                     </div>
                 </div>
 
@@ -188,8 +202,13 @@
             $.ajax({
                 type: 'POST',
                 url: '/register', // 가입완료 버튼을 누르면 이 URL로 매핑!!! 마지막에 가는게xx
+
+                // 사용자가 입력한 정보들이 위에 변수로 수집되고, 그 정보는 아래의 data라는 객체에 저장된다.
+                // 이 객체는 json 데이터형식을 가지며, 각 입력필드의 값을 해당 필드의 이름으로 매핑한다!!
+                // 이 요청은 /register url로 보내지며, 서버의 컨트롤러 중에 @PostMappling("/register")가 달린 메소드가 호출된다.
+                // 이 메서드는 json형식의 데이터인 'userDto' 객체를 파라미터로 받는다.
+
                 data: JSON.stringify(data),
-                // dataType: 'json', // JSON 형식의 응답을 요청
                 contentType: 'application/json', // JSON 형식의 데이터를 전송
                 success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
                     console.log(response); //응답 body부 데이터
@@ -197,9 +216,8 @@
                     console.log(xhr);
                     if (xhr.status === 200) {
                         // 서버 응답의 상태 코드가 200일 때만 실행
-                        alert('가입이 완료되었습니다!!!!.');
-                        // location.href = response.url;
-                        location.href = "/home";
+                        alert('가입이 완료되었습니다!');
+                        location.href = "/board";
                     } else {
                         // 가입 실패 처리
                         alert('서버에서 오류가 발생했습니다.');
@@ -214,6 +232,47 @@
                 }
             });
 
+    }
+
+    function sendEmailVerification() {
+        // 1. 작성한 이메일 주소 가져오기
+        var email = $('#email').val();
+
+        // 2. 가져온 정보를 data로 묶기
+        let data = {
+            "email" : email
+        }
+
+        // 3. 클라에서 가져온 데이터를 서버로 전송
+        $.ajax({
+            type: 'POST',
+            url: '/email-confirm',
+            data: JSON.stringify(data),
+            contentType: 'application/json', // JSON 형식의 데이터를 전송v
+            success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
+                console.log(response); //응답 body부 데이터
+                console.log(status); //"succes"로 고정인듯함
+                console.log(xhr);
+                if (xhr.status === 200) {
+                    // 서버 응답의 상태 코드가 200일 때만 실행
+                    alert('메일이 전송 되었습니다!');
+
+                    // 인증번호 입력 칸 표시
+                    $('#verificationCodeDiv').show();
+
+                } else {
+                    // 실패 처리
+                    alert('서버에서 오류가 발생했습니다.');
+                }
+            },
+            error: function (response, status, xhr) {
+                // 서버 요청 실패 시 실행
+                console.log('실패했다...')
+                console.log(response); //응답 body부 데이터
+
+                alert('서버 요청 실패');
+            }
+        });
     }
 
 

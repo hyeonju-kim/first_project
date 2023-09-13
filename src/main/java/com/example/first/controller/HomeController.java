@@ -1,5 +1,6 @@
 package com.example.first.controller;
 
+import com.example.first.dto.TempAuthInfo;
 import com.example.first.dto.TestDto;
 import com.example.first.dto.UserDto;
 import com.example.first.dto.UserRequestDto;
@@ -22,6 +23,11 @@ public class HomeController {
     private final UserService userService;
 //    private final BCryptPasswordEncoder encoder;
 
+    // 홈 화면 (로그인/ 회원가입 버튼 있는)
+    @GetMapping
+    public String home() {
+        return "home";
+    }
 
     // 1. 회원가입 화면
     @GetMapping("/register")
@@ -34,40 +40,26 @@ public class HomeController {
     @ResponseBody
     public void signup(@RequestBody UserDto userDto) {
         System.out.println("TEST");
-//        System.out.println(map.get("username"));
         System.out.printf("testDto == " + userDto.getEmail());
-
-//        Map<String,Object> resMap = new HashMap<>();
-        boolean success = true;
         try{
             // 회원가입 실시!
             userService.signUp(userDto);
-
         }catch (Exception e){
             e.printStackTrace();
-//            resMap.put("msg" , "오류가 발생");
             userDto.setMessage("오류가 발생 ㅠㅠ ");
-            success = false;
         }
-        if(success){
-//            resMap.put("url" , "home");
-        }
-//        resMap.put("success" , success);
-
-//        return resMap;
         return ;
     }
 
-//    @PostMapping("/register")
-//    public String signup(@RequestParam Long userId,
-//                         @RequestParam String username,
-//                         @RequestParam String email,
-//                         @RequestParam String nickname,
-//                         @RequestParam String password,
-//                         @RequestParam String phoneNumber) {
-//        userService.signUp(userRequestDto);
-//        return "home";
-//    }
+    // 이메일 인증
+    @ResponseBody
+    @PostMapping("/email-confirm")
+    public void sendEmail(@RequestBody TempAuthInfo tempAuthInfo){
+        // 메일로 인증번호 발송
+        System.out.printf("email === "+ tempAuthInfo.getEmail());
+        userService.sendEmail(tempAuthInfo.getEmail());
+    }
+
 
     // 3. 로그인 화면
     @GetMapping("/login")
@@ -75,16 +67,17 @@ public class HomeController {
         return "login";
     }
 
-    // 4. 로그인
-    @PostMapping("/login")
-    public String login(UserRequestDto userRequestDto) {
-        userService.login(userRequestDto);
-        return "redirect:/home";
-    }
+//    // 4. 로그인
+//    @PostMapping("/login")
+//    public String login(UserDto userDto) {
+//        userService.login(userDto);
+//        return "redirect:/home";
+//    }
 
-    @GetMapping("/home")
-    public String home() {
-        return "home";
+    // 게시판 화면 (메인 화면)
+    @GetMapping("/board")
+    public String board() {
+        return "board";
     }
 
 //    // 😊 1. 로그인
