@@ -11,11 +11,10 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface HomeMapper {
     // 회원가입
-    UserDto signUp(UserRequestDto userRequestDto);
+    void signUp(UserDto userDto);
 
     // 로그인
     void login(UserRequestDto userRequestDto);
-
 
     // 사용자아이디로 사용자 가져오는 메서드
     User findByUserId(Long userId);

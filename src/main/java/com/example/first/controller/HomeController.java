@@ -4,6 +4,7 @@ import com.example.first.dto.TestDto;
 import com.example.first.dto.UserDto;
 import com.example.first.dto.UserRequestDto;
 import com.example.first.service.UserService;
+import com.example.first.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -30,25 +31,30 @@ public class HomeController {
     // 2. 회원가입
     @PostMapping("/register")
     @ResponseBody
-    public Map<String, Object> signup(@RequestBody MultiValueMap<String,Object> map) {
+    public void signup(@RequestBody UserDto userDto) {
         System.out.println("TEST");
-        System.out.println(map.get("username"));
+//        System.out.println(map.get("username"));
+        System.out.printf("testDto == " + userDto.getEmail());
 
-        Map<String,Object> resMap = new HashMap<>();
+//        Map<String,Object> resMap = new HashMap<>();
         boolean success = true;
         try{
-//            userService.signUp(userRequestDto);
+            // 회원가입 실시!
+            userService.signUp(userDto);
+
         }catch (Exception e){
             e.printStackTrace();
-            resMap.put("msg" , "오류가 발생");
+//            resMap.put("msg" , "오류가 발생");
+            userDto.setMessage("오류가 발생 ㅠㅠ ");
             success = false;
         }
         if(success){
-            resMap.put("url" , "home");
+//            resMap.put("url" , "home");
         }
-        resMap.put("success" , success);
+//        resMap.put("success" , success);
 
-        return resMap;
+//        return resMap;
+        return ;
     }
 
 //    @PostMapping("/register")

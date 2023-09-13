@@ -18,6 +18,8 @@ public class UserDto {
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문, 숫자, 특수문자를 사용하세요.")
     private String password;
 
+    private String passwordConfirm;
+
     private String username;
 
     private String nickname;

@@ -6,13 +6,10 @@ import com.example.first.dto.UserResponseDto;
 import org.springframework.stereotype.Service;
 
 public interface UserService {
-
-
-
     // 회원가입
 //    UserDto signUp(UserRequestDto userRequestDto);
 
-    void signUp(UserRequestDto userRequestDto);
+    void signUp(UserDto userDto);
 
     // 로그인
     void login(UserRequestDto userRequestDto);
