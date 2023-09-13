@@ -17,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Controller
 @Slf4j
+@CrossOrigin
 public class HomeController {
     private final UserService userService;
 //    private final BCryptPasswordEncoder encoder;

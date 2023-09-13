@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<!--회원가입-->`
+<!--회원가입-->
 <mapper namespace="com.example.first.mapper.HomeMapper">
-    <select id="signUp" parameterType="com.example.first.dto.UserRequestDto">
+    <select id="signUp" parameterType="com.example.first.dto.UserDto">
         INSERT INTO postgres.first_project.users (user_email, user_name, user_nickname, user_password, user_password_confirm, user_phone_number)
-        VALUES ( #{email}, #{username}, #{nickname}, #{password}, #{password}, #{phoneNumber})
+        VALUES ( #{email}, #{username}, #{nickname}, #{passwordConfirm}, #{password}, #{phoneNumber})
     </select>
 
 <!--&lt;!&ndash;    사용자 아이디로 사용자 가져오는 메서드&ndash;&gt;-->

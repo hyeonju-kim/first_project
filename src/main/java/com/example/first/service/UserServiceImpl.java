@@ -13,15 +13,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final HomeMapper homeMapper;
-    private final SqlSessionTemplate sqlSessionTemplate;
-//    private final BCryptPasswordEncoder encoder;
-
-    @Autowired
-    public UserServiceImpl(HomeMapper homeMapper, SqlSessionTemplate sqlSessionTemplate) {
-        this.homeMapper = homeMapper;
-        this.sqlSessionTemplate = sqlSessionTemplate;
-    }
-
 
     @Override
     public void signUp(UserDto userDto) {

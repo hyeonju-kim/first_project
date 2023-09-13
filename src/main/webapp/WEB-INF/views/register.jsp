@@ -189,19 +189,28 @@
                 type: 'POST',
                 url: '/register', // 가입완료 버튼을 누르면 이 URL로 매핑!!! 마지막에 가는게xx
                 data: JSON.stringify(data),
-                dataType: 'json', // JSON 형식의 응답을 요청
-                // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                // dataType: 'json', // JSON 형식의 응답을 요청
                 contentType: 'application/json', // JSON 형식의 데이터를 전송
-                success: function (response) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
-                    if (response.success) {
-                        // 가입 성공 처리
+                success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
+                    console.log(response); //응답 body부 데이터
+                    console.log(status); //"succes"로 고정인듯함
+                    console.log(xhr);
+                    if (xhr.status === 200) {
+                        // 서버 응답의 상태 코드가 200일 때만 실행
                         alert('가입이 완료되었습니다!!!!.');
                         // location.href = response.url;
-                        location.href = /"home";
+                        location.href = "/home";
                     } else {
                         // 가입 실패 처리
-                        alert(response.msg);
+                        alert('서버에서 오류가 발생했습니다.');
                     }
+                },
+                error: function (response, status, xhr) {
+                    // 서버 요청 실패 시 실행
+                    console.log('실패했다...')
+                    console.log(response); //응답 body부 데이터
+
+                    alert('서버 요청 실패');
                 }
             });
 
