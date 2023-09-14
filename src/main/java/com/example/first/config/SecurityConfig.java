@@ -5,73 +5,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class  SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImpl userDetailsService;
-    private final JwtUtil jwtUtil;
-
-    private static final String[] AUTH_WHITE_LIST = {
-            "/v2/api-docs",
-            "/v3/api-docs/**",
-            "/configuration/ui",
-            "/webjars/**",
-            "/h2/**",
-            "/css/**",
-            "/js/**",
-            "/scss/**",
-            "/vendor/**",
-            "/img/**",
-            "/h2-console/**",
-            "/login",
-            "/register",
-            "/home",
-            "/mypage",
-            "/board"
-    };
-
-    //1. 내가 만든 서비스 지정
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-    }
-
-    // 2. 시큐리티 필터 적용하지 않을 url (우회용도)
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(AUTH_WHITE_LIST);
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 3. 요청에 대해 인증 없이 접근을 허용하는 설정. 이 설정을 사용하면 모든 URL에 대해 인증되지 않은 사용자도 접근할 수 있다.
-        http.csrf().disable()
-                .authorizeRequests().antMatchers("/**").permitAll()// 괄호 안에 허용해줄 url적기
-                .anyRequest().authenticated();
+        http.csrf().disable();
+        http.authorizeRequests()
+                .antMatchers("/","/register","/login", "/css/**").permitAll();
+//                .antMatchers("/member/**").authenticated() // 일반사용자 접근 가능
+//                .antMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN") // 매니저, 관리자 접근 가능
+//                .antMatchers("/admin/**").hasRole("ADMIN"); // 관리자만 접근 가능
+        // 인증 필요시 로그인 페이지와 로그인 성공시 리다이랙팅 경로 지정
+        http.formLogin().loginPage("/login").defaultSuccessUrl("/", true);
+        // 로그인이 수행될 uri 매핑 (post 요청이 기본)
+        http.formLogin().loginProcessingUrl("/login").defaultSuccessUrl("/", true);
+        // 인증된 사용자이지만 인가되지 않은 경로에 접근시 리다이랙팅 시킬 uri 지정
+        http.exceptionHandling().accessDeniedPage("/forbidden");
+        // logout
+        http.logout().logoutUrl("/logout").logoutSuccessUrl("/");
 
-
-
-        http.headers().frameOptions().disable(); // h2 db 접근위해 추가함 (빼면 화면안보임)
-
-        // 4. 세션 꺼주기
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // 5. jwt필터 넣어주기
-        // UsernamePasswordAuthenticationFilter에 도달하기 전에 커스텀한 필터를 먼저 동작시킴
-        http.addFilterBefore(new JwtFilter(userDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-
+        //1. 내가 만든 서비스 지정
+        http.userDetailsService(userDetailsService);
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

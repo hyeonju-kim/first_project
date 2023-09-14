@@ -1,6 +1,5 @@
 package com.example.first.service;
 
-import com.example.first.config.JwtUtil;
 import com.example.first.dto.TempAuthInfo;
 import com.example.first.dto.UserDto;
 import com.example.first.exception.UserException;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Random;
 
 @Service
@@ -25,7 +23,6 @@ public class UserServiceImpl implements UserService{
     private final HomeMapper homeMapper;
     private final BCryptPasswordEncoder encoder;
     private final UserDetailsServiceImpl userDetailsService;
-    private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
 
@@ -182,27 +179,26 @@ public class UserServiceImpl implements UserService{
         UserDetails userDetails = userDetailsService.loadUserByUsername(userDto.getUsername());
 
         // 3. subject, claim 모두 UserDetails를 사용하므로 객체를 그대로 전달
-        String accessToken = jwtUtil.generateAccessToken(userDetails); // 엑세스 토큰
-        String refreshToken = jwtUtil.generateRefreshToken(userDetails);  // 리프레시 토큰
+//        String accessToken = jwtUtil.generateAccessToken(userDetails); // 엑세스 토큰
+//        String refreshToken = jwtUtil.generateRefreshToken(userDetails);  // 리프레시 토큰
 
 
         // 230814 추가 - redis에 refresh 토큰 저장하기!
         // RT:나나(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로
 
-        Date refreshTokenExpiration = jwtUtil.getExpirationDate(refreshToken);
-        long remainingTimeInMillis = refreshTokenExpiration.getTime() - System.currentTimeMillis();// 만료까지 남은시간
+//        Date refreshTokenExpiration = jwtUtil.getExpirationDate(refreshToken);
+//        long remainingTimeInMillis = refreshTokenExpiration.getTime() - System.currentTimeMillis();// 만료까지 남은시간
 
 //        redisTemplate.opsForValue().set("RT:" + username, refreshToken, remainingTimeInMillis, TimeUnit.MILLISECONDS);
         System.out.println("key==========RT:" + username);
-        System.out.println("accessToken===========" + accessToken);
-        System.out.println("refreshToken===========" + refreshToken);
 
 
         // 4. 생성된 토큰을 응답
         //            UserResponseDto userResponseDto = new UserResponseDto(username, nickname, phoneNumber);
 //            loginSuccessResponseDto.setUserResponseDto(userResponseDto);
-        return new UserDto(accessToken, refreshToken);
+//        return new UserDto(accessToken, refreshToken);
 
+        return null;
 
 
     }
