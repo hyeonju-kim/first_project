@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입 화면 샘플 - Bootstrap</title>
+    <title>회원가입 화면</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -45,21 +45,18 @@
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
-            <form  method="post">
+<%--            <form  method="post">--%>
+            <form class="validation-form" novalidate onsubmit="return register();">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="username">이름</label>
-                        <input type="text" class="form-control" id="username" placeholder="홍길동" value="" required>
-                        <div class="invalid-feedback">
-                            이름을 입력해주세요.
-                        </div>
+                        <label for="name">이름</label>
+                        <input type="text" class="form-control" id="name" placeholder="홍길동" value="" required>
+                        <span id="nameError" style="color: red;"></span>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="nickname">별명</label>
                         <input type="text" class="form-control" id="nickname" placeholder="별명" value="" required>
-                        <div class="invalid-feedback">
-                            별명을 입력해주세요.
-                        </div>
+                        <span id="nicknameError" style="color: red;"></span>
                     </div>
                 </div>
 
@@ -83,12 +80,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="email">이메일</label>
+                    <label for="username">이메일</label>
 <%--                    인증하기 버튼을 누르면 작성한 email이 사라지는 것을 방지하기 위해 readonly 추가 --%>
-                    <input type="email" class="form-control" id="email" placeholder="weaver123@example.com" required >
-                    <div class="invalid-feedback">
-                        이메일을 입력해주세요.
-                    </div>
+                    <input type="email" class="form-control" id="username" placeholder="weaver123@example.com" required >
+                    <span id="usernameError" style="color: red;"></span>
                 </div>
                 <!-- 이메일 인증 버튼 추가 -->
                 <div class="mb-3">
@@ -107,26 +102,20 @@
                 <div class="mb-3">
                     <label for="password">비밀번호</label>
                     <input type="password" class="form-control" id="password" placeholder="비밀번호는 8~16자 영문, 숫자, 특수문자를 사용하세요" required>
-                    <div class="invalid-feedback">
-                        비밀번호를 입력해주세요.
-                    </div>
+                    <span id="passwordError" style="color: red;"></span>
                 </div>
 
                 <div class="mb-3">
                     <label for="passwordConfirm">비밀번호 확인</label>
                     <input type="password" class="form-control" id="passwordConfirm" placeholder="비밀번호를 다시 입력해주세요" required>
-                    <div class="invalid-feedback">
-                        비밀번호를 다시 입력해주세요.
-                    </div>
+                    <span id="passwordConfirmError" style="color: red;"></span>
                 </div>
 
 
                 <div class="mb-3">
                     <label for="phoneNumber">휴대폰 번호</label>
-                    <input type="text" class="form-control" id="phoneNumber" placeholder="비밀번호를 다시 입력해주세요" required>
-                    <div class="invalid-feedback">
-                        휴대폰 번호를 입력해주세요.
-                    </div>
+                    <input type="text" class="form-control" id="phoneNumber" placeholder="휴대폰번호를 입력해주세요" required>
+                    <span id="phoneNumberError" style="color: red;"></span>
                 </div>
 
                 <div class="mb-3">
@@ -156,7 +145,7 @@
 
 
                 <div class="mb-4"></div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="test()">가입 완료</button>
+                <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register()">가입 완료</button>
             </form>
         </div>
     </div>
@@ -169,40 +158,130 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-    // 가입완료 메서드
-    function test() {
+
+    // 1. 😊 유효성 검사 로직
+    // window.addEventListener('load', () => {
+    //     const forms = document.getElementsByClassName('validation-form');
+    //
+    //     Array.prototype.filter.call(forms, (form) => {
+    //         form.addEventListener('submit', function (event) {
+    //             if (form.checkValidity() === false) {
+    //                 event.preventDefault();
+    //                 event.stopPropagation();
+    //             }
+    //
+    //             form.classList.add('was-validated');
+    //         }, false);
+    //     });
+    // }, false);
+
+    // 2. 😊 가입완료 메서드
+    function register() {
             // e.preventDefault(); // 폼 제출 방지
 
             // 1. 여기서 내가 화면에서 post 로 입력하는 정보를 하나하나 가져오기
-            var username = $('#username').val()
+            var name = $('#name').val()
             var nickname = $('#nickname').val()
-            var email = $('#email').val()
+            var username = $('#username').val()
             var password = $('#password').val()
             var passwordConfirm = $('#passwordConfirm').val()
             var phoneNumber = $('#phoneNumber').val()
             var profilePicture = $('#profilePicture').val()
+            var zipcode = $('#zipcode').val()
+            var streetAdr = $('#streetAdr').val()
+            var detailAdr = $('#detailAdr').val()
 
-            console.log(username);
+            console.log(name);
             console.log(nickname);
-            console.log(email);
+            console.log(username);
             console.log(password);
             console.log(passwordConfirm);
             console.log(phoneNumber);
             console.log(profilePicture);
+            console.log(zipcode);
+            console.log(streetAdr);
+            console.log(detailAdr);
+
+            // 2. 유효성 검사
+
+            // 각 필드의 유효성을 검사합니다.
+            var isValid = true;
+
+            // 비밀번호가 8~16자 영문, 숫자, 특수문자를 사용하도록 검증
+            var passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
+
+            if (!passwordRegex.test(password)) {
+                alert('비밀번호는 8~16자 영문, 숫자, 특수문자를 사용해야 합니다.');
+                return;
+            }
+
+            // 비밀번호 확인 유효성 검사
+            if (passwordConfirm.trim() === "") {
+                $("#passwordConfirmError").text("비밀번호 확인을 입력하세요.");
+                isValid = false;
+            } else if (password !== passwordConfirm) {
+                $("#passwordConfirmError").text("비밀번호가 일치하지 않습니다.");
+                isValid = false;
+            } else {
+                $("#passwordConfirmError").text("");
+            }
+
+            // 이름 유효성 검사
+            if (name.trim() === "") {
+                $("#nameError").text("이름을 입력하세요.");
+                isValid = false;
+            } else {
+                $("#nameError").text("");
+            }
+
+            // 이메일 유효성 검사 (이메일 형식 체크)
+            var emailPattern = /^(?:\w+\.?)*\w+@(?:\w+\.)+\w+$/;
+            if (!emailPattern.test(username)) {
+                $("#usernameError").text("올바른 이메일 형식이 아닙니다.");
+                isValid = false;
+            } else {
+                $("#usernameError").text("");
+            }
+
+            // 닉네임 유효성 검사
+            var nicknamePattern = /^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/;
+            if (!nicknamePattern.test(nickname)) {
+                $("#nicknameError").text("닉네임은 특수문자를 제외한 2~10자리여야 합니다.");
+                isValid = false;
+            } else {
+                $("#nicknameError").text("");
+            }
+
+            // 휴대폰 번호 유효성 검사
+            if (phoneNumber.trim() === "") {
+                $("#phoneNumberError").text("휴대폰 번호를 입력하세요.");
+                isValid = false;
+            } else {
+                $("#phoneNumberError").text("");
+            }
 
 
-           // 2. 가져온 정보를 data로 묶기
+
+            if (!isValid) {
+                // 유효성 검사에 실패한 경우 경고 메시지만 표시하고 폼을 서버로 제출하지 않음
+                return;
+            }
+
+           // 3. 가져온 정보를 data로 묶기
             let data = {
-                "username" : username,
+                "name" : name,
                 "nickname" : nickname,
-                "email" : email,
+                "username" : username,
                 "password" : password,
                 "passwordConfirm" : passwordConfirm,
                 "phoneNumber" : phoneNumber,
-                "profilePicture" : profilePicture
+                "profilePicture" : profilePicture,
+                "zipcode" : zipcode,
+                "streetAdr" : streetAdr,
+                "detailAdr" : detailAdr
             }
 
-            // 3. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
+            // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
             $.ajax({
                 type: 'POST',
                 url: '/register', // 가입완료 버튼을 누르면 이 URL로 매핑!!! 마지막에 가는게xx
@@ -221,7 +300,7 @@
                     if (xhr.status === 200) {
                         // 서버 응답의 상태 코드가 200일 때만 실행
                         alert('가입이 완료되었습니다!');
-                        location.href = "/board";
+                        location.href = "/login";
                     } else {
                         // 가입 실패 처리
                         alert('서버에서 오류가 발생했습니다.');
@@ -236,16 +315,23 @@
                 }
             });
 
+            return true;
+
+            // // 5. 모든 필드가 유효한 경우 폼을 서버로 제출할 수 있습니다.
+            // if (isValid) {
+            //     $("#registrationForm")[0].submit();
+            // }
     }
 
-    // 메일전송 메소드
+    // 3. 😊 메일전송 메소드
     function sendEmailVerification() {
         // 1. 작성한 이메일 주소 가져오기
-        var email = $('#email').val();
+        var username = $('#username').val();
+        console.log(username);
 
         // 2. 가져온 정보를 data로 묶기
         let data = {
-            "email" : email
+            "username" : username
         }
 
         // 3. 클라에서 가져온 데이터를 서버로 전송
@@ -280,7 +366,7 @@
         });
     }
 
-    // 카카오 주소 api 사용해서 우편번호로 주소찾기 메서드
+    // 4. 😊 카카오 주소 api 사용해서 우편번호로 주소찾기 메서드
     function findAddr() {
         console.log('주소찾기 메서드 findAddr() 실행')
         new daum.Postcode({
@@ -355,7 +441,6 @@
             }
         }).open();
     }
-
 
 </script>
 

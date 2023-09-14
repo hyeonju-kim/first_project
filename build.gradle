@@ -34,12 +34,14 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.5.4'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0' // 버전은 최신 버전으로 대체 가능
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1' // JAXB API 종속성 추가  - 디비에서 불러올때 DataTypeConverter가 없어서 ClassNotFoundException이 났음
 
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

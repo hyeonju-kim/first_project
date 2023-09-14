@@ -21,7 +21,7 @@ public class EmailService {
         log.info("send Email");
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("hyeonju.kim@weaverloft.com");
-        message.setTo(tempAuthInfo.getEmail());
+        message.setTo(tempAuthInfo.getUsername());
         message.setSubject("회원가입 인증번호 발송 안내");
         message.setText("인증번호 : " + tempAuthInfo.getAuthNumber());
         javaMailSender.send(message);

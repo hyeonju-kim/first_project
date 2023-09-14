@@ -6,25 +6,32 @@
 
 <!--회원가입-->
 <mapper namespace="com.example.first.mapper.HomeMapper">
-    <select id="signUp" parameterType="com.example.first.dto.UserDto">
-        INSERT INTO postgres.first_project.users (user_email, user_name, user_nickname, user_password, user_password_confirm, user_phone_number, user_profile_picture, zipcode, street_adr, detail_adr)
-        VALUES ( #{email}, #{username}, #{nickname}, #{passwordConfirm}, #{password}, #{phoneNumber}, #{profilePicture} , #{zipcode}, #{streetAdr}, #{detailAdr})
+    <select id="signUp" parameterType="com.example.first.dto.UserDto" resultType="com.example.first.dto.UserDto">
+        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture, zipcode, street_adr, detail_adr)
+        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePicture} , #{zipcode}, #{streetAdr}, #{detailAdr})
     </select>
 
 <!--인증 번호 저장-->
     <select id="setAuth" parameterType="com.example.first.dto.TempAuthInfo">
-        INSERT INTO postgres.first_project.auth (user_email, auth_number)
-        VALUES ( #{email}, #{authNumber})
+        INSERT INTO postgres.first_project.auth (username, auth_number)
+        VALUES ( #{username}, #{authNumber})
     </select>
 
-<!--    사용자 메일로 사용자 가져오기-->
 
-<!--&lt;!&ndash;    사용자 아이디로 사용자 가져오는 메서드&ndash;&gt;-->
-<!--    <select id="findByUserId" resultType="com.example.model.User">-->
-<!--        SELECT * FROM users WHERE user_id = #{userId}-->
-<!--    </select>-->
 
-<!--    개인정보 확인-->
+    <!--    사용자 메일로 사용자 가져오기-->
+    <select id="findByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto">
+        SELECT * FROM postgres.first_project.users WHERE username = #{username}
+    </select>
+
+
+<!--    마이페이지 정보 가져오기-->
+    <select id="getUserInfo" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto">
+        SELECT * FROM postgres.first_project.users WHERE username = #{username}
+    </select>
+
+
+    <!--    개인정보 확인-->
 <!--    <select id="personalInfo"  resultType="com.example.first.dto.UserResponseDto">-->
 <!--        <![CDATA[-->
 <!--        SELECT sum(total_price) FROM sales total_price-->
@@ -38,8 +45,8 @@
     <select id="isUsernameUnique" parameterType="java.lang.String" resultType="java.lang.Boolean">
     <![CDATA[
         SELECT COUNT(*) = 0
-        FROM users
-        WHERE user_name = #{username}
+        FROM postgres.first_project.users
+        WHERE username = #{username}
         ]]>
     </select>
 </mapper>

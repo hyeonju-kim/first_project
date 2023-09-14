@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TempAuthInfo {
-    private String email;
+    private String username;
     private String authNumber;
 }

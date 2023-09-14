@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 화면</title>
+    <title>비밀번호 찾기</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -44,8 +44,8 @@
 <div class="container">
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
-            <h4 class="mb-3">로그인</h4>
-            <form class="validation-form" action="/login" method="post" novalidate>
+            <h4 class="mb-3">임시 비밀번호 전송</h4>
+            <form class="validation-form"  method="post" novalidate>
                 <div class="mb-3">
                     <label for="username">이메일</label>
                     <input type="email" class="form-control" id="username" name="username" placeholder="weaver123@example.com" required>
@@ -54,20 +54,9 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="" required>
-                    <div class="invalid-feedback">
-                        비밀번호를 입력해주세요.
-                    </div>
-                </div>
-
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="loginTest()">로그인</button>
-                <div class="mt-3 text-center">
-                    <a href="/forgot-password" class="mr-2 text-primary">비밀번호 찾기</a>|&nbsp;
-                    <a href="/register" class="text-primary">회원가입</a>
-                </div>
+                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="sendTempPwToEmail()">임시 비밀번호 전송</button>
+
             </form>
         </div>
     </div>
@@ -94,36 +83,37 @@
     // }, false);
 
 
-    function loginTest() {
-        var username = $('#username').val()
-        var password = $('#password').val()
-
+    // 임시 비밀번호 메일전송 메소드
+    function sendTempPwToEmail() {
+        // 1. 작성한 이메일 주소 가져오기
+        var username = $('#username').val();
         console.log(username);
-        console.log(password);
 
-
-        // 가져온 정보를 data로 묶기
+        // 2. 가져온 정보를 data로 묶기
         let data = {
-            "username" : username,
-            "password" : password
+            "username" : username
         }
 
-        // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
+        // 3. 클라에서 가져온 데이터를 서버로 전송
         $.ajax({
             type: 'POST',
-            url: '/login',
+            url: '/forgot-password',
             data: JSON.stringify(data),
-            contentType: 'application/json',
-            success: function (response, status, xhr) {
-                console.log(response);
-                console.log(status);
+            contentType: 'application/json', // JSON 형식의 데이터를 전송
+            success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
+                console.log(response); //응답 body부 데이터
+                console.log(status); //"succes"로 고정인듯함
                 console.log(xhr);
                 if (xhr.status === 200) {
                     // 서버 응답의 상태 코드가 200일 때만 실행
-                    alert(username + '님 환영합니다!');
-                    location.href = "/board";
+                    alert('메일이 전송 되었습니다!');
+                    location.href = "/change-password";
+
+                    // 인증번호 입력 칸 표시
+                    $('#verificationCodeDiv').show();
+
                 } else {
-                    // 가입 실패 처리
+                    // 실패 처리
                     alert('서버에서 오류가 발생했습니다.');
                 }
             },
@@ -135,15 +125,7 @@
                 alert('서버 요청 실패');
             }
         });
-
-        return true;
-
-        // // 5. 모든 필드가 유효한 경우 폼을 서버로 제출할 수 있습니다.
-        // if (isValid) {
-        //     $("#registrationForm")[0].submit();
-        // }
     }
-
 </script>
 </body>
 
