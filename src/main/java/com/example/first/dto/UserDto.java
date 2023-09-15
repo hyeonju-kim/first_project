@@ -1,7 +1,6 @@
 package com.example.first.dto;
 
 
-import com.example.first.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,42 +46,42 @@ public class UserDto {
     private String streetAdr;
     private String detailAdr;
 
-    private Address address;
+//    private Address address;
 
-    private String accessToken;
-
-    private String refreshToken;
-
-    public UserDto(String accessToken, String refreshToken){
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-    }
-
-    public UserDto() {
-    }
-
-    // request -> service (requestDto를 받아서 Dto로 변환해준다)
-    public UserDto(UserRequestDto requestDto) {
-        this.password = requestDto.getPassword();
-        this.username = requestDto.getUsername();
-    }
-
-    // repository -> service
-    public UserDto(User user) {
-//        this.email = user.getEmail();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.nickname = user.getNickname();
-    }
-
-    // UserDto -> UserResponseDto (Dto에서 responseDto로 변환해준다)
-    public UserResponseDto convertToUserResponseDto() {
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setUserId(this.userId);
-        userResponseDto.setUsername(this.username);
-        userResponseDto.setNickname(this.nickname);
-        userResponseDto.setMessage(this.message);
-        return userResponseDto;
-    }
+//    private String accessToken;
+//
+//    private String refreshToken;
+//
+//    public UserDto(String accessToken, String refreshToken){
+//        this.accessToken = accessToken;
+//        this.refreshToken = refreshToken;
+//    }
+//
+//    public UserDto() {
+//    }
+//
+//    // request -> service (requestDto를 받아서 Dto로 변환해준다)
+//    public UserDto(UserRequestDto requestDto) {
+//        this.password = requestDto.getPassword();
+//        this.username = requestDto.getUsername();
+//    }
+//
+//    // repository -> service
+//    public UserDto(User user) {
+////        this.email = user.getEmail();
+//        this.username = user.getUsername();
+//        this.password = user.getPassword();
+//        this.nickname = user.getNickname();
+//    }
+//
+//    // UserDto -> UserResponseDto (Dto에서 responseDto로 변환해준다)
+//    public UserResponseDto convertToUserResponseDto() {
+//        UserResponseDto userResponseDto = new UserResponseDto();
+//        userResponseDto.setUserId(this.userId);
+//        userResponseDto.setUsername(this.username);
+//        userResponseDto.setNickname(this.nickname);
+//        userResponseDto.setMessage(this.message);
+//        return userResponseDto;
+//    }
 
 }
