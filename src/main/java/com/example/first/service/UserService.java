@@ -1,7 +1,9 @@
 package com.example.first.service;
 
+import com.example.first.dto.PasswordDto;
 import com.example.first.dto.UserDto;
 import com.example.first.exception.UserException;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
     // 회원가입
@@ -15,11 +17,14 @@ public interface UserService {
     // 비번 찾기
     void sendTempPwToEmail(String username);
 
+    // 비번 변경
+    void changePw(PasswordDto passwordDto) throws UserException;
+
     // 로그인
-    UserDto login(UserDto userDto) throws UserException;
+    UserDetails login(UserDto userDto) throws UserException;
 
     // 마이페이지 화면 보이기
-    UserDto getUserInfo();
+//    UserDto getUserInfo();
 
     // 개인정보 확인
 //    UserResponseDto personalInfo();

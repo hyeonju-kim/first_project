@@ -16,6 +16,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDto foundUser = homeMapper.findByUsername(username);
+
+        System.out.println("username === " + username);
+        System.out.println("homeMapper.findByUsername(username) === " + homeMapper.findByUsername(username));
+
         if (foundUser == null) {
             throw new UsernameNotFoundException("해당 계정이 존재하지 않습니다.");
         }

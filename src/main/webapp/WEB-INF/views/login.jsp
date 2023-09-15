@@ -45,7 +45,7 @@
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">로그인</h4>
-            <form class="validation-form" action="/login" method="post" novalidate>
+            <form name="login_form" class="validation-form" action="/login" method="post">
                 <div class="mb-3">
                     <label for="username">이메일</label>
                     <input type="email" class="form-control" id="username" name="username" placeholder="weaver123@example.com" required>
@@ -95,11 +95,16 @@
 
 
     function loginTest() {
+        // document.login_form.submit();
+
+
         var username = $('#username').val()
         var password = $('#password').val()
 
         console.log(username);
         console.log(password);
+
+
 
 
         // 가져온 정보를 data로 묶기
@@ -111,7 +116,7 @@
         // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
         $.ajax({
             type: 'POST',
-            url: '/login',
+            url: '/loginTest',
             data: JSON.stringify(data),
             contentType: 'application/json',
             success: function (response, status, xhr) {

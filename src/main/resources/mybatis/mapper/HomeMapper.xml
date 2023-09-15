@@ -17,6 +17,12 @@
         VALUES ( #{username}, #{authNumber})
     </select>
 
+<!--비밀번호 변경-->
+    <select id="changePw" parameterType="com.example.first.dto.PasswordDto">
+        UPDATE postgres.first_project.users
+        SET password = #{newPassword}
+        WHERE username = #{username}
+    </select>
 
 
     <!--    사용자 메일로 사용자 가져오기-->

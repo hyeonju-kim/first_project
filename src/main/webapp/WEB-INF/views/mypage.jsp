@@ -41,6 +41,20 @@
                     <label for="phoneNumber">휴대폰 번호</label>
                     <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="${phoneNumber}" readonly>
                 </div>
+                <div class="mb-3">
+                    <label for="profilePicture">프로필 사진</label>
+                    <input type="file" class="form-control" id="profilePicture" name="profilePicture">
+                </div>
+                <div class="mb-3">
+                    <label for="streetAdr">주소</label>
+                    <input type="text" class="form-control" id="streetAdr" name="streetAdr" value="${streetAdr}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="detailAdr">상세 주소</label>
+                    <input type="text" class="form-control" id="detailAdr" name="detailAdr" value="${detailAdr}" readonly>
+                </div>
+
+
                 <hr class="mb-4">
                 <div class="text-center">
                     <a class="btn btn-primary" href="/change-password">비밀번호 변경하기</a>

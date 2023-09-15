@@ -47,8 +47,8 @@
             <h4 class="mb-3">비밀번호 변경</h4>
             <form class="validation-form" method="post" novalidate>
                 <div class="mb-3">
-                    <label for="tempPassword">임시 비밀번호</label>
-                    <input type="password" class="form-control" id="tempPassword" name="tempPassword" required>
+                    <label for="password">임시 비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
                     <div class="invalid-feedback">
                         임시 비밀번호를 입력해주세요.
                     </div>
@@ -74,12 +74,12 @@
 <script>
     function changePassword() {
         // 1. 입력한 임시 비밀번호와 새로운 비밀번호 가져오기
-        var tempPassword = $('#tempPassword').val();
+        var password = $('#password').val();
         var newPassword = $('#newPassword').val();
 
         // 2. 가져온 정보를 data로 묶기
         let data = {
-            "tempPassword": tempPassword,
+            "password": password,
             "newPassword": newPassword
         }
 

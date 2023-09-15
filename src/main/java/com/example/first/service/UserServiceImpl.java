@@ -1,5 +1,6 @@
 package com.example.first.service;
 
+import com.example.first.dto.PasswordDto;
 import com.example.first.dto.TempAuthInfo;
 import com.example.first.dto.UserDto;
 import com.example.first.exception.UserException;
@@ -48,13 +49,6 @@ public class UserServiceImpl implements UserService{
         return username;
     }
 
-//    // 인증된 사용자의 id 가져오기
-//    public Long getUserId() {
-//        User foundUser = userRepository.findByUsername(getUsernameFromAuthentication());
-//        return foundUser.getId();
-//    }
-
-
 
     // 회원가입
     @Override
@@ -67,10 +61,10 @@ public class UserServiceImpl implements UserService{
             throw new UserException("해당 이메일이 이미 존재합니다.", HttpStatus.BAD_REQUEST, null);
         }
 
-        // 비밀번호 확인이 비밀번호와 다를 때
-        if (!userDto.getPassword().equals(userDto.getPasswordConfirm())) {
-            throw new UserException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST, null);
-        }
+//        // 비밀번호 확인이 비밀번호와 다를 때
+//        if (!userDto.getPassword().equals(userDto.getPasswordConfirm())) {
+//            throw new UserException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST, null);
+//        }
 
         String encodedPassword = encoder.encode(userDto.getPassword());
         userDto.setPassword(encodedPassword);
@@ -136,7 +130,7 @@ public class UserServiceImpl implements UserService{
 
         // 임시 비밀번호 생성
         String tempPw = instancePasswordGenerator();
-        System.out.printf("임시비번 = = = "  + tempPw);
+        System.out.println("tempPw = " + tempPw);
 
         // 임시 유저 정보 생성
         TempAuthInfo tempAuthInfo = new TempAuthInfo();
@@ -150,11 +144,52 @@ public class UserServiceImpl implements UserService{
         eventPublisher.publishEvent(tempAuthInfo);
     }
 
+    // 비밀번호 변경
+    @Override
+    public void changePw(PasswordDto passwordDto) throws UserException {
+
+
+
+        System.out.println("passwordDto.getPassword() === " + passwordDto.getPassword());
+        System.out.println("passwordDto.getNewPassword() === " + passwordDto.getNewPassword());
+
+        // 1. 사용자 정보를 가져옴
+        UserDto user = homeMapper.findByUsername(passwordDto.getUsername());
+
+        if (user == null) {
+            throw new UserException("디비에서 가져온 유저디티오 객체가 널이에요ㅠ", HttpStatus.BAD_REQUEST, null);
+        }
+        System.out.println("user.getPassword() === " + user.getUsername());
+
+//        // 2. 디비에 저장된 암호화된 비밀번호와 입력한 현재 비밀번호를 비교
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        if (passwordEncoder.matches(passwordDto.getPassword(), user.getPassword())) {
+//            // 3. 현재 비밀번호가 일치하는 경우, 새 비밀번호를 암호화하여 업데이트
+//            String newPasswordEncoded = passwordEncoder.encode(passwordDto.getNewPassword());
+//            passwordDto.setNewPassword(newPasswordEncoded);
+//            homeMapper.changePw(passwordDto);
+//        } else {
+//            // 4. 비밀번호가 일치하지 않는 경우 예외 또는 에러 처리
+//            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+//        }
+
+//        if (!passwordDto.getPassword().equals(user.getPassword())) {
+//            throw new UserException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST, null);
+//        }
+        // 3. 새 비밀번호를 암호화하여 업데이트
+        String newPasswordEncoded = encoder.encode(passwordDto.getNewPassword());
+        passwordDto.setNewPassword(newPasswordEncoded);
+        passwordDto.setUsername(user.getUsername());
+
+        System.out.println("newPasswordEncoded === " + newPasswordEncoded);
+        System.out.println("user.getUsername()" + user.getUsername());
+        homeMapper.changePw(passwordDto);
+    }
 
 
     // 로그인
     @Override
-    public UserDto login(UserDto userDto) throws UserException {
+    public UserDetails login(UserDto userDto) throws UserException {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         UserDto retrievedUser = homeMapper.findByUsername(username);
@@ -173,42 +208,19 @@ public class UserServiceImpl implements UserService{
             throw new UserException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST, null);
         }
 
-
-
         // 2. 인증 성공(회원저장소에 해당 이름이 있으면) 후 인증된 user의 정보를 갖고옴
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userDto.getUsername());
-
-        // 3. subject, claim 모두 UserDetails를 사용하므로 객체를 그대로 전달
-//        String accessToken = jwtUtil.generateAccessToken(userDetails); // 엑세스 토큰
-//        String refreshToken = jwtUtil.generateRefreshToken(userDetails);  // 리프레시 토큰
-
-
-        // 230814 추가 - redis에 refresh 토큰 저장하기!
-        // RT:나나(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로
-
-//        Date refreshTokenExpiration = jwtUtil.getExpirationDate(refreshToken);
-//        long remainingTimeInMillis = refreshTokenExpiration.getTime() - System.currentTimeMillis();// 만료까지 남은시간
-
-//        redisTemplate.opsForValue().set("RT:" + username, refreshToken, remainingTimeInMillis, TimeUnit.MILLISECONDS);
         System.out.println("key==========RT:" + username);
-
-
-        // 4. 생성된 토큰을 응답
-        //            UserResponseDto userResponseDto = new UserResponseDto(username, nickname, phoneNumber);
-//            loginSuccessResponseDto.setUserResponseDto(userResponseDto);
-//        return new UserDto(accessToken, refreshToken);
-
-        return null;
+        return userDetailsService.loadUserByUsername(userDto.getUsername());
 
 
     }
 
     // 마이페이지 정보 가져오기
-    @Override
-    public UserDto getUserInfo() {
-        String usernameFromAuthentication = getUsernameFromAuthentication();
-        return homeMapper.getUserInfo(usernameFromAuthentication);
-    }
+//    @Override
+//    public UserDto getUserInfo() {
+//        String usernameFromAuthentication = getUsernameFromAuthentication();
+//        return homeMapper.getUserInfo(usernameFromAuthentication);
+//    }
 
 //    @Override
 //    public UserResponseDto personalInfo() {
