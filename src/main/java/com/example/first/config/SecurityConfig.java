@@ -8,7 +8,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -32,38 +39,38 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         // 유진님 코드 //
-//        http
-//                .formLogin()
-//                .loginPage("/login")
-//                .defaultSuccessUrl("/")
-//                .failureUrl("/login?error=true")
-//                .failureHandler(new AuthenticationFailureHandler() {
-//                    @Override
-//                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-//                        response.sendRedirect("/login?error=true");
-//                    }
-//                })
-//                .usernameParameter("username")
-//                .passwordParameter("password")
-//                .and()
-//                .userDetailsService(userDetailsService)
-//                .logout()
-//                .logoutUrl("/logout")
-//                .logoutSuccessUrl("/")
-//                .and()
-//                .csrf().disable();
+        http
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login?error=true")
+                .failureHandler(new AuthenticationFailureHandler() {
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                        response.sendRedirect("/login?error=true");
+                    }
+                })
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .and()
+                .userDetailsService(userDetailsService)
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .and()
+                .csrf().disable();
 
 
-        http.formLogin().loginPage("/login").defaultSuccessUrl("/", true);
-        // 로그인이 수행될 uri 매핑 (post 요청이 기본)
-        http.formLogin().loginProcessingUrl("/login").defaultSuccessUrl("/", true);
-        // 인증된 사용자이지만 인가되지 않은 경로에 접근시 리다이랙팅 시킬 uri 지정
-        http.exceptionHandling().accessDeniedPage("/forbidden");
-        // logout
-        http.logout().logoutUrl("/logout").logoutSuccessUrl("/");
-
-        //1. 내가 만든 서비스 지정
-        http.userDetailsService(userDetailsService);
+//        http.formLogin().loginPage("/login").defaultSuccessUrl("/", true);
+//        // 로그인이 수행될 uri 매핑 (post 요청이 기본)
+//        http.formLogin().loginProcessingUrl("/login").defaultSuccessUrl("/", true);
+//        // 인증된 사용자이지만 인가되지 않은 경로에 접근시 리다이랙팅 시킬 uri 지정
+//        http.exceptionHandling().accessDeniedPage("/forbidden");
+//        // logout
+//        http.logout().logoutUrl("/logout").logoutSuccessUrl("/");
+//
+//        //1. 내가 만든 서비스 지정
+//        http.userDetailsService(userDetailsService);
     }
 
     @Bean
