@@ -190,17 +190,7 @@ public class HomeController {
 //        UserDto userDto = userService.getUserInfo(); // UserService에서 현재 사용자 정보를 가져오는 메서드
 
 
-        UserDto user = homeMapper.findByUsername("akak111@naver.com");
-//        System.out.println("userDto ===== " + userDto);
-//        System.out.println("userDto ===== " + userDto.getUsername());
-
-        model.addAttribute("name", user.getName());
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("nickname", user.getNickname());
-        model.addAttribute("phoneNumber", user.getPhoneNumber());
-        model.addAttribute("profilePicture", user.getProfilePicture());
-        model.addAttribute("streetAdr", user.getStreetAdr());
-        model.addAttribute("detailAdr", user.getDetailAdr());
+//        UserDto user = homeMapper.findByUsername("akak111@naver.com");
 
         // 현재 사용자의 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -208,13 +198,25 @@ public class HomeController {
         // 사용자 이름 가져오기
         String username = authentication.getName();
 
+        UserDto foundUser = homeMapper.findByUsername(username);
 
-        System.out.println("authentication.getName() ==== " + authentication.getName());
-        System.out.println("authentication.getCredentials() ==== " + authentication.getCredentials());
-        System.out.println("authentication.getDetails() ==== " + authentication.getDetails());
-        System.out.println("authentication.getPrincipal() ==== " + authentication.getPrincipal());
-        System.out.println("authentication.getAuthorities() ==== " + authentication.getAuthorities());
-        System.out.println("authentication==== " + authentication);
+        model.addAttribute("name", foundUser.getName());
+        model.addAttribute("username", foundUser.getUsername());
+        model.addAttribute("nickname", foundUser.getNickname());
+        model.addAttribute("phoneNumber", foundUser.getPhoneNumber());
+        model.addAttribute("profilePicture", foundUser.getProfilePicture());
+        model.addAttribute("streetAdr", foundUser.getStreetAdr());
+        model.addAttribute("detailAdr", foundUser.getDetailAdr());
+
+
+
+
+        System.out.println("마이페이지 - authentication.getName() ==== " + authentication.getName());
+        System.out.println("마이페이지 - authentication.getCredentials() ==== " + authentication.getCredentials());
+        System.out.println("마이페이지 - authentication.getDetails() ==== " + authentication.getDetails());
+        System.out.println("마이페이지 - authentication.getPrincipal() ==== " + authentication.getPrincipal());
+        System.out.println("마이페이지 - authentication.getAuthorities() ==== " + authentication.getAuthorities());
+        System.out.println("마이페이지 - authentication==== " + authentication);
 
         // 여기에서 필요한 정보를 세션에서 가져와 모델에 추가하거나 직접 사용할 수 있습니다.
         // 예를 들어, 사용자 이름을 모델에 추가하면 해당 정보를 뷰에서 사용할 수 있습니다.

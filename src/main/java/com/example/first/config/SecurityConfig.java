@@ -41,7 +41,7 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
         // 유진님 코드 //
         http
                 .formLogin()
-                .loginPage("/login")
+                .loginPage("/login") // 로그인 페이지의 디폴트 경로 설정
                 .defaultSuccessUrl("/")
                 .failureUrl("/login?error=true")
                 .failureHandler(new AuthenticationFailureHandler() {
@@ -50,7 +50,7 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
                         response.sendRedirect("/login?error=true");
                     }
                 })
-                .usernameParameter("username")
+                .usernameParameter("username")  // "login.jsp"에서 지정한 변수명으로 파라미터명 설정
                 .passwordParameter("password")
                 .and()
                 .userDetailsService(userDetailsService)
@@ -59,6 +59,11 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 .and()
                 .csrf().disable();
+
+        // 조유진님 코드
+        http.formLogin()
+                .loginProcessingUrl("/j_spring_security_check") // 해당 url 요청이 들어오면 authProvider로 로그인 정보를 전달하여 로그인 로직이 수행될 수 있도록 설정
+                .permitAll(); // 로그인 폼 url 모두 허용
 
 
 //        http.formLogin().loginPage("/login").defaultSuccessUrl("/", true);
