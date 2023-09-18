@@ -19,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -108,7 +107,7 @@ public class HomeController {
         // 내가 업로드 파일을 저장할 경로
         String fileName =  System.currentTimeMillis() + "_" + profilePicture.getOriginalFilename();
 
-        String profilePictureLocation = userService.storeProfilePicture(profilePicture, fileName);
+//        String profilePictureLocation = userService.storeProfilePicture(profilePicture, fileName);
 //        userDto.setProfilePictureLocation(profilePictureLocation);
 
 
@@ -199,18 +198,18 @@ public class HomeController {
     public UserDto login(@RequestBody UserDto userDto) throws UserException {
 //        Object a = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("TEST");
-        System.out.println(" 컨트롤러에서 " + userDto.getUsername());
-        System.out.println(" 컨트롤러에서 " + userDto.getPassword());
+        System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getUsername());
+        System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getPassword());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
 
-        System.out.println("authentication = " + authentication);
-        System.out.println("authentication.getName() = " + authentication.getName());
-        System.out.println("authentication.getAuthorities() = " + authentication.getAuthorities());
-        System.out.println("authentication.getDetails() = " + authentication.getDetails());
-        System.out.println("authentication.getCredentials() = " + authentication.getCredentials());
-        System.out.println("authentication.getPrincipal() = " + authentication.getPrincipal());
+        System.out.println(" 홈 컨트롤러 / 로그인 - authentication = " + authentication);
+        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getName() = " + authentication.getName());
+        System.out.println(" 홈 컨트롤러 / 로그인 - .getAuthorities() = " + authentication.getAuthorities());
+        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getDetails() = " + authentication.getDetails());
+        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getCredentials() = " + authentication.getCredentials());
+        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getPrincipal() = " + authentication.getPrincipal());
         System.out.println("principal = " + principal.getUsername());
 
         UserDto userDto1 = principal.getUserDto();
@@ -227,45 +226,6 @@ public class HomeController {
     }
 
 
-    // 마이페이지 화면
-    @GetMapping("/mypage")
-    public String mypage(Model model) {
-        // 사용자 정보를 가져와 모델에 추가
-//        UserDto userDto = userService.getUserInfo(); // UserService에서 현재 사용자 정보를 가져오는 메서드
 
-
-//        UserDto user = homeMapper.findByUsername("akak111@naver.com");
-
-        // 현재 사용자의 인증 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 사용자 이름 가져오기
-        String username = authentication.getName();
-
-        UserDto foundUser = homeMapper.findByUsername(username);
-
-        model.addAttribute("name", foundUser.getName());
-        model.addAttribute("username", foundUser.getUsername());
-        model.addAttribute("nickname", foundUser.getNickname());
-        model.addAttribute("phoneNumber", foundUser.getPhoneNumber());
-        model.addAttribute("streetAdr", foundUser.getStreetAdr());
-        model.addAttribute("detailAdr", foundUser.getDetailAdr());
-
-
-
-
-        System.out.println("마이페이지 - authentication.getName() ==== " + authentication.getName());
-        System.out.println("마이페이지 - authentication.getCredentials() ==== " + authentication.getCredentials());
-        System.out.println("마이페이지 - authentication.getDetails() ==== " + authentication.getDetails());
-        System.out.println("마이페이지 - authentication.getPrincipal() ==== " + authentication.getPrincipal());
-        System.out.println("마이페이지 - authentication.getAuthorities() ==== " + authentication.getAuthorities());
-        System.out.println("마이페이지 - authentication==== " + authentication);
-
-        // 여기에서 필요한 정보를 세션에서 가져와 모델에 추가하거나 직접 사용할 수 있습니다.
-        // 예를 들어, 사용자 이름을 모델에 추가하면 해당 정보를 뷰에서 사용할 수 있습니다.
-//        model.addAttribute("username", username);
-
-        return "mypage";
-    }
 
 }

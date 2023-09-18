@@ -31,7 +31,7 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/register",  "/css/**").permitAll();
+                .antMatchers("/register",  "/mypage", "/css/**").permitAll();
 //                .antMatchers("/member/**").authenticated() // 일반사용자 접근 가능
 //                .antMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN") // 매니저, 관리자 접근 가능
 //                .antMatchers("/admin/**").hasRole("ADMIN"); // 관리자만 접근 가능
@@ -62,7 +62,7 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 조유진님 코드
         http.formLogin()
-                .loginProcessingUrl("/j_spring_security_check") // 해당 url 요청이 들어오면 authProvider로 로그인 정보를 전달하여 로그인 로직이 수행될 수 있도록 설정
+                .loginProcessingUrl("/login") // 해당 url 요청이 들어오면 authProvider로 로그인 정보를 전달하여 로그인 로직이 수행될 수 있도록 설정
                 .permitAll(); // 로그인 폼 url 모두 허용
 
 

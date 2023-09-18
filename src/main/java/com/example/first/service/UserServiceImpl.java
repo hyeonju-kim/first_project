@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,20 +38,6 @@ public class UserServiceImpl implements UserService{
 
     private static final Random RANDOM = new Random();
 
-
-    // jwt 토큰으로 현재 인증된 사용자의 Authentication 객체에서 이름 가져오기
-    public String getUsernameFromAuthentication() {
-        String username = null;
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            // 인증된 사용자의 이름 가져오기
-            username = authentication.getName();
-        }
-        return username;
-    }
-
-
     // 회원가입
     @Override
     public UserDto signUp(UserDto userDto) throws UserException {
@@ -70,12 +54,29 @@ public class UserServiceImpl implements UserService{
 //            throw new UserException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST, null);
 //        }
 
+
+//         TODO 해결하자 !!!! 왜 널이나오는지!! 인증번호 확인 과정 필요!
+//        TempAuthInfo tempAuthInfo = homeMapper.findAuthNumberByUsername(userDto.getUsername());
+//        String authNumber = tempAuthInfo.getAuthNumber(); // 왜자꾸 널이나오지;;;
+//        String tempAuthInfoUsername = tempAuthInfo.getUsername();
+//
+//        System.out.println(" 유저서비스임플/ 회원가입 - tempAuthInfo = " + tempAuthInfo);
+//        System.out.println(" 유저서비스임플/ 회원가입 - tempAuthInfo.getUsername() = " + tempAuthInfoUsername);
+//        System.out.println(" 유저서비스임플/ 회원가입 - tempAuthInfo.getAuthNumber() = " + authNumber);
+//        System.out.println(" 유저서비스임플/ 회원가입 - userDto.getAuthNumber() = " + userDto.getAuthNumber());
+
+
         String encodedPassword = encoder.encode(userDto.getPassword());
         userDto.setPassword(encodedPassword);
 
         System.out.println("인코딩된 비밀번호 : " + encodedPassword);
 
+//
+//        if (!Objects.equals(userDto.getAuthNumber(), authNumber)) {
+//            throw new UserException("인증번호가 다릅니다.", HttpStatus.BAD_REQUEST, null);
+//        }
         return homeMapper.signUp(userDto);
+
     }
 
     // 프로필 사진 경로 반환 및 업로드
@@ -129,6 +130,7 @@ public class UserServiceImpl implements UserService{
         TempAuthInfo tempAuthInfo = new TempAuthInfo();
         tempAuthInfo.setUsername(username);
         tempAuthInfo.setAuthNumber(authNumber);
+        tempAuthInfo.setCreatedAt(LocalDateTime.now());
 
         // 디비에 인증번호 저장
         homeMapper.setAuth(tempAuthInfo);

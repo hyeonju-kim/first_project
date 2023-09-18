@@ -19,6 +19,9 @@ public interface HomeMapper {
     // 사용자 이메일로 사용자 가져오는 메서드
     UserDto findByUsername(String username);
 
+    // username 으로 인증번호 가져오기
+    TempAuthInfo findAuthNumberByUsername(String username);
+
     // 로그인
 //    UserDto login(UserDto userDto);
 

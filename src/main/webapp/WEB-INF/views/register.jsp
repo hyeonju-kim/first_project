@@ -92,8 +92,8 @@
 
                 <!-- 인증번호 입력 칸 (숨겨진 상태로 시작) -->
                 <div class="mb-3" id="verificationCodeDiv" style="display: none;">
-                    <label for="verificationCode">인증번호</label>
-                    <input type="text" class="form-control" id="verificationCode" placeholder="인증번호를 입력하세요" required>
+                    <label for="authNumber">인증번호</label>
+                    <input type="text" class="form-control" id="authNumber" placeholder="인증번호를 입력하세요" required>
                     <div class="invalid-feedback">
                         인증번호를 입력해주세요.
                     </div>
@@ -190,6 +190,7 @@
             var zipcode = $('#zipcode').val()
             var streetAdr = $('#streetAdr').val()
             var detailAdr = $('#detailAdr').val()
+            var authNumber = $('#authNumber').val()
 
             console.log(name);
             console.log(nickname);
@@ -200,6 +201,7 @@
             console.log(zipcode);
             console.log(streetAdr);
             console.log(detailAdr);
+            console.log(authNumber);
 
             // 2. 유효성 검사
 
@@ -277,7 +279,9 @@
                 "profilePicture" : profilePicture,
                 "zipcode" : zipcode,
                 "streetAdr" : streetAdr,
-                "detailAdr" : detailAdr
+                "detailAdr" : detailAdr,
+                "authNumber" : authNumber
+
             }
 
             // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)

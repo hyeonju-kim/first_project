@@ -46,6 +46,9 @@
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">로그인</h4>
+
+            <%--   추가 !!! --%>
+            <c:url value="/login" var="loginUrl"/>
             <form name="login_form" class="validation-form" action="/login" method="post">
                 <div class="mb-3">
                     <label for="username">이메일</label>
@@ -116,10 +119,10 @@
 
         // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
         $.ajax({
-            type: 'POST',
-            url: '/loginTest',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
+            // type: 'POST',
+            // url: '/loginTest',
+            // data: JSON.stringify(data),
+            // contentType: 'application/json',
             success: function (response, status, xhr) {
                 console.log(response);
                 console.log(status);

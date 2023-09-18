@@ -20,8 +20,16 @@
 
 <!--인증 번호 저장-->
     <select id="setAuth" parameterType="com.example.first.dto.TempAuthInfo">
-        INSERT INTO postgres.first_project.auth (username, auth_number)
-        VALUES ( #{username}, #{authNumber})
+        INSERT INTO postgres.first_project.auth (username, auth_number, created_at)
+        VALUES ( #{username}, #{authNumber}, #{createdAt})
+    </select>
+
+<!--    인증번호 가져오기-->
+    <select id="findAuthNumberByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.TempAuthInfo">
+        SELECT * FROM postgres.first_project.auth
+        WHERE username = #{username}
+        ORDER BY created_at DESC -- created_at 열을 내림차순으로 정렬합니다.
+        LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
     </select>
 
 <!--비밀번호 변경-->
