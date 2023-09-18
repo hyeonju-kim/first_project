@@ -40,7 +40,15 @@ public class UserDto {
 
     private String authNumber; // 인증번호
 
-    private String profilePicture;
+//    private String profilePicture;
+
+
+    // 경로를 저장하기 (파일명)
+    private String profilePictureLocation;
+
+    // 프로필 사진
+//    private MultipartFile profilePicture;
+
 
     private String zipcode;
     private String streetAdr;

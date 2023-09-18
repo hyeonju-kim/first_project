@@ -120,7 +120,7 @@
 
                 <div class="mb-3">
                     <label for="profilePicture">프로필 사진</label>
-                    <input type="file" class="form-control-file" id="profilePicture" accept="image/*">
+                    <input type="file" class="form-control-file" id="profilePicture" name="uploadFile" accept=".jpg, .jpeg, .png">
                     <div class="invalid-feedback">
                         이미지 파일을 업로드해주세요.
                     </div>
@@ -145,7 +145,8 @@
 
 
                 <div class="mb-4"></div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register()">가입 완료</button>
+                <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register(); storeProfilePicture()">가입 완료</button>
+
             </form>
         </div>
     </div>
@@ -175,7 +176,7 @@
     //     });
     // }, false);
 
-    // 2. 😊 가입완료 메서드
+    // 1. 😊 가입완료 메서드
     function register() {
             // e.preventDefault(); // 폼 제출 방지
 
@@ -186,7 +187,6 @@
             var password = $('#password').val()
             var passwordConfirm = $('#passwordConfirm').val()
             var phoneNumber = $('#phoneNumber').val()
-            var profilePicture = $('#profilePicture').val()
             var zipcode = $('#zipcode').val()
             var streetAdr = $('#streetAdr').val()
             var detailAdr = $('#detailAdr').val()
@@ -197,7 +197,6 @@
             console.log(password);
             console.log(passwordConfirm);
             console.log(phoneNumber);
-            console.log(profilePicture);
             console.log(zipcode);
             console.log(streetAdr);
             console.log(detailAdr);
@@ -322,6 +321,47 @@
             //     $("#registrationForm")[0].submit();
             // }
     }
+
+    // 파일 업로드 메소드
+    function storeProfilePicture() {
+        let fileInput = $("input[name=uploadFile]")[0];
+        let fileObj = fileInput.files[0];
+
+        if (fileObj) {
+            let formData = new FormData();
+            formData.append("uploadFile", fileObj);
+
+            console.log("fileObj: " + fileObj);
+            console.log("fileObj.name: " + fileObj.name);
+            console.log("fileObj.size: " + fileObj.size);
+            console.log("fileObj.type: " + fileObj.type);
+
+            $.ajax({
+                url: '/upload-profilePicture',
+                processData: false,
+                contentType: false,
+                data: formData,
+                type: 'POST',
+                // dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    // 파일 업로드 성공 처리를 추가할 수 있습니다.
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                    // 파일 업로드 실패 처리를 추가할 수 있습니다.
+                }
+            });
+        }
+    }
+
+    // 파일 업로드 버튼(input[type=file])에 change 이벤트 핸들러 등록
+    $("input[type=file]").on("change", storeProfilePicture);
+
+
+
 
     // 3. 😊 메일전송 메소드
     function sendEmailVerification() {

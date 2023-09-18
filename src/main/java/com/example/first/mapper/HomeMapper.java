@@ -1,6 +1,7 @@
 package com.example.first.mapper;
 
 import com.example.first.dto.PasswordDto;
+import com.example.first.dto.ProfilePicture;
 import com.example.first.dto.TempAuthInfo;
 import com.example.first.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Repository;
 public interface HomeMapper {
     // 회원가입
     UserDto signUp(UserDto userDto);
+
+    // 프로필 사진 업로드
+    void storeProfilePicture(ProfilePicture picture);
 
     // 사용자 이메일로 사용자 가져오는 메서드
     UserDto findByUsername(String username);

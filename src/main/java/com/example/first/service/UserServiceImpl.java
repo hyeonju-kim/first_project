@@ -1,6 +1,7 @@
 package com.example.first.service;
 
 import com.example.first.dto.PasswordDto;
+import com.example.first.dto.ProfilePicture;
 import com.example.first.dto.TempAuthInfo;
 import com.example.first.dto.UserDto;
 import com.example.first.exception.UserException;
@@ -14,7 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -69,9 +73,35 @@ public class UserServiceImpl implements UserService{
         String encodedPassword = encoder.encode(userDto.getPassword());
         userDto.setPassword(encodedPassword);
 
-        System.out.printf("인코딩된 비밀번호 : " + encodedPassword);
+        System.out.println("인코딩된 비밀번호 : " + encodedPassword);
 
         return homeMapper.signUp(userDto);
+    }
+
+    // 프로필 사진 경로 반환 및 업로드
+    public String storeProfilePicture(MultipartFile profilePicture, String fileName) throws IOException {
+        // 프로필 사진을 저장하고 파일 경로를 반환하는 로직
+        // 이 부분에서 파일을 실제로 저장하고 경로를 반환하는 코드를 작성합니다.
+
+
+        String savePath =  "C:\\Program Files\\hj\\first_project\\profile_picture\\" + fileName;
+        LocalDateTime regDate = LocalDateTime.now();
+        String fileExt = getFileExtension(fileName);
+        ProfilePicture picture = new ProfilePicture(fileName, savePath, regDate, profilePicture.getBytes(), fileExt);
+
+        homeMapper.storeProfilePicture(picture);
+
+        return savePath;
+
+    }
+
+    // 파일 이름에서 확장자를 추출하는 메서드
+    public static String getFileExtension(String fileName) {
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        } else {
+            return ""; // 확장자가 없는 경우 빈 문자열 반환
+        }
     }
 
     // 회원가입 시 6자리 인증번호 생성 메서드
@@ -106,6 +136,9 @@ public class UserServiceImpl implements UserService{
         // 메일 전송 이벤트 퍼블리싱(비동기)
         eventPublisher.publishEvent(tempAuthInfo);
     }
+
+
+
 
 
     // 임시 비밀번호 생성 메서드

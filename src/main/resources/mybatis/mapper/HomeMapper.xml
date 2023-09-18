@@ -7,8 +7,15 @@
 <!--회원가입-->
 <mapper namespace="com.example.first.mapper.HomeMapper">
     <select id="signUp" parameterType="com.example.first.dto.UserDto" resultType="com.example.first.dto.UserDto">
-        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture, zipcode, street_adr, detail_adr)
-        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePicture} , #{zipcode}, #{streetAdr}, #{detailAdr})
+        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location, zipcode, street_adr, detail_adr)
+        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode}, #{streetAdr}, #{detailAdr})
+    </select>
+
+
+<!--프로필 사진 업로드-->
+    <select id="storeProfilePicture" parameterType="com.example.first.dto.ProfilePicture" >
+        INSERT INTO postgres.first_project.profile_picture (file_name, save_path, reg_date, file_size, flag_del, file_ext)
+        VALUES ( #{fileName}, #{savePath}, #{regDate}, #{fileSize}, #{flagDel}, #{fileExt})
     </select>
 
 <!--인증 번호 저장-->

@@ -4,12 +4,16 @@ import com.example.first.dto.PasswordDto;
 import com.example.first.dto.UserDto;
 import com.example.first.exception.UserException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface UserService {
     // 회원가입
-//    UserDto signUp(UserRequestDto userRequestDto);
-
     UserDto signUp(UserDto userDto) throws UserException;
+
+    // 프로필 사진 업로드
+    String storeProfilePicture(MultipartFile profilePicture, String fileName) throws IOException;
 
     //이메일 인증
     void sendAuthNumToEmail(String username);
