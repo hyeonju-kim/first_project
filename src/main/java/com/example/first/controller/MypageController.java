@@ -13,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Controller
 @Slf4j
@@ -24,43 +27,38 @@ public class MypageController {
     // 마이페이지 화면
     @GetMapping("/mypage")
     public String mypage(Model model) {
-        // 사용자 정보를 가져와 모델에 추가
-//        UserDto userDto = userService.getUserInfo(); // UserService에서 현재 사용자 정보를 가져오는 메서드
-
-
-//        UserDto user = homeMapper.findByUsername("akak111@naver.com");
-
         // 현재 사용자의 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("마이페이지 - authentication = " + authentication);
 
         // 사용자 이름 가져오기
         String username = authentication.getName();
+        UserDto userDto = homeMapper.findByUsername(username);
 
-        UserDto foundUser = homeMapper.findByUsername(username);
-
-        model.addAttribute("username", foundUser.getUsername());
-        model.addAttribute("nickname", foundUser.getNickname());
-        model.addAttribute("phoneNumber", foundUser.getPhoneNumber());
-        model.addAttribute("streetAdr", foundUser.getStreetAdr());
-        model.addAttribute("detailAdr", foundUser.getDetailAdr());
-
-
+        System.out.println("마이페이지 - foundUser.getUsername() ==== " + userDto.getUsername());
+        System.out.println("마이페이지 - foundUser.getName() ==== " + userDto.getName());
+        System.out.println("마이페이지 - foundUser.getNickname() ==== " + userDto.getNickname());
+        System.out.println("마이페이지 - foundUser.getPhoneNumber() ==== " + userDto.getPhoneNumber());
+        System.out.println("마이페이지 - foundUser.getStreetAdr() ==== " + userDto.getStreetAdr());
+        System.out.println("마이페이지 - foundUser.getDetailAdr() ==== " + userDto.getDetailAdr());
 
 
-        System.out.println("마이페이지 - authentication.getName() ==== " + authentication.getName());
-        System.out.println("마이페이지 - authentication.getCredentials() ==== " + authentication.getCredentials());
-        System.out.println("마이페이지 - authentication.getDetails() ==== " + authentication.getDetails());
-        System.out.println("마이페이지 - authentication.getPrincipal() ==== " + authentication.getPrincipal());
-        System.out.println("마이페이지 - authentication.getAuthorities() ==== " + authentication.getAuthorities());
-        System.out.println("마이페이지 - authentication==== " + authentication);
+        // 프로필 사진 경로 가져와서 저장하기 (미리 저장 못해서 일단 이렇게 가져와서 넣어주자,,)
+        String profilePictureSavePath = homeMapper.findProfilePictureSavePath(username);// 왜 여기서 못가져오지?
 
-        // 여기에서 필요한 정보를 세션에서 가져와 모델에 추가하거나 직접 사용할 수 있습니다.
-        // 예를 들어, 사용자 이름을 모델에 추가하면 해당 정보를 뷰에서 사용할 수 있습니다.
-//        model.addAttribute("username", username);
+        System.out.println("마이페이지 컨트롤러 / 화면 - profilePictureSavePath =  " + profilePictureSavePath);
+        userDto.setProfilePictureLocation(profilePictureSavePath);
+
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("savePath", profilePictureSavePath);
+        params.put("userDto", userDto);
+
+
+        homeMapper.updateUserInsertSavePath(params);
+
+        model.addAttribute("user", userDto);
 
         return "mypage";
     }
-
-
 }

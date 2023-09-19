@@ -27,31 +27,32 @@
             <form class="validation-form" action="/login" method="post" novalidate>
                 <div class="mb-3">
                     <label for="name">이름</label>
-                    <input type="text" class="form-control" id="name" name="name" value="${name}" readonly>
+                    <input type="text" class="form-control" id="name" name="name" value="${user.name}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="username">이메일</label>
-                    <input type="email" class="form-control" id="username" name="email" value="${username}" readonly>
+                    <input type="email" class="form-control" id="username" name="email" value="${user.username}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="nickname">닉네임</label>
-                    <input type="text" class="form-control" id="nickname" name="nickname" value="${nickname}" readonly>
+                    <input type="text" class="form-control" id="nickname" name="nickname" value="${user.nickname}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="phoneNumber">휴대폰 번호</label>
-                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="${phoneNumber}" readonly>
+                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="${user.phoneNumber}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="profilePicture">프로필 사진</label>
-                    <input type="file" class="form-control" id="profilePicture" name="profilePicture">
+<%--                    <input type="file" class="form-control" id="profilePicture" name="profilePicture">--%>
+                    <img src="${user.profilePictureLocation}" alt="프로필 사진" width="200" height="200" id="profilePicture">
                 </div>
                 <div class="mb-3">
                     <label for="streetAdr">주소</label>
-                    <input type="text" class="form-control" id="streetAdr" name="streetAdr" value="${streetAdr}" readonly>
+                    <input type="text" class="form-control" id="streetAdr" name="streetAdr" value="${user.streetAdr}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="detailAdr">상세 주소</label>
-                    <input type="text" class="form-control" id="detailAdr" name="detailAdr" value="${detailAdr}" readonly>
+                    <input type="text" class="form-control" id="detailAdr" name="detailAdr" value="${user.detailAdr}" readonly>
                 </div>
 
 
@@ -72,24 +73,24 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        // 서버에서 사용자 정보 가져오기
-        $.ajax({
-            url: '/mypage', // 컨트롤러 URL 설정
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                // 가져온 데이터를 페이지에 채웁니다.
-                $('#name').text(data.name);
-                $('#username').text(data.username);
-                $('#nickname').text(data.nickname);
-                $('#phoneNumber').text(data.phoneNumber);
-            },
-            error: function (error) {
-                console.error('Error:', error);
-            }
-        });
-    });
+    // $(document).ready(function () {
+    //     // 서버에서 사용자 정보 가져오기
+    //     $.ajax({
+    //         url: '/mypage', // 컨트롤러 URL 설정
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             // 가져온 데이터를 페이지에 채웁니다.
+    //             $('#name').text(data.name);
+    //             $('#username').text(data.username);
+    //             $('#nickname').text(data.nickname);
+    //             $('#phoneNumber').text(data.phoneNumber);
+    //         },
+    //         error: function (error) {
+    //             console.error('Error:', error);
+    //         }
+    //     });
+    // });
 
 
     // function sendTempPwToEmail() {

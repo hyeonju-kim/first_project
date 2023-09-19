@@ -13,14 +13,14 @@
 <body>
 <div class="container">
     <h2 class="text-center">게시글 수정</h2>
-    <form action="/boards/<%= board.getBoardId() %>/edit" method="post">
+    <form action="/boards/${board.boardId}/edit" method="post">
         <div class="form-group">
             <label for="title">제목</label>
-            <input type="text" class="form-control" id="title" name="title" value="<%= board.getTitle() %>" required>
+            <input type="text" class="form-control" id="title" name="title" value="${board.title}" required>
         </div>
         <div class="form-group">
             <label for="content">내용</label>
-            <textarea class="form-control" id="content" name="content" rows="4" required><%= board.getContent() %></textarea>
+            <textarea class="form-control" id="content" name="content" rows="4" required>${board.content}</textarea>
         </div>
         <button type="submit" class="btn btn-primary">게시글 수정</button>
     </form>

@@ -3,9 +3,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
-<!--회원가입-->
+<!-- 게시판 -->
 <mapper namespace="com.example.first.mapper.BoardMapper">
 
+    <!-- 게시글 목록 조회 쿼리 -->
+    <select id="getAllBoards" resultType="com.example.first.dto.BoardDto">
+        SELECT * FROM postgres.first_project.boards
+        ORDER BY created_at DESC;
+    </select>
+
+    <!-- 특정 게시글 조회 쿼리 -->
+    <select id="getBoardById" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardDto">
+        SELECT * FROM postgres.first_project.boards
+        WHERE board_id = #{boardId};
+    </select>
+
+    <!-- 게시글 생성 쿼리 -->
+    <insert id="createBoard" parameterType="com.example.first.dto.BoardDto">
+        INSERT INTO postgres.first_project.boards (title, content, status, created_at, user_id)
+        VALUES (#{title}, #{content}, #{status}, #{createdAt}, #{userId});
+    </insert>
+
+    <!-- 게시글 수정 쿼리 -->
+    <update id="updateBoard" parameterType="com.example.first.dto.BoardDto">
+        UPDATE postgres.first_project.boards
+        SET title = #{title}, content = #{content}, status = #{status}, created_at = #{createdAt}, user_id = #{userId}
+        WHERE board_id = #{boardId};
+    </update>
+
+    <!-- 게시글 삭제 쿼리 -->
+    <delete id="deleteBoard" parameterType="java.lang.Long">
+        DELETE FROM postgres.first_project.boards WHERE board_id = #{boardId};
+    </delete>
 
 </mapper>

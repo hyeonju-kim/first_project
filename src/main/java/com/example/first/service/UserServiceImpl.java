@@ -49,38 +49,24 @@ public class UserServiceImpl implements UserService{
             throw new UserException("해당 이메일이 이미 존재합니다.", HttpStatus.BAD_REQUEST, null);
         }
 
-//        // 비밀번호 확인이 비밀번호와 다를 때
-//        if (!userDto.getPassword().equals(userDto.getPasswordConfirm())) {
-//            throw new UserException("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST, null);
-//        }
-
-
-//         TODO 해결하자 !!!! 왜 널이나오는지!! 인증번호 확인 과정 필요!
-//        TempAuthInfo tempAuthInfo = homeMapper.findAuthNumberByUsername(userDto.getUsername());
-//        String authNumber = tempAuthInfo.getAuthNumber(); // 왜자꾸 널이나오지;;;
-//        String tempAuthInfoUsername = tempAuthInfo.getUsername();
-//
-//        System.out.println(" 유저서비스임플/ 회원가입 - tempAuthInfo = " + tempAuthInfo);
-//        System.out.println(" 유저서비스임플/ 회원가입 - tempAuthInfo.getUsername() = " + tempAuthInfoUsername);
-//        System.out.println(" 유저서비스임플/ 회원가입 - tempAuthInfo.getAuthNumber() = " + authNumber);
-//        System.out.println(" 유저서비스임플/ 회원가입 - userDto.getAuthNumber() = " + userDto.getAuthNumber());
-
-
         String encodedPassword = encoder.encode(userDto.getPassword());
         userDto.setPassword(encodedPassword);
 
         System.out.println("인코딩된 비밀번호 : " + encodedPassword);
 
+//        ProfilePicture recentProfilePicture = homeMapper.getRecentProfilePicture();
 //
-//        if (!Objects.equals(userDto.getAuthNumber(), authNumber)) {
-//            throw new UserException("인증번호가 다릅니다.", HttpStatus.BAD_REQUEST, null);
-//        }
+//        System.out.println(" 유저 서비스 임플 / 회원가입 - recentProfilePicture = " + recentProfilePicture);
+//
+//        recentProfilePicture.setUsername(userDto.getUsername());
+//        homeMapper.updateProfilePicture(recentProfilePicture);
+
         return homeMapper.signUp(userDto);
 
     }
 
     // 프로필 사진 경로 반환 및 업로드
-    public String storeProfilePicture(MultipartFile profilePicture, String fileName) throws IOException {
+    public String storeProfilePicture(MultipartFile profilePicture, String fileName, String username) throws IOException {
         // 프로필 사진을 저장하고 파일 경로를 반환하는 로직
         // 이 부분에서 파일을 실제로 저장하고 경로를 반환하는 코드를 작성합니다.
 
@@ -88,7 +74,8 @@ public class UserServiceImpl implements UserService{
         String savePath =  "C:\\Program Files\\hj\\first_project\\profile_picture\\" + fileName;
         LocalDateTime regDate = LocalDateTime.now();
         String fileExt = getFileExtension(fileName);
-        ProfilePicture picture = new ProfilePicture(fileName, savePath, regDate, profilePicture.getBytes(), fileExt);
+
+        ProfilePicture picture = new ProfilePicture(fileName, savePath, regDate, profilePicture.getBytes(), fileExt, username);
 
         homeMapper.storeProfilePicture(picture);
 
@@ -185,8 +172,8 @@ public class UserServiceImpl implements UserService{
 
 
 
-        System.out.println("passwordDto.getPassword() === " + passwordDto.getPassword());
-        System.out.println("passwordDto.getNewPassword() === " + passwordDto.getNewPassword());
+        System.out.println(" 유저서비스임플 / 비번변경 - passwordDto.getPassword() === " + passwordDto.getPassword());
+        System.out.println(" 유저서비스임플 / 비번변경 - passwordDto.getNewPassword() === " + passwordDto.getNewPassword());
 
         // 1. 사용자 정보를 가져옴
         UserDto user = homeMapper.findByUsername(passwordDto.getUsername());
@@ -229,8 +216,11 @@ public class UserServiceImpl implements UserService{
         String password = userDto.getPassword();
         UserDto retrievedUser = homeMapper.findByUsername(username);
 
-        System.out.println("foundUserDto.getUsername() ==============" + retrievedUser.getUsername());
-        System.out.println("foundUserDto ==============" + retrievedUser);
+        System.out.println(" 유저서비스임플 / 로그인 - foundUserDto.getUsername(): " + retrievedUser.getUsername());
+        System.out.println(" 유저서비스임플 / 로그인 - foundUserDto.getUsername(): " + retrievedUser.getStreetAdr());
+        System.out.println(" 유저서비스임플 / 로그인 - foundUserDto.getUsername(): " + retrievedUser.getDetailAdr());
+        System.out.println(" 유저서비스임플 / 로그인 - foundUserDto.getUsername(): " + retrievedUser.getPhoneNumber());
+        System.out.println(" 유저서비스임플 / 로그인 - foundUserDto : " + retrievedUser);
 
         // 조회한 비밀번호
         String foundPw = retrievedUser.getPassword();

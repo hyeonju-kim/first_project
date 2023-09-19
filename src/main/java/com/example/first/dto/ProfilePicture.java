@@ -18,17 +18,9 @@ public class ProfilePicture {
     private byte[] fileSize;
     private String flagDel = "N";
     private String fileExt;
+    private String username;
 
-//    private MultipartFile profilePicture;
 
-    public ProfilePicture(String fileName, String savePath, LocalDateTime regDate, byte[] fileSize, String flagDel, String fileExt) {
-        this.fileName = fileName;
-        this.savePath = savePath;
-        this.regDate = regDate;
-        this.fileSize = fileSize;
-        this.flagDel = flagDel;
-        this.fileExt = fileExt;
-    }
 
     public ProfilePicture(String fileName, String savePath, LocalDateTime regDate, byte[] fileSize, String fileExt) {
         this.fileName = fileName;
@@ -36,5 +28,14 @@ public class ProfilePicture {
         this.regDate = regDate;
         this.fileSize = fileSize;
         this.fileExt = fileExt;
+    }
+
+    public ProfilePicture(String fileName, String savePath, LocalDateTime regDate, byte[] fileSize, String fileExt, String username) {
+        this.fileName = fileName;
+        this.savePath = savePath;
+        this.regDate = regDate;
+        this.fileSize = fileSize;
+        this.fileExt = fileExt;
+        this.username = username;
     }
 }

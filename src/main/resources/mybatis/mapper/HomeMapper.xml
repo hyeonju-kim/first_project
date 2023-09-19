@@ -4,28 +4,60 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
+
+
 <!--회원가입-->
 <mapper namespace="com.example.first.mapper.HomeMapper">
-    <select id="signUp" parameterType="com.example.first.dto.UserDto" resultType="com.example.first.dto.UserDto">
+
+<resultMap id="userResultMap" type="com.example.first.dto.UserDto">
+    <id property="userId" column="user_id"/>
+    <result property="username" column="username"/>
+    <result property="name" column="name"/>
+    <result property="nickname" column="nickname"/>
+    <result property="password" column="password"/>
+    <result property="phoneNumber" column="phone_number"/>
+    <result property="profilePictureLocation" column="profile_picture_location"/>
+    <result property="zipcode" column="zipcode"/>
+    <result property="streetAdr" column="street_adr"/>
+    <result property="detailAdr" column="detail_adr"/>
+
+</resultMap>
+
+
+    <resultMap id="profilePictureResultMap" type="com.example.first.dto.ProfilePicture">
+        <result property="fileName" column="file_name"/>
+        <result property="savePath" column="save_path"/>
+        <result property="regDate" column="reg_date"/>
+    </resultMap>
+
+    <!--회원가입-->
+    <select id="signUp" parameterType="com.example.first.dto.UserDto" resultType="com.example.first.dto.UserDto"  resultMap="userResultMap">
         INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location, zipcode, street_adr, detail_adr)
         VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode}, #{streetAdr}, #{detailAdr})
     </select>
 
+    <!--    사용자 메일로 사용자 가져오기-->
+    <select id="findByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto"  resultMap="userResultMap">
+        SELECT "userId", password, name, username, nickname, phone_number, zipcode, street_adr, detail_adr
+        FROM postgres.first_project.users
+        WHERE username = #{username}
+    </select>
 
-<!--프로필 사진 업로드-->
+
+    <!--프로필 사진 업로드-->
     <select id="storeProfilePicture" parameterType="com.example.first.dto.ProfilePicture" >
-        INSERT INTO postgres.first_project.profile_picture (file_name, save_path, reg_date, file_size, flag_del, file_ext)
-        VALUES ( #{fileName}, #{savePath}, #{regDate}, #{fileSize}, #{flagDel}, #{fileExt})
+        INSERT INTO postgres.first_project.profile_picture (file_name, save_path, reg_date, file_size, flag_del, file_ext, username)
+        VALUES ( #{fileName}, #{savePath}, #{regDate}, #{fileSize}, #{flagDel}, #{fileExt}, #{username})
     </select>
 
 <!--인증 번호 저장-->
-    <select id="setAuth" parameterType="com.example.first.dto.TempAuthInfo">
+    <select id="setAuth" parameterType="com.example.first.dto.TempAuthInfo" >
         INSERT INTO postgres.first_project.auth (username, auth_number, created_at)
         VALUES ( #{username}, #{authNumber}, #{createdAt})
     </select>
 
-<!--    인증번호 가져오기-->
-    <select id="findAuthNumberByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.TempAuthInfo">
+<!-- 인증번호 가져오기-->
+    <select id="findAuthNumberByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.TempAuthInfo"  resultMap="userResultMap">
         SELECT * FROM postgres.first_project.auth
         WHERE username = #{username}
         ORDER BY created_at DESC -- created_at 열을 내림차순으로 정렬합니다.
@@ -39,17 +71,46 @@
         WHERE username = #{username}
     </select>
 
-
-    <!--    사용자 메일로 사용자 가져오기-->
-    <select id="findByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto">
-        SELECT * FROM postgres.first_project.users WHERE username = #{username}
+    <!-- username 으로 프로필사진 경로 가져오기 -->
+    <select id="findProfilePictureSavePath" parameterType="java.lang.String" resultType="java.lang.String" >
+        SELECT save_path
+        FROM postgres.first_project.profile_picture
+        WHERE username = #{username}
+        ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
+        LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
     </select>
 
 
-<!--    마이페이지 정보 가져오기-->
-    <select id="getUserInfo" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto">
-        SELECT * FROM postgres.first_project.users WHERE username = #{username}
+    <!-- 프로필 사진 제일 최근 객체 가져오기 -->
+    <select id="getRecentProfilePicture" resultType="com.example.first.dto.ProfilePicture" resultMap="userResultMap">
+        SELECT * FROM postgres.first_project.profile_picture
+        ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
+        LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
     </select>
+
+    <!--회원가입 시 프로필사진 가져와서 업데이트 -->
+    <select id="updateProfilePicture" parameterType="com.example.first.dto.ProfilePicture">
+        UPDATE postgres.first_project.profile_picture
+        SET username = #{username}
+    </select>
+
+    <!--마이페이지 접근 시 유저 객체 가져와서 save_path 업데이트 -->
+    <update id="updateUserInsertSavePath" parameterType="map">
+        UPDATE postgres.first_project.users
+        SET profile_picture_location = #{savePath}
+        WHERE username = #{userDto.username}
+    </update>
+
+
+
+
+
+    <!--&lt;!&ndash;    마이페이지 정보 가져오기&ndash;&gt;-->
+<!--    <select id="getUserInfo" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto">-->
+<!--        SELECT "userId", password, name, username, nickname, phone_number, zipcode, street_adr, detail_adr-->
+<!--        FROM postgres.first_project.users-->
+<!--        WHERE username = #{username}-->
+<!--    </select>-->
 
 
     <!--    개인정보 확인-->

@@ -269,6 +269,9 @@
             }
 
            // 3. 가져온 정보를 data로 묶기
+            let fileInput = $("input[name=uploadFile]")[0];
+            let fileObj = fileInput.files[0];
+
             let data = {
                 "name" : name,
                 "nickname" : nickname,
@@ -281,7 +284,35 @@
                 "streetAdr" : streetAdr,
                 "detailAdr" : detailAdr,
                 "authNumber" : authNumber
+            }
 
+            if (fileObj) {
+                let formData = new FormData();
+                formData.append("uploadFile", fileObj);
+
+                console.log("fileObj: " + fileObj);
+                console.log("fileObj.name: " + fileObj.name);
+                console.log("fileObj.size: " + fileObj.size);
+                console.log("fileObj.type: " + fileObj.type);
+
+                $.ajax({
+                    url: '/upload-profilePicture',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    type: 'POST',
+                    // dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+                        // 파일 업로드 성공 처리를 추가할 수 있습니다.
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                        // 파일 업로드 실패 처리를 추가할 수 있습니다.
+                    }
+                });
             }
 
             // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
@@ -330,10 +361,12 @@
     function storeProfilePicture() {
         let fileInput = $("input[name=uploadFile]")[0];
         let fileObj = fileInput.files[0];
+        var username = $('#username').val()
 
         if (fileObj) {
             let formData = new FormData();
             formData.append("uploadFile", fileObj);
+            formData.append("username", username);
 
             console.log("fileObj: " + fileObj);
             console.log("fileObj.name: " + fileObj.name);

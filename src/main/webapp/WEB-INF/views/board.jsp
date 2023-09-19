@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -37,7 +38,7 @@
 <%--    </div>--%>
 
     <!-- 글 작성 버튼 -->
-    <a href="/write" class="btn btn-primary mb-3">글 작성</a>
+    <a href="/boards/create" class="btn btn-primary mb-3">글 작성</a>
 
     <!-- 글 목록 -->
     <table class="table">
@@ -49,17 +50,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td><a href="/view/1">첫 번째 글 제목</a></td>
-            <td>작성자1</td>
-            <td>2023-09-12</td>
-        </tr>
-        <tr>
-            <td><a href="/view/2">두 번째 글 제목</a></td>
-            <td>작성자2</td>
-            <td>2023-09-13</td>
-        </tr>
-        <!-- 기타 글 목록 아이템 추가 -->
+        <c:forEach items="${boards}" var="board">
+            <tr>
+                <td><a href="/boards/${board.boardId}">${board.title}</a></td>
+                <td>${board.userId}</td>
+                <td>${board.createdAt}</td>
+            </tr>
+        </c:forEach>
         </tbody>
     </table>
 

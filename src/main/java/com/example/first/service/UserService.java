@@ -13,7 +13,7 @@ public interface UserService {
     UserDto signUp(UserDto userDto) throws UserException;
 
     // 프로필 사진 업로드
-    String storeProfilePicture(MultipartFile profilePicture, String fileName) throws IOException;
+    String storeProfilePicture(MultipartFile profilePicture, String fileName, String username) throws IOException;
 
     //이메일 인증
     void sendAuthNumToEmail(String username);

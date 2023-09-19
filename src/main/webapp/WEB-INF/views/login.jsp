@@ -67,7 +67,7 @@
                 </div>
 
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="loginTest()">로그인</button>
+                <button class="btn btn-primary btn-lg btn-block" type="button" onclick="login()">로그인</button>
                 <div class="mt-3 text-center">
                     <a href="/forgot-password" class="mr-2 text-primary">비밀번호 찾기</a>|&nbsp;
                     <a href="/register" class="text-primary">회원가입</a>
@@ -98,7 +98,7 @@
     // }, false);
 
 
-    function loginTest() {
+    function login() {
         // document.login_form.submit();
 
 
@@ -119,10 +119,10 @@
 
         // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
         $.ajax({
-            // type: 'POST',
-            // url: '/loginTest',
-            // data: JSON.stringify(data),
-            // contentType: 'application/json',
+            type: 'POST',
+            url: '/login',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
             success: function (response, status, xhr) {
                 console.log(response);
                 console.log(status);
@@ -130,7 +130,7 @@
                 if (xhr.status === 200) {
                     // 서버 응답의 상태 코드가 200일 때만 실행
                     alert(username + '님 환영합니다!');
-                    location.href = "/board";
+                    location.href = "/boards";
                 } else {
                     // 가입 실패 처리
                     alert('서버에서 오류가 발생했습니다.');
