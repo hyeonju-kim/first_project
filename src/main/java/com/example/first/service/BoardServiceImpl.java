@@ -2,8 +2,12 @@ package com.example.first.service;
 
 
 import com.example.first.dto.BoardDto;
+import com.example.first.dto.UserDto;
 import com.example.first.mapper.BoardMapper;
+import com.example.first.mapper.HomeMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,7 +19,8 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService {
 //    private final List<BoardDto> boards = new ArrayList<>();
     private final BoardMapper boardMapper;
-    private Long nextBoardId = 1L;
+    private final HomeMapper homeMapper;
+//    private Long nextBoardId = 1L;
 
 
     // 게시판 글 조회
@@ -54,18 +59,36 @@ public class BoardServiceImpl implements BoardService {
     // 글 작성
     @Override
     public Long createBoard(BoardDto boardDto) {
-        List<BoardDto> allBoards = boardMapper.getAllBoards();
-        Long size = (long) allBoards.size();
-        boardDto.setBoardId(++size);
+//        List<BoardDto> allBoards = boardMapper.getAllBoards();
+//        Long size = (long) allBoards.size();
+//        boardDto.setBoardId(++size);
 
         // 현재 시간 지정
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
         boardDto.setCreatedAt(formattedDateTime);
 
-        boardMapper.createBoard(boardDto);
-        return boardDto.getBoardId();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+
+        System.out.println(" 보드 서비스 임플 / 글 작성 - authentication =  " + authentication);
+        System.out.println(" 보드 서비스 임플 / 글 작성 - authentication.getName() =  " + authentication.getName());
+
+        UserDto user = homeMapper.findByUsername(username);
+        String nickname = user.getNickname();
+        System.out.println(" 보드 서비스 임플 / 글 작성 - nickname =  " + nickname);
+
+        boardDto.setNickname(nickname);
+        boardDto.setUsername(username);
+
+        Long boardId = boardMapper.createBoard(boardDto);
+
+        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) =  " + boardId);
+
+
+        return boardId;
     }
 
     // 글 수정

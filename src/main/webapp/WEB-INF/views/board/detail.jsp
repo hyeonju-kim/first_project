@@ -13,12 +13,13 @@
 <body>
 <div class="container mt-4">
     <h2 class="text-center">게시글 상세 정보</h2>
+    <a href="/boards" class="btn btn-primary">게시판 목록</a>
     <div class="row mt-4">
         <div class="col-md-12"> <!-- 수정된 부분 -->
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">제목: ${board.title}</h5>
-                    <p class="card-text">작성자: ${board.userId}</p>
+                    <p class="card-text">작성자: ${board.nickname}</p>
                     <p class="card-text">작성일: ${board.createdAt}</p>
                 </div>
             </div>

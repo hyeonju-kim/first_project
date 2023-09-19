@@ -16,6 +16,8 @@ public class BoardDto {
     private String createdAt;
     private Long userId;
     private MultipartFile file;
+    private String username;
+    private String nickname;
 
 
 
@@ -25,13 +27,6 @@ public class BoardDto {
     public BoardDto(String title, String content) {
         this.title = title;
         this.content = content;
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-
-        this.userId = 1L; // TODO 수정
-
-
-
     }
 
 }

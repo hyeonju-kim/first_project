@@ -17,10 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
@@ -52,7 +55,7 @@ public class HomeController {
     // 2. 회원가입
     @PostMapping("/register")
     @ResponseBody
-    public UserDto signup( @RequestBody UserDto userDto ) throws UserException, IOException {
+    public UserDto signup(@RequestBody UserDto userDto) throws UserException, IOException {
         System.out.println("TEST");
         System.out.println("testDto == " + userDto.getUsername());
 
@@ -85,13 +88,13 @@ public class HomeController {
         System.out.println("컨트롤러/파일업로드 - username = " + username);
 
         // 내가 업로드 파일을 저장할 경로
-        String fileName =  System.currentTimeMillis() + "_" + profilePicture.getOriginalFilename();
+        String fileName = System.currentTimeMillis() + "_" + profilePicture.getOriginalFilename();
 
 //        String profilePictureLocation = userService.storeProfilePicture(profilePicture, fileName);
 //        userDto.setProfilePictureLocation(profilePictureLocation);
 
 
-        String savePath =  "C:\\Program Files\\hj\\first_project\\profile_picture\\" + fileName;
+        String savePath = "C:\\Program Files\\hj\\first_project\\profile_picture\\" + fileName;
         // 저장할 파일, 생성자로 경로와 이름을 지정해줌.
         File saveFile = new File(savePath, fileName);
 
@@ -108,12 +111,13 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패");
         }
     }
+
     // 3. 이메일로 인증번호 전송
     @ResponseBody
     @PostMapping("/email-confirm")
-    public void sendAuthNumToEmail(@RequestBody TempAuthInfo tempAuthInfo){
+    public void sendAuthNumToEmail(@RequestBody TempAuthInfo tempAuthInfo) {
         // 메일로 인증번호 발송
-        System.out.println("email === "+ tempAuthInfo.getUsername());
+        System.out.println("email === " + tempAuthInfo.getUsername());
         userService.sendAuthNumToEmail(tempAuthInfo.getUsername());
     }
 
@@ -127,7 +131,7 @@ public class HomeController {
     // 4. 이메일로 임시 비밀번호 전송
     @ResponseBody
     @PostMapping("/forgot-password")
-    public void forgotId(@RequestBody TempAuthInfo tempAuthInfo){
+    public void forgotId(@RequestBody TempAuthInfo tempAuthInfo) {
         // 메일로 임시 비밀번호 발송
         System.out.println("컨트롤러 --- tempAuthInfo.getUsername() = " + tempAuthInfo.getUsername());
         userService.sendTempPwToEmail(tempAuthInfo.getUsername());
@@ -201,7 +205,16 @@ public class HomeController {
         return "boards";
     }
 
+    // 로그아웃
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // 현재 사용자를 로그아웃 처리
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
 
+        // 로그아웃 후 리다이렉트할 페이지를 지정 (예: 홈 페이지)
+        return "redirect:/boards";
+    }
 
 
 }

@@ -25,6 +25,7 @@
 <div class="container">
     <!-- 마이페이지 버튼 -->
     <div class="text-right mt-2">
+        <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
         <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
     </div>
 
@@ -53,7 +54,7 @@
         <c:forEach items="${boards}" var="board">
             <tr>
                 <td><a href="/boards/${board.boardId}">${board.title}</a></td>
-                <td>${board.userId}</td>
+                <td>${board.nickname}</td>
                 <td>${board.createdAt}</td>
             </tr>
         </c:forEach>

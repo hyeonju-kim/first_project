@@ -5,6 +5,8 @@ import com.example.first.dto.BoardDto;
 import com.example.first.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,10 @@ public class BoardController {
             System.out.println("보드 컨트롤러 / 글목록 for문 - board.getContent() ::" + board.getContent());
             System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
         }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
         model.addAttribute("boards", boards);
         return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
     }
@@ -51,6 +57,7 @@ public class BoardController {
         System.out.println(" 보드 컨트롤러 / 특정 게시글 조회 - board.getTitle() = " + board.getTitle());
         System.out.println(" 보드 컨트롤러 / 특정 게시글 조회 - board.getContent() = " + board.getContent());
         System.out.println(" 보드 컨트롤러 / 특정 게시글 조회 - board.getBoardId() = " + board.getBoardId());
+        System.out.println(" 보드 컨트롤러 / 특정 게시글 조회 - board.getBoardId() = " + board.getNickname());
 
         if (board != null) {
             model.addAttribute("board", board);
@@ -75,6 +82,7 @@ public class BoardController {
 //    }
 
 
+    // 글 작성
     @PostMapping("/create")
     public String createBoard(@RequestParam("title") String title,
                               @RequestParam("content") String content,

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +28,7 @@ public class MypageController {
 
     // 마이페이지 화면
     @GetMapping("/mypage")
-    public String mypage(Model model) {
+    public ModelAndView mypage(Model model) {
         // 현재 사용자의 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("마이페이지 - authentication = " + authentication);
@@ -37,7 +39,7 @@ public class MypageController {
 
         System.out.println("마이페이지 - foundUser.getUsername() ==== " + userDto.getUsername());
         System.out.println("마이페이지 - foundUser.getName() ==== " + userDto.getName());
-        System.out.println("마이페이지 - foundUser.getNickname() ==== " + userDto.getNickname());
+//        System.out.println("마이페이지 - foundUser.getNickname() ==== " + userDto.getNickname());
         System.out.println("마이페이지 - foundUser.getPhoneNumber() ==== " + userDto.getPhoneNumber());
         System.out.println("마이페이지 - foundUser.getStreetAdr() ==== " + userDto.getStreetAdr());
         System.out.println("마이페이지 - foundUser.getDetailAdr() ==== " + userDto.getDetailAdr());
@@ -57,8 +59,14 @@ public class MypageController {
 
         homeMapper.updateUserInsertSavePath(params);
 
-        model.addAttribute("user", userDto);
+//        model.addAttribute("user", userDto);
 
-        return "mypage";
+        File file = new File("C:/Users/weaver-gram-002/Desktop/고슴도치사진.jpg");
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("mypage");
+        mv.addObject("file", file);
+        mv.addObject("user", userDto);
+        return mv;
     }
 }

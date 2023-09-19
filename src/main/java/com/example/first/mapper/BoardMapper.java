@@ -14,7 +14,7 @@ public interface BoardMapper {
 
     BoardDto getBoardById(Long boardId);
 
-    void createBoard(BoardDto boardDto);
+    Long createBoard(BoardDto boardDto);
 
     void updateBoard(BoardDto boardDto);
 

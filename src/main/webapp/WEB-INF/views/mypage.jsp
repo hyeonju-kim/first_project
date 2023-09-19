@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -22,6 +24,9 @@
 <body>
 <div class="container mt-5">
     <h2 class="text-center mb-4">마이페이지</h2>
+    <a href="/boards" class="btn btn-primary mt-3">게시판 목록</a>
+    <br>
+    <br>
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <form class="validation-form" action="/login" method="post" novalidate>
@@ -44,7 +49,11 @@
                 <div class="mb-3">
                     <label for="profilePicture">프로필 사진</label>
 <%--                    <input type="file" class="form-control" id="profilePicture" name="profilePicture">--%>
-                    <img src="${user.profilePictureLocation}" alt="프로필 사진" width="200" height="200" id="profilePicture">
+<%--                    <img src="${user.profilePictureLocation}" alt="프로필 사진" width="200" height="200" id="profilePicture">--%>
+<%--                    <img src="C:/Users/weaver-gram-002/Desktop/고슴도치사진.jpg" alt="프로필 사진" width="200" height="200" id="profilePicture"/>--%>
+                    <img src="${file}" alt="프로필 사진" width="200" height="200" id="profilePicture"/>
+<%--                    <img src="<spring:url value = 'file:///C:/Users/weaver-gram-002/Desktop/고슴도치사진.jpg' />" alt="프로필 사진" width="200" height="200" id="profilePicture"/>--%>
+
                 </div>
                 <div class="mb-3">
                     <label for="streetAdr">주소</label>

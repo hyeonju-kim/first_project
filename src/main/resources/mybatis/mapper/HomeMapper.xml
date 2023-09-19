@@ -10,7 +10,7 @@
 <mapper namespace="com.example.first.mapper.HomeMapper">
 
 <resultMap id="userResultMap" type="com.example.first.dto.UserDto">
-    <id property="userId" column="user_id"/>
+    <result property="userId" column="user_id"/>
     <result property="username" column="username"/>
     <result property="name" column="name"/>
     <result property="nickname" column="nickname"/>
@@ -38,7 +38,7 @@
 
     <!--    사용자 메일로 사용자 가져오기-->
     <select id="findByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto"  resultMap="userResultMap">
-        SELECT "userId", password, name, username, nickname, phone_number, zipcode, street_adr, detail_adr
+        SELECT *
         FROM postgres.first_project.users
         WHERE username = #{username}
     </select>

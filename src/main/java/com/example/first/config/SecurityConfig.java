@@ -28,7 +28,7 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
             "/scss/**",
             "/vendor/**",
             "/img/**",
-            "/boards/**",
+//            "/boards/**",
             "/store-img/**"
     };
 
