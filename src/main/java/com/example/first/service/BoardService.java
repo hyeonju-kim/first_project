@@ -10,4 +10,6 @@ public interface BoardService {
     Long createBoard(BoardDto boardDto);
     void updateBoard(Long boardId, BoardDto boardDto);
     void deleteBoard(Long boardId);
+
+    List<BoardDto> getSearchBoards(String keyword);
 }

@@ -88,17 +88,19 @@ public class HomeController {
         System.out.println("컨트롤러/파일업로드 - username = " + username);
 
         // 내가 업로드 파일을 저장할 경로
-        String fileName = System.currentTimeMillis() + "_" + profilePicture.getOriginalFilename();
+        String originalName = profilePicture.getOriginalFilename();
+        String fileName = System.currentTimeMillis() + "_" + originalName;
 
 //        String profilePictureLocation = userService.storeProfilePicture(profilePicture, fileName);
 //        userDto.setProfilePictureLocation(profilePictureLocation);
 
 
-        String savePath = "C:\\Program Files\\hj\\first_project\\profile_picture\\" + fileName;
+        // 업로드 할 디렉토리 경로 설정
+        String savePath = "C:\\Program Files\\hj\\first_project\\profile_picture";
         // 저장할 파일, 생성자로 경로와 이름을 지정해줌.
         File saveFile = new File(savePath, fileName);
 
-        userService.storeProfilePicture(profilePicture, fileName, username);
+        userService.storeProfilePicture(profilePicture, fileName, username, originalName);
 
 
         try {

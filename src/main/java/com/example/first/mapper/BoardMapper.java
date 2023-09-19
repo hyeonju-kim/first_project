@@ -19,5 +19,7 @@ public interface BoardMapper {
     void updateBoard(BoardDto boardDto);
 
     void deleteBoard(Long boardId);
+
+    List<BoardDto> getSearchBoards(String keyword);
 }
 

@@ -130,4 +130,14 @@ public class BoardController {
         boardService.deleteBoard(boardId);
         return "redirect:/boards"; // 게시글 삭제 후 목록 페이지로 리다이렉트합니다.
     }
+
+    // 글 검색
+    @GetMapping("/search")
+    public String searchBoard(@RequestParam String keyword, Model model) {
+        List<BoardDto> boards = boardService.getSearchBoards(keyword);
+
+        model.addAttribute("boards", boards);
+        return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
+
+    }
 }

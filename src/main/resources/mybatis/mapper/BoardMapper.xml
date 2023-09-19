@@ -43,4 +43,12 @@
         DELETE FROM postgres.first_project.boards WHERE board_id = #{boardId};
     </delete>
 
+    <!-- 게시글 검색 쿼리 -->
+    <select id="getSearchBoards" parameterType="java.lang.String" resultType="com.example.first.dto.BoardDto" resultMap="boardResultMap">
+        SELECT *
+        FROM postgres.first_project.boards
+        WHERE
+            (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'));
+    </select>
+
 </mapper>

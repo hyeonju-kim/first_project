@@ -43,8 +43,11 @@ public class UserDto {
 //    private String profilePicture;
 
 
-    // 경로를 저장하기 (파일명)
+    // 경로를 저장하기 (파일경로명)
     private String profilePictureLocation;
+
+    // 파일 원본명
+    private String originalName;
 
     // 프로필 사진
 //    private MultipartFile profilePicture;

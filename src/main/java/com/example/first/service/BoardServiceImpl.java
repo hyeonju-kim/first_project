@@ -99,14 +99,15 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 글 삭제
-//    @Override
-//    public void deleteBoard(Long boardId) {
-//        boards.removeIf(board -> board.getBoardId().equals(boardId));
-//    }
-
     @Override
     public void deleteBoard(Long boardId) {
         boardMapper.deleteBoard(boardId);
+    }
+
+    // 글 검색
+    @Override
+    public List<BoardDto> getSearchBoards(String keyword) {
+        return boardMapper.getSearchBoards(keyword);
     }
 
 

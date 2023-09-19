@@ -28,6 +28,7 @@
         <result property="fileName" column="file_name"/>
         <result property="savePath" column="save_path"/>
         <result property="regDate" column="reg_date"/>
+        <result property="originalName" column="file_original_name"/>
     </resultMap>
 
     <!--회원가입-->
@@ -46,8 +47,8 @@
 
     <!--프로필 사진 업로드-->
     <select id="storeProfilePicture" parameterType="com.example.first.dto.ProfilePicture" >
-        INSERT INTO postgres.first_project.profile_picture (file_name, save_path, reg_date, file_size, flag_del, file_ext, username)
-        VALUES ( #{fileName}, #{savePath}, #{regDate}, #{fileSize}, #{flagDel}, #{fileExt}, #{username})
+        INSERT INTO postgres.first_project.profile_picture (file_name, save_path, reg_date, file_size, flag_del, file_ext, username, file_original_name)
+        VALUES ( #{fileName}, #{savePath}, #{regDate}, #{fileSize}, #{flagDel}, #{fileExt}, #{username}, #{originalName})
     </select>
 
 <!--인증 번호 저장-->
@@ -71,9 +72,27 @@
         WHERE username = #{username}
     </select>
 
+    <!-- username 으로 프로필사진 이름 가져오기 -->
+    <select id="findProfilePictureOriginalName" parameterType="java.lang.String" resultType="java.lang.String" >
+        SELECT file_original_name
+        FROM postgres.first_project.profile_picture
+        WHERE username = #{username}
+        ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
+        LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
+    </select>
+
     <!-- username 으로 프로필사진 경로 가져오기 -->
     <select id="findProfilePictureSavePath" parameterType="java.lang.String" resultType="java.lang.String" >
         SELECT save_path
+        FROM postgres.first_project.profile_picture
+        WHERE username = #{username}
+        ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
+        LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
+    </select>
+
+    <!-- username 으로 프로필사진 파일명 가져오기 -->
+    <select id="findProfilePictureFileName" parameterType="java.lang.String" resultType="java.lang.String" >
+        SELECT file_name
         FROM postgres.first_project.profile_picture
         WHERE username = #{username}
         ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.

@@ -46,9 +46,14 @@ public class MypageController {
 
 
         // 프로필 사진 경로 가져와서 저장하기 (미리 저장 못해서 일단 이렇게 가져와서 넣어주자,,)
-        String profilePictureSavePath = homeMapper.findProfilePictureSavePath(username);// 왜 여기서 못가져오지?
+        String originalName = homeMapper.findProfilePictureOriginalName(username);
+        String profilePictureSavePath = homeMapper.findProfilePictureSavePath(username);
+        String profilePictureFileName = homeMapper.findProfilePictureFileName(username);
 
+        System.out.println("마이페이지 컨트롤러 / 화면 - originalName =  " + originalName);
         System.out.println("마이페이지 컨트롤러 / 화면 - profilePictureSavePath =  " + profilePictureSavePath);
+        System.out.println("마이페이지 컨트롤러 / 화면 - profilePictureFileName =  " + profilePictureFileName);
+        userDto.setOriginalName(originalName);
         userDto.setProfilePictureLocation(profilePictureSavePath);
 
 
@@ -61,7 +66,12 @@ public class MypageController {
 
 //        model.addAttribute("user", userDto);
 
-        File file = new File("C:/Users/weaver-gram-002/Desktop/고슴도치사진.jpg");
+        //solution /img/ 아래 쓰고싶은 파일 이름만 적어줍니다.
+        File file = new File("/img/"+profilePictureFileName);
+//        File file = new File("/img/test.jpg");
+//        File file = new File("/img/1695134285638_cat.jpg");
+
+        System.out.println("마이페이지 컨트롤러 / 화면 - /img/"+profilePictureFileName);
 
         ModelAndView mv = new ModelAndView();
         mv.setViewName("mypage");

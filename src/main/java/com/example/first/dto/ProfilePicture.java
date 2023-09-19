@@ -19,6 +19,7 @@ public class ProfilePicture {
     private String flagDel = "N";
     private String fileExt;
     private String username;
+    private String originalName;
 
 
 
@@ -30,12 +31,13 @@ public class ProfilePicture {
         this.fileExt = fileExt;
     }
 
-    public ProfilePicture(String fileName, String savePath, LocalDateTime regDate, byte[] fileSize, String fileExt, String username) {
+    public ProfilePicture(String fileName, String savePath, LocalDateTime regDate, byte[] fileSize, String fileExt, String username, String originalName) {
         this.fileName = fileName;
         this.savePath = savePath;
         this.regDate = regDate;
         this.fileSize = fileSize;
         this.fileExt = fileExt;
         this.username = username;
+        this.originalName = originalName;
     }
 }

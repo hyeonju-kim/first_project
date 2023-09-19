@@ -28,7 +28,10 @@
         <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
         <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
     </div>
-
+<br>
+<br>
+<br>
+<br>
     <h2 class="center-title">게시판</h2>
 
 
@@ -61,14 +64,32 @@
         </tbody>
     </table>
 
+    <br>
+    <br>
+
+    <!-- 글 목록 위 검색창 -->
+    <form action="/boards/search" method="GET" style="max-width: 300px; margin: 0 auto;">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword" aria-label="검색어" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">검색</button>
+            </div>
+        </div>
+    </form>
+
+    <br>
+    <br>
+
     <!-- 페이징 처리 -->
-    <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="#">이전</a></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">다음</a></li>
-    </ul>
+    <div class="text-center" style="position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">이전</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">다음</a></li>
+        </ul>
+    </div>
 </div>
 
 <script>

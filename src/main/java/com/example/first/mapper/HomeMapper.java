@@ -40,8 +40,14 @@ public interface HomeMapper {
     // 사용자아이디로 사용자 가져오는 메서드
     UserDto findByUserId(Long userId);
 
+    // username 으로 프로필사진 원본이름 가져오기
+    String findProfilePictureOriginalName(String username);
+
     // username 으로 프로필사진 경로 가져오기
     String findProfilePictureSavePath(String username);
+
+    // username 으로 프로필사진 파일명 가져오기
+    String findProfilePictureFileName(String username);
 
     // 프로필 사진 제일 최근 객체 가져오기
     ProfilePicture getRecentProfilePicture();

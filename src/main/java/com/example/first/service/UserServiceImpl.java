@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService{
     }
 
     // 프로필 사진 경로 반환 및 업로드
-    public String storeProfilePicture(MultipartFile profilePicture, String fileName, String username) throws IOException {
+    public String storeProfilePicture(MultipartFile profilePicture, String fileName, String username, String originalName) throws IOException {
         // 프로필 사진을 저장하고 파일 경로를 반환하는 로직
         // 이 부분에서 파일을 실제로 저장하고 경로를 반환하는 코드를 작성합니다.
 
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService{
         LocalDateTime regDate = LocalDateTime.now();
         String fileExt = getFileExtension(fileName);
 
-        ProfilePicture picture = new ProfilePicture(fileName, savePath, regDate, profilePicture.getBytes(), fileExt, username);
+        ProfilePicture picture = new ProfilePicture(fileName, savePath, regDate, profilePicture.getBytes(), fileExt, username, originalName);
 
         homeMapper.storeProfilePicture(picture);
 
