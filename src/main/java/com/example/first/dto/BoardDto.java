@@ -1,13 +1,13 @@
 package com.example.first.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Data
 @RequiredArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BoardDto {
     private Long boardId;
     private String title;
@@ -18,10 +18,7 @@ public class BoardDto {
     private MultipartFile file;
     private String username;
     private String nickname;
-
-
-
-
+    private List<CommentDto> comments; // 댓글 목록
 
 
     public BoardDto(String title, String content) {

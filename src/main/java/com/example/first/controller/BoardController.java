@@ -2,9 +2,11 @@ package com.example.first.controller;
 
 
 import com.example.first.dto.BoardDto;
+import com.example.first.dto.CommentDto;
+import com.example.first.mapper.BoardMapper;
 import com.example.first.service.BoardService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,13 +19,11 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/boards")
+@RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final BoardMapper boardMapper;
 
-    @Autowired
-    public BoardController(BoardService boardService) {
-        this.boardService = boardService;
-    }
 
     // 게시판 글 조회
     @GetMapping
@@ -65,6 +65,13 @@ public class BoardController {
         } else {
             return "redirect:/board"; // 게시글을 찾을 수 없으면 목록 페이지로 리다이렉트합니다.
         }
+    }
+
+    // 특정 게시글의 댓글 조회 - Test용
+    @ResponseBody
+    @GetMapping("/onlyComment/{boardId}")
+    public List<CommentDto> getAllComments(@PathVariable Long boardId) {
+        return boardMapper.getHierarchicalCommentsByBoardId(boardId);
     }
 
     // 글 작성 폼
@@ -139,5 +146,61 @@ public class BoardController {
         model.addAttribute("boards", boards);
         return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
 
+    }
+
+    //======== 댓글 ==========
+
+    // 댓글 작성
+    @PostMapping("/{boardId}/addComment")
+    public String addComment(@PathVariable Long boardId, @RequestParam String content) {
+        System.out.println(" 보드 컨트롤러 / 댓글 작성 - @PathVariable Long boardId = " + boardId);
+        System.out.println(" 보드 컨트롤러 / 댓글 작성 - @RequestParam String content = " + content);
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setBoardId(boardId);
+        commentDto.setContent(content);
+
+        boardService.createComment(commentDto);
+
+        return "redirect:/boards/" + boardId; // 댓글 추가 후 게시글 상세 페이지로 리다이렉트
+    }
+
+    // 댓글 수정 처리
+    @PostMapping("/{boardId}/editComment/{commentId}")
+    public String editComment(@PathVariable Long boardId, @PathVariable Long commentId, @RequestParam String content) {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setCommentId(commentId);
+        commentDto.setContent(content);
+
+        boardService.updateComment(commentDto);
+
+        return "redirect:/boards/" + boardId; // 댓글 수정 후 게시글 상세 페이지로 리다이렉트
+    }
+
+    // 댓글 삭제
+    @GetMapping("/{boardId}/deleteComment/{commentId}")
+    public String deleteComment(@PathVariable Long boardId, @PathVariable Long commentId) {
+        boardService.deleteComment(commentId);
+
+        return "redirect:/boards/" + boardId; // 댓글 삭제 후 게시글 상세 페이지로 리다이렉트
+    }
+
+    // ======= 대댓글 =======
+
+    // 대댓글 작성 처리
+    @PostMapping("/{boardId}/addReply/{commentId}")
+    public String addReply(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @RequestParam String content) {
+
+        CommentDto reCommentDto = new CommentDto();
+        reCommentDto.setBoardId(boardId);
+        reCommentDto.setParentCommentId(commentId); // 부모 댓글의 commentId를 설정
+        reCommentDto.setContent(content);
+
+        boardService.createComment(reCommentDto);
+
+        return "redirect:/boards/" + boardId; // 대댓글 추가 후 게시글 상세 페이지로 리다이렉트
     }
 }
