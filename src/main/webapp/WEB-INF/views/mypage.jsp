@@ -48,13 +48,9 @@
                 </div>
                 <div class="mb-3">
                     <label for="profilePicture">프로필 사진</label>
-<%--                    <input type="file" class="form-control" id="profilePicture" name="profilePicture">--%>
-<%--                    <img src="${user.profilePictureLocation}" alt="프로필 사진" width="200" height="200" id="profilePicture">--%>
-<%--                    <img src="C:/Users/weaver-gram-002/Desktop/고슴도치사진.jpg" alt="프로필 사진" width="200" height="200" id="profilePicture"/>--%>
-                    <img src="${file}" alt="프로필 사진" width="200" height="200" id="profilePicture"/>
-<%--                    <img src="<spring:url value = 'file:///C:/Users/weaver-gram-002/Desktop/고슴도치사진.jpg' />" alt="프로필 사진" width="200" height="200" id="profilePicture"/>--%>
-
                 </div>
+                <img src="${file}" alt="프로필 사진"  height="200" id="profilePicture"/>
+
                 <div class="mb-3">
                     <label for="streetAdr">주소</label>
                     <input type="text" class="form-control" id="streetAdr" name="streetAdr" value="${user.streetAdr}" readonly>

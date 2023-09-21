@@ -2,6 +2,8 @@ package com.example.first.service;
 
 import com.example.first.dto.BoardDto;
 import com.example.first.dto.CommentDto;
+import com.example.first.dto.PagingResponse;
+import com.example.first.dto.SearchDto;
 
 import java.util.List;
 
@@ -29,4 +31,7 @@ public interface BoardService {
 
     // 댓글 삭제
     void deleteComment(Long commentId);
+
+    // 게시글 리스트 조회
+    PagingResponse<BoardDto> findAllBoards(final SearchDto params);
 }

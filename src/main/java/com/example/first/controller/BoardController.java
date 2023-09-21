@@ -3,12 +3,13 @@ package com.example.first.controller;
 
 import com.example.first.dto.BoardDto;
 import com.example.first.dto.CommentDto;
+import com.example.first.dto.PagingResponse;
+import com.example.first.dto.SearchDto;
 import com.example.first.mapper.BoardMapper;
 import com.example.first.service.BoardService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,27 +26,56 @@ public class BoardController {
     private final BoardMapper boardMapper;
 
 
-    // 게시판 글 조회
+//    // 게시판 글 조회 1 - 기본
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<BoardDto> boards = boardService.getAllBoards();
+//
+//
+//        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards = " + boards);
+//        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards.size() = " + boards.size());
+//
+//        for (BoardDto board : boards) {
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getBoardId() ::" + board.getBoardId());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getTitle() ::" + board.getTitle());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getContent() ::" + board.getContent());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
+//        }
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//
+//        model.addAttribute("boards", boards);
+//        return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
+//    }
+
+
+    // 게시판 글 조회 2 - 페이징 처리 추가
     @GetMapping
-    public String getAllBoards(Model model) {
-        List<BoardDto> boards = boardService.getAllBoards();
+    @ResponseBody
+    public String getAllBoards2(@ModelAttribute("params") final SearchDto params, Model model) throws JsonProcessingException {
+        PagingResponse<BoardDto> response = boardService.findAllBoards(params);
 
-        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards = " + boards);
-        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards.size() = " + boards.size());
 
-        for (BoardDto board : boards) {
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getBoardId() ::" + board.getBoardId());
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getTitle() ::" + board.getTitle());
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getContent() ::" + board.getContent());
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
+
+        List<BoardDto> list = response.getList();
+        for (BoardDto boardDto : list) {
+            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getBoardId() = " + boardDto.getBoardId());
+            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getTitle() = " + boardDto.getTitle());
+            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getNickname() = " + boardDto.getNickname());
+            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getCreatedAt() = " + boardDto.getCreatedAt());
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String stringToObjectMapper = objectMapper.writeValueAsString(response);
 
-        model.addAttribute("boards", boards);
-        return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
+        model.addAttribute("boards", response);
+        model.addAttribute("params", params);
+
+        return "board";
     }
+
+
 
     // 특정 게시글 조회
     @GetMapping("/{boardId}")

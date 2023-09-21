@@ -2,6 +2,7 @@ package com.example.first.mapper;
 
 import com.example.first.dto.BoardDto;
 import com.example.first.dto.CommentDto;
+import com.example.first.dto.SearchDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -43,5 +44,17 @@ public interface BoardMapper {
 
     // 코멘트 테이블에 레벨 업데이트
     void updateBoardLevel(CommentDto commentDto);
+
+    /**
+     * 게시글 리스트 조회
+     * @return 게시글 리스트
+     */
+    List<BoardDto> findAllBoards(SearchDto params);
+
+    /**
+     * 게시글 수 카운팅
+     * @return 게시글 수
+     */
+    int countBoards(SearchDto params);
 }
 

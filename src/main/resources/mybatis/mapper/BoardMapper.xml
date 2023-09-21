@@ -153,4 +153,20 @@
         DELETE FROM postgres.first_project.comments WHERE comment_id = #{commentId};
     </delete>
 
+    <!-- 게시글 리스트 조회 -->
+    <select id="findAllBoards" parameterType="com.example.first.dto.SearchDto" resultType="com.example.first.dto.BoardDto"  resultMap="boardResultMap">
+        SELECT *
+        FROM postgres.first_project.boards
+        LIMIT #{recordSize} OFFSET #{pagination.limitStart}
+    </select>
+
+
+    <!-- 게시글 수 카운팅 -->
+    <select id="countBoards" parameterType="com.example.first.dto.SearchDto" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            postgres.first_project.boards
+    </select>
+
 </mapper>
