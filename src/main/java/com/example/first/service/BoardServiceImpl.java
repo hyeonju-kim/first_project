@@ -8,19 +8,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
+import static com.example.first.service.UserServiceImpl.getFileExtension;
+
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
-//    private final List<BoardDto> boards = new ArrayList<>();
     private final BoardMapper boardMapper;
     private final HomeMapper homeMapper;
-//    private Long nextBoardId = 1L;
 
 
     // 게시판 글 조회
@@ -29,21 +31,11 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.getAllBoards();
     }
 
-    // 특정 게시글 조회  ( 스트림 사용 )
-//    @Override
-//    public BoardDto getBoardById(Long boardId) {
-//        return boards.stream()
-//                .filter(board -> board.getBoardId().equals(boardId))
-//                .findFirst()
-//                .orElse(null);
-//    }
 
     // 특정 게시글 조회
     @Override
     public BoardDto getBoardById(Long boardId) {
-
         BoardDto boardDto = boardMapper.getBoardById(boardId);
-//        List<CommentDto> allCommentsByBoardId = boardMapper.getAllCommentsByBoardId(boardId);
         List<CommentDto> hierarchicalCommentsByBoardId = boardMapper.getHierarchicalCommentsByBoardId(boardId);
 
         // 1. 계층형 댓글 데이터를 가져온 후 각 댓글의 level 값을 설정
@@ -53,35 +45,28 @@ public class BoardServiceImpl implements BoardService {
         }
 
         boardDto.setComments(hierarchicalCommentsByBoardId);
-
         System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 - boardDto = " + boardDto);
         System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 - boardDto.getTitle() = " + boardDto.getTitle());
         System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 - boardDto.getContent() = " + boardDto.getContent());
 
         return boardDto;
-//        for (BoardDto board : boards) {
-//            if (board.getBoardId().equals(boardId)) {
-//                return board;
-//            }
-//        }
     }
 
     // 글 작성
     @Override
-    public Long createBoard(BoardDto boardDto) {
-//        List<BoardDto> allBoards = boardMapper.getAllBoards();
-//        Long size = (long) allBoards.size();
-//        boardDto.setBoardId(++size);
+    public Long createBoard(BoardDto boardDto, MultipartFile file, String fileName, String originalName) throws IOException {
+
+        String savePath =  "C:\\multifile\\" + fileName;
+        String fileExt = getFileExtension(fileName);
 
         // 현재 시간 지정
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = now.format(formatter);
-        boardDto.setCreatedAt(formattedDateTime);
+        String regDate = now.format(formatter);
+        boardDto.setCreatedAt(regDate);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
 
         System.out.println(" 보드 서비스 임플 / 글 작성 - authentication =  " + authentication);
         System.out.println(" 보드 서비스 임플 / 글 작성 - authentication.getName() =  " + authentication.getName());
@@ -92,12 +77,16 @@ public class BoardServiceImpl implements BoardService {
 
         boardDto.setNickname(nickname);
         boardDto.setUsername(username);
-
+        boardDto.setFileLocation(savePath);
+        boardDto.setFileOriginalName(originalName);
 
         Long boardId = boardMapper.createBoard(boardDto);
 
-        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) =  " + boardId);
+        BoardMultiFile picture = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
+        String s = boardMapper.storeBoardMultiFile(picture);
 
+        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / boardId =  " + boardId);
+        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / picture.getFileName()=  " + picture.getFileName());
 
         return boardId;
     }
@@ -106,7 +95,6 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void updateBoard(Long boardId, BoardDto boardDto) {
         boardMapper.updateBoard(boardDto);
-
     }
 
     // 글 삭제
@@ -194,6 +182,11 @@ public class BoardServiceImpl implements BoardService {
             System.out.println(" 보드 서비스 임플 / 전체 게시글 조회 (페이징) - boardDto.getCreatedAt() = " + boardDto.getCreatedAt());
         }
         return new PagingResponse<>(list, pagination);
+    }
+
+    @Override
+    public BoardMultiFile findBoardMultiFileBySeq(Long fileId) {
+        return boardMapper.findBoardMultiFileBySeq(fileId);
     }
 
 

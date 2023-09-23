@@ -96,7 +96,7 @@ public class HomeController {
 
 
         // 업로드 할 디렉토리 경로 설정
-        String savePath = "C:\\Program Files\\hj\\first_project\\profile_picture";
+        String savePath = "C:\\profile_picture";
         // 저장할 파일, 생성자로 경로와 이름을 지정해줌.
         File saveFile = new File(savePath, fileName);
 

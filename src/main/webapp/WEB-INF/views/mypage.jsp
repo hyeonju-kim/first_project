@@ -78,68 +78,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // $(document).ready(function () {
-    //     // 서버에서 사용자 정보 가져오기
-    //     $.ajax({
-    //         url: '/mypage', // 컨트롤러 URL 설정
-    //         type: 'GET',
-    //         dataType: 'json',
-    //         success: function (data) {
-    //             // 가져온 데이터를 페이지에 채웁니다.
-    //             $('#name').text(data.name);
-    //             $('#username').text(data.username);
-    //             $('#nickname').text(data.nickname);
-    //             $('#phoneNumber').text(data.phoneNumber);
-    //         },
-    //         error: function (error) {
-    //             console.error('Error:', error);
-    //         }
-    //     });
-    // });
-
-
-    // function sendTempPwToEmail() {
-    //     // 1. 작성한 이메일 주소 가져오기
-    //     var username = $('#username').val();
-    //     console.log(username);
-    //
-    //     // 2. 가져온 정보를 data로 묶기
-    //     let data = {
-    //         "username" : username
-    //     }
-    //
-    //     // 3. 클라에서 가져온 데이터를 서버로 전송
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/forgot-password',
-    //         data: JSON.stringify(data),
-    //         contentType: 'application/json', // JSON 형식의 데이터를 전송
-    //         success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
-    //             console.log(response); //응답 body부 데이터
-    //             console.log(status); //"succes"로 고정인듯함
-    //             console.log(xhr);
-    //             if (xhr.status === 200) {
-    //                 // 서버 응답의 상태 코드가 200일 때만 실행
-    //                 alert('메일이 전송 되었습니다!');
-    //                 location.href = "/change-password";
-    //
-    //                 // 인증번호 입력 칸 표시
-    //                 $('#verificationCodeDiv').show();
-    //
-    //             } else {
-    //                 // 실패 처리
-    //                 alert('서버에서 오류가 발생했습니다.');
-    //             }
-    //         },
-    //         error: function (response, status, xhr) {
-    //             // 서버 요청 실패 시 실행
-    //             console.log('실패했다...')
-    //             console.log(response); //응답 body부 데이터
-    //
-    //             alert('서버 요청 실패');
-    //         }
-    //     });
-    // }
 </script>
 
 </body>

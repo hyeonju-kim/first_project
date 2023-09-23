@@ -10,6 +10,9 @@
         <id property="boardId" column="board_id"/>
         <result property="userId" column="user_id"/>
         <result property="createdAt" column="created_at"/>
+        <result property="fileLocation" column="file_location"/>
+        <result property="fileOriginalName" column="file_original_name"/>
+
     </resultMap>
 
     <resultMap id="CommentResultMap" type="com.example.first.dto.CommentDto">
@@ -17,6 +20,18 @@
         <result property="boardId" column="board_id"/>
         <result property="parentCommentId" column="parent_comment_id"/>
         <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="BoardMultiFileResultMap" type="com.example.first.dto.BoardMultiFile">
+        <id property="fileId" column="seq"/>
+        <result property="boardId" column="board_id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="savePath" column="save_path"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="flagDel" column="flag_del"/>
+        <result property="fileExt" column="file_ext"/>
+        <result property="fileOriginalName" column="file_original_name"/>
     </resultMap>
 
     <!-- 게시글 목록 조회 쿼리 -->
@@ -33,10 +48,37 @@
 
     <!-- 게시글 생성 쿼리 -->
     <select id="createBoard" parameterType="com.example.first.dto.BoardDto" resultType="java.lang.Long">
-        INSERT INTO postgres.first_project.boards (title, content, status, created_at, user_id, username, nickname)
-        VALUES (#{title}, #{content}, #{status}, #{createdAt}, #{userId}, #{username}, #{nickname})
+        INSERT INTO postgres.first_project.boards (title, content, status, created_at, user_id, username, nickname, file_location, file_original_name)
+        VALUES (#{title}, #{content}, #{status}, #{createdAt}, #{userId}, #{username}, #{nickname}, #{fileLocation}, #{fileOriginalName})
         RETURNING board_id;
     </select>
+
+    <!--멀티파일 업로드 (단일) -->
+    <select id="storeBoardMultiFile" parameterType="com.example.first.dto.BoardMultiFile" >
+        INSERT INTO postgres.first_project.board_multi_file (board_id, file_name, save_path, reg_date, flag_del, file_ext, username, file_original_name)
+        VALUES ( #{boardId}, #{fileName}, #{savePath}, #{regDate}, #{flagDel}, #{fileExt}, #{username}, #{fileOriginalName})
+    </select>
+
+    <!-- 멀티파일 업로드 (다중) -->
+    <insert id="storeBoardMultiFiles" parameterType="list">
+        INSERT INTO postgres.first_project.board_multi_file (
+        board_id, file_name, save_path, reg_date, flag_del, file_ext, username, file_original_name
+        )
+        VALUES
+        <foreach item="file" collection="list" separator=",">
+            (
+            #{file.boardId},
+            #{file.fileName},
+            #{file.savePath},
+            #{file.regDate},
+            #{file.flagDel},
+            #{file.fileExt},
+            #{file.username},
+            #{file.fileOriginalName}
+            )
+        </foreach>
+    </insert>
+
 
     <!-- 게시글 수정 쿼리 -->
     <update id="updateBoard" parameterType="com.example.first.dto.BoardDto">
@@ -108,7 +150,7 @@
             WHERE c.parent_comment_id  = ch.commentId
             AND NOT CYCLE
         )
-        SELECT DISTINCT ON (path) -- 중복 제거를 commentId와 path에 적용
+        SELECT DISTINCT ON (path)
             commentId,
             boardId,
             lpad(' ', level) || content as content,
@@ -168,5 +210,49 @@
         FROM
             postgres.first_project.boards
     </select>
+
+
+    <!-- boardId로 멀티파일 이름 가져오기 -->
+    <select id="findBoardMultiFileOriginalName" parameterType="java.lang.Long" resultType="java.lang.String" >
+        SELECT file_original_name
+        FROM postgres.first_project.board_multi_file
+        WHERE board_id = #{boardId}
+        ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
+            LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
+    </select>
+
+    <!-- boardId로 멀티파일 경로 가져오기 -->
+    <select id="findBoardMultiFileSavePath" parameterType="java.lang.Long" resultType="java.lang.String" >
+        SELECT save_path
+        FROM postgres.first_project.board_multi_file
+        WHERE board_id = #{boardId}
+        ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
+            LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
+    </select>
+
+    <!-- boardId로 멀티파일 파일명 가져오기 -->
+    <select id="findBoardMultiFileFileName" parameterType="java.lang.Long" resultType="java.lang.String" >
+        SELECT file_name
+        FROM postgres.first_project.board_multi_file
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!-- boardId로 멀티파일 객체 가져오기 -->
+    <select id="findBoardMultiFileByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
+        SELECT *
+        FROM postgres.first_project.board_multi_file
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!-- fileId로 멀티파일 객체 가져오기 -->
+    <select id="findBoardMultiFileBySeq" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
+        SELECT *
+        FROM postgres.first_project.board_multi_file
+        WHERE seq = #{fileId}
+    </select>
+
+
+
+
 
 </mapper>

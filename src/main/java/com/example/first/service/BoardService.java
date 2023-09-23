@@ -1,10 +1,9 @@
 package com.example.first.service;
 
-import com.example.first.dto.BoardDto;
-import com.example.first.dto.CommentDto;
-import com.example.first.dto.PagingResponse;
-import com.example.first.dto.SearchDto;
+import com.example.first.dto.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface BoardService {
@@ -12,7 +11,7 @@ public interface BoardService {
 
     BoardDto getBoardById(Long boardId);
 
-    Long createBoard(BoardDto boardDto);
+    Long createBoard(BoardDto boardDto, MultipartFile file, String fileName, String originalName) throws IOException;
 
     void updateBoard(Long boardId, BoardDto boardDto);
 
@@ -34,4 +33,7 @@ public interface BoardService {
 
     // 게시글 리스트 조회
     PagingResponse<BoardDto> findAllBoards(final SearchDto params);
+
+    // 멀티 파일 객체 가져오기
+    BoardMultiFile findBoardMultiFileBySeq(Long fileId);
 }

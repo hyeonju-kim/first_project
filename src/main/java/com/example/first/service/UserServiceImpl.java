@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Service
@@ -71,8 +72,12 @@ public class UserServiceImpl implements UserService{
         // 이 부분에서 파일을 실제로 저장하고 경로를 반환하는 코드를 작성합니다.
 
 
-        String savePath =  "C:\\Program Files\\hj\\first_project\\profile_picture\\" + fileName;
-        LocalDateTime regDate = LocalDateTime.now();
+        String savePath =  "C:\\profile_picture\\" + fileName;
+        // 현재 시간 지정
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String regDate = now.format(formatter);
+
         String fileExt = getFileExtension(fileName);
 
         ProfilePicture picture = new ProfilePicture(fileName, savePath, regDate, profilePicture.getBytes(), fileExt, username, originalName);

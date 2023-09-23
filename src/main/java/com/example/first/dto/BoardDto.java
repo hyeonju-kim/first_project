@@ -20,6 +20,12 @@ public class BoardDto {
     private String nickname;
     private List<CommentDto> comments; // 댓글 목록
 
+    // 경로를 저장하기 (파일경로명)
+    private String fileLocation;
+
+    // 파일 원본명
+    private String fileOriginalName;
+
 
     public BoardDto(String title, String content) {
         this.title = title;

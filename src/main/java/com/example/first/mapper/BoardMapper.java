@@ -1,6 +1,7 @@
 package com.example.first.mapper;
 
 import com.example.first.dto.BoardDto;
+import com.example.first.dto.BoardMultiFile;
 import com.example.first.dto.CommentDto;
 import com.example.first.dto.SearchDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,6 +18,12 @@ public interface BoardMapper {
     BoardDto getBoardById(Long boardId);
 
     Long createBoard(BoardDto boardDto);
+
+    // 멀티파일 업로드 (단일)
+    String storeBoardMultiFile(BoardMultiFile file);
+
+    // 멀티파일 업로드 (다중)
+    void storeBoardMultiFiles(List<BoardMultiFile> files);
 
     void updateBoard(BoardDto boardDto);
 
@@ -56,5 +63,22 @@ public interface BoardMapper {
      * @return 게시글 수
      */
     int countBoards(SearchDto params);
+
+
+    // boardId로 멀티 파일 원본이름 가져오기
+    List<String> findBoardMultiFileOriginalName(Long boardId);
+
+    // boardId로 멀티 파일 경로 가져오기
+    List<String> findBoardMultiFileSavePath(Long boardId);
+
+    // boardId로 멀티 파일 파일명 가져오기
+    String findBoardMultiFileFileName(Long boardId);
+
+
+    // fileId로 멀티 파일 객체 가져오기
+    BoardMultiFile findBoardMultiFileByBoardId(Long boardId);
+
+    // fileId로 멀티 파일 객체 가져오기
+    BoardMultiFile findBoardMultiFileBySeq(Long fileId);
 }
 

@@ -34,35 +34,35 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $("#submitBtn").click(function() {
-            var title = $("#title").val();
-            var content = $("#content").val();
-            // var file = $("#file")[0].files[0]; // 파일 업로드
-
-            var formData = new FormData();
-            formData.append("title", title);
-            formData.append("content", content);
-            // formData.append("file", file);
-
-            $.ajax({
-                type: "POST",
-                url: "/boards/create",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    // 성공 시 처리
-                    alert("게시글이 생성되었습니다.");
-                    // 원하는 리다이렉트 처리
-                },
-                error: function(error) {
-                    // 오류 시 처리
-                    alert("게시글 생성에 실패했습니다.");
-                }
-            });
-        });
-    });
+    // $(document).ready(function() {
+    //     $("#submitBtn").click(function() {
+    //         var title = $("#title").val();
+    //         var content = $("#content").val();
+    //         // var file = $("#file")[0].files[0]; // 파일 업로드
+    //
+    //         var formData = new FormData();
+    //         formData.append("title", title);
+    //         formData.append("content", content);
+    //         // formData.append("file", file);
+    //
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/boards/create",
+    //             data: formData,
+    //             processData: false,
+    //             contentType: false,
+    //             success: function(response) {
+    //                 // 성공 시 처리
+    //                 alert("게시글이 생성되었습니다.");
+    //                 // 원하는 리다이렉트 처리
+    //             },
+    //             error: function(error) {
+    //                 // 오류 시 처리
+    //                 alert("게시글 생성에 실패했습니다.");
+    //             }
+    //         });
+    //     });
+    // });
 </script>
 
 

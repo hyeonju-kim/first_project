@@ -51,7 +51,7 @@
     <h2 class="text-center">게시글 상세 정보</h2>
     <a href="/boards" class="btn btn-primary">게시판 목록</a>
     <div class="row mt-4">
-        <div class="col-md-12"> <!-- 수정된 부분 -->
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title1">제목: ${board.title}</h5>
@@ -62,12 +62,33 @@
         </div>
     </div>
     <div class="row mt-4">
-        <div class="col-md-12"> <!-- 수정된 부분 -->
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">내용</h5>
                     <p class="card-text">${board.content}</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">첨부 파일</h5>
+                </div>
+
+
+                <div class="file-info">
+                    <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                    <a href="/boards/posts/${multiFile.boardId}/files/${multiFile.fileId}/download">${multiFile.fileOriginalName}</a>
+                    <span>${multiFile.fileSize}kb</span>
+                </div>
+
+
+
             </div>
         </div>
     </div>

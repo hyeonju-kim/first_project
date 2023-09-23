@@ -41,7 +41,9 @@ dependencies {
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16' // 쿼리문 로그에 찍히도록
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation group: 'com.oracle.database.jdbc', name: 'ojdbc6', version: '11.2.0.4'
-
+    implementation 'commons-fileupload:commons-fileupload:1.4' // 멀티파일첨부
+    implementation 'commons-io:commons-io:2.11.0' // 멀티파일첨부
+    implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24.1' // 멀티파일첨부 - mime 사용 위해
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
