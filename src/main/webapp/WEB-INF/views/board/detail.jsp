@@ -18,9 +18,17 @@
             font-size: 20px; /* 폰트 크기 지정 (원하는 크기로 수정) */
         }
         .comment-box {
-            background-color: #F3F3F3;
+            background-color: #f2f2f2;
             padding: 10px;
             margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        .file-info {
+            background-color: #f2f2f2;
+            padding: 10px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
             border: 1px solid #ddd;
         }
 
@@ -81,13 +89,13 @@
                 </div>
 
 
-                <div class="file-info">
-                    <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
-                    <a href="/boards/posts/${multiFile.boardId}/files/${multiFile.fileId}/download">${multiFile.fileOriginalName}</a>
-                    <span>${multiFile.fileSize}kb</span>
-                </div>
-
-
+                <c:forEach var="multiFile" items="${multiFiles}">
+                    <div class="file-info">
+                        <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                        <a href="/boards/posts/${multiFile.boardId}/files/${multiFile.fileId}/download">${multiFile.fileOriginalName}</a>
+                        <span>${multiFile.fileSize}kb</span>
+                    </div>
+                </c:forEach>
 
             </div>
         </div>

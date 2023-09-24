@@ -3,6 +3,7 @@ package com.example.first.dto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Getter
@@ -19,6 +20,7 @@ public class BoardMultiFile {
     private String fileExt;
     private String username;
     private String fileOriginalName;
+    private MultipartFile file;
 
 
 

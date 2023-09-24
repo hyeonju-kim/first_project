@@ -23,48 +23,76 @@
             <textarea class="form-control" id="content" name="content" rows="8" required></textarea>
         </div>
         <div class="form-group mt-4">
-            <label for="file"><strong>첨부 파일</strong></label>
-            <input type="file" class="form-control-file" id="file" name="file">
+            <label for="files"><strong>첨부 파일</strong></label>
+            <div class="file_list">
+                <div class="file_input_group">
+                    <div class="file_input">
+                        <input type="text" readonly />
+                        <label> 첨부파일
+                            <input type="file" name="files" onchange="selectFile(this);" />
+                        </label>
+                        <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
+                        <button type="button" onclick="addFile();" class="btns fn_add_btn"><span>파일 추가</span></button>
+                    </div>
+
+                </div>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary mt-4">게시글 생성</button>
     </form>
 </div>
 
-
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // $(document).ready(function() {
-    //     $("#submitBtn").click(function() {
-    //         var title = $("#title").val();
-    //         var content = $("#content").val();
-    //         // var file = $("#file")[0].files[0]; // 파일 업로드
-    //
-    //         var formData = new FormData();
-    //         formData.append("title", title);
-    //         formData.append("content", content);
-    //         // formData.append("file", file);
-    //
-    //         $.ajax({
-    //             type: "POST",
-    //             url: "/boards/create",
-    //             data: formData,
-    //             processData: false,
-    //             contentType: false,
-    //             success: function(response) {
-    //                 // 성공 시 처리
-    //                 alert("게시글이 생성되었습니다.");
-    //                 // 원하는 리다이렉트 처리
-    //             },
-    //             error: function(error) {
-    //                 // 오류 시 처리
-    //                 alert("게시글 생성에 실패했습니다.");
-    //             }
-    //         });
-    //     });
-    // });
-</script>
+    // 파일 선택
+    function selectFile(element) {
+        const file = element.files[0];
+        const filename = element.closest('.file_input').firstElementChild;
 
+        // 1. 파일 선택 창에서 취소 버튼이 클릭된 경우
+        if (!file) {
+            filename.value = '';
+            return false;
+        }
+
+        // 2. 파일 크기가 10MB를 초과하는 경우
+        const fileSize = Math.floor(file.size / 1024 / 1024);
+        if (fileSize > 10) {
+            alert('10MB 이하의 파일로 업로드해 주세요.');
+            filename.value = '';
+            element.value = '';
+            return false;
+        }
+
+        // 3. 파일명 지정
+        filename.value = file.name;
+    }
+
+    // 파일 추가
+    function addFile() {
+        const fileDiv = document.createElement('div');
+        fileDiv.innerHTML = `
+            <div class="file_input_group">
+                <div class="file_input">
+                    <input type="text" readonly />
+                    <label> 첨부파일
+                        <input type="file" name="files" onchange="selectFile(this);" />
+                    </label>
+                    <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
+                    <button type="button" onclick="addFile();" class="btns fn_add_btn"><span>파일 추가</span></button>
+                </div>
+
+            </div>
+        `;
+        document.querySelector('.file_list').appendChild(fileDiv);
+    }
+
+    // 파일 삭제
+    function removeFile(element) {
+        element.parentElement.remove();
+    }
+</script>
 
 </body>
 </html>

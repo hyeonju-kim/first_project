@@ -48,8 +48,8 @@
 
     <!-- 게시글 생성 쿼리 -->
     <select id="createBoard" parameterType="com.example.first.dto.BoardDto" resultType="java.lang.Long">
-        INSERT INTO postgres.first_project.boards (title, content, status, created_at, user_id, username, nickname, file_location, file_original_name)
-        VALUES (#{title}, #{content}, #{status}, #{createdAt}, #{userId}, #{username}, #{nickname}, #{fileLocation}, #{fileOriginalName})
+        INSERT INTO postgres.first_project.boards (title, content, status, created_at, user_id, username, nickname)
+        VALUES (#{title}, #{content}, #{status}, #{createdAt}, #{userId}, #{username}, #{nickname})
         RETURNING board_id;
     </select>
 
@@ -237,7 +237,7 @@
         WHERE board_id = #{boardId}
     </select>
 
-    <!-- boardId로 멀티파일 객체 가져오기 -->
+    <!-- boardId로 멀티파일 객체 (단일) 가져오기 -->
     <select id="findBoardMultiFileByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
         SELECT *
         FROM postgres.first_project.board_multi_file

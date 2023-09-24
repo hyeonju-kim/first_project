@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +53,13 @@ public class BoardServiceImpl implements BoardService {
         return boardDto;
     }
 
-    // 글 작성
+    // 게시판 아이디로 멀티파일들 조회
+    @Override
+    public List<BoardMultiFile> getBoardMultiFilesByBoardId(Long boardId) {
+        return boardMapper.findBoardMultiFileByBoardId(boardId);
+    }
+
+    // 글 작성 (단일 멀티 파일)
     @Override
     public Long createBoard(BoardDto boardDto, MultipartFile file, String fileName, String originalName) throws IOException {
 
@@ -82,11 +89,65 @@ public class BoardServiceImpl implements BoardService {
 
         Long boardId = boardMapper.createBoard(boardDto);
 
-        BoardMultiFile picture = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
-        String s = boardMapper.storeBoardMultiFile(picture);
+        BoardMultiFile boardMultiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
+        String s = boardMapper.storeBoardMultiFile(boardMultiFile);
 
         System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / boardId =  " + boardId);
-        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / picture.getFileName()=  " + picture.getFileName());
+        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / picture.getFileName()=  " + boardMultiFile.getFileName());
+
+        return boardId;
+    }
+
+    // 글 작성 (다중 멀티 파일)
+    @Override
+    public Long createBoard2(BoardDto boardDto, List<MultipartFile> files) throws IOException {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String regDate = now.format(formatter);
+        boardDto.setCreatedAt(regDate);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserDto user = homeMapper.findByUsername(username);
+        String nickname = user.getNickname();
+        boardDto.setNickname(nickname);
+        boardDto.setUsername(username);
+
+
+        // 게시글 정보 저장
+        Long boardId = boardMapper.createBoard(boardDto);
+
+        // 멀티 첨부 파일 업로드 및 정보 저장
+        if (files != null) {
+            for (MultipartFile file : files) {
+                if (file != null && !file.isEmpty()) { // 파일이 존재하고 비어있지 않은 경우에만 처리
+                    // 내가 업로드 파일을 저장할 경로
+                    String originalName = file.getOriginalFilename();
+                    String fileName = System.currentTimeMillis() + "_" + originalName;
+
+                    String saveRootPath =  "C:\\multifile"; // 업로드할 디렉토리 경로 설정
+                    String savePath =  "C:\\multifile\\" + fileName; // 업로드할 디렉토리 경로 + 파일명 설정
+
+                    // 저장할 파일 경로와 파일명 생성
+                    File saveFile = new File(saveRootPath, fileName);
+
+                    // 파일 업로드 및 정보 저장
+                    try {
+                        file.transferTo(saveFile);
+
+                        String fileExt = getFileExtension(fileName);
+
+
+                        BoardMultiFile multiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
+                        boardMapper.storeBoardMultiFile(multiFile);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new IOException("파일 업로드 실패 ㅠㅠ");
+                    }
+                }
+            }
+        }
 
         return boardId;
     }

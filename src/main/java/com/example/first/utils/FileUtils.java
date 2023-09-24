@@ -40,6 +40,11 @@ public class FileUtils {
     }
 
 
+
+
+
+
+
     private static final Tika tika = new Tika();
 
     // 파일 업로드 시, 확장자 검사

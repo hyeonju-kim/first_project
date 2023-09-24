@@ -11,7 +11,13 @@ public interface BoardService {
 
     BoardDto getBoardById(Long boardId);
 
+    // 글 작성 (단일 멀티 파일)
     Long createBoard(BoardDto boardDto, MultipartFile file, String fileName, String originalName) throws IOException;
+
+    // 글 작성 (다중 멀티 파일)
+    Long createBoard2(BoardDto boardDto, List<MultipartFile> files) throws IOException;
+
+    List<BoardMultiFile> getBoardMultiFilesByBoardId(Long boardId);
 
     void updateBoard(Long boardId, BoardDto boardDto);
 

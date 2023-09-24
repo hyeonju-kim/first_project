@@ -19,11 +19,13 @@ public interface BoardMapper {
 
     Long createBoard(BoardDto boardDto);
 
+
+
     // 멀티파일 업로드 (단일)
     String storeBoardMultiFile(BoardMultiFile file);
 
-    // 멀티파일 업로드 (다중)
-    void storeBoardMultiFiles(List<BoardMultiFile> files);
+    // 다중 멀티 파일 업로드
+    void uploadMultiFiles(List<BoardMultiFile> fileList);
 
     void updateBoard(BoardDto boardDto);
 
@@ -72,11 +74,11 @@ public interface BoardMapper {
     List<String> findBoardMultiFileSavePath(Long boardId);
 
     // boardId로 멀티 파일 파일명 가져오기
-    String findBoardMultiFileFileName(Long boardId);
+    List<String> findBoardMultiFileFileName(Long boardId);
 
 
-    // fileId로 멀티 파일 객체 가져오기
-    BoardMultiFile findBoardMultiFileByBoardId(Long boardId);
+    // fileId로 멀티 파일 리스트 가져오기
+    List<BoardMultiFile> findBoardMultiFileByBoardId(Long boardId);
 
     // fileId로 멀티 파일 객체 가져오기
     BoardMultiFile findBoardMultiFileBySeq(Long fileId);
