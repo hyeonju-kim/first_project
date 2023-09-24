@@ -44,6 +44,11 @@ dependencies {
     implementation 'commons-fileupload:commons-fileupload:1.4' // 멀티파일첨부
     implementation 'commons-io:commons-io:2.11.0' // 멀티파일첨부
     implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24.1' // 멀티파일첨부 - mime 사용 위해
+//    implementation group: 'org.apache.poi', name: 'poi', version: '5.0.0'
+//    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
+    implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

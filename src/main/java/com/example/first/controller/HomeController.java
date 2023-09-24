@@ -56,25 +56,9 @@ public class HomeController {
     @PostMapping("/register")
     @ResponseBody
     public UserDto signup(@RequestBody UserDto userDto) throws UserException, IOException {
-        System.out.println("TEST");
-        System.out.println("testDto == " + userDto.getUsername());
 
-
-        // 파일 업로드 처리
-//        String fileName = userDto.getUsername() + "_" + System.currentTimeMillis() + "_" + userDto.getProfilePicture().getOriginalFilename();
-
-        // 프로필 사진 업로드
-//        String profilePictureLocation = userService.storeProfilePicture(userDto.getProfilePicture(), fileName);
-//        userDto.setProfilePictureLocation(profilePictureLocation);
-
-//        try{
-//            // 회원가입 실시!
-//            UserDto regiesteredUserDto = userService.signUp(userDto);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            userDto.setMessage("오류가 발생 ㅠㅠ ");
-//        }
-
+        System.out.println("*************************   "+userDto.getRole());
+        System.out.println("*************************   "+userDto.getNickname());
         return userService.signUp(userDto);
     }
 
@@ -201,11 +185,11 @@ public class HomeController {
         return userDto;
     }
 
-    // 게시판 화면 (메인 화면)
-    @GetMapping("/board")
-    public String board() {
-        return "boards";
-    }
+//    // 게시판 화면 (메인 화면)
+//    @GetMapping("/board")
+//    public String board() {
+//        return "boards";
+//    }
 
     // 로그아웃
     @GetMapping("/logout")

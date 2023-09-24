@@ -1,7 +1,10 @@
 package com.example.first.service;
 
 
-import com.example.first.dto.*;
+import com.example.first.dto.BoardDto;
+import com.example.first.dto.BoardMultiFile;
+import com.example.first.dto.CommentDto;
+import com.example.first.dto.UserDto;
 import com.example.first.mapper.BoardMapper;
 import com.example.first.mapper.HomeMapper;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.first.service.UserServiceImpl.getFileExtension;
 
@@ -26,10 +30,27 @@ public class BoardServiceImpl implements BoardService {
     private final HomeMapper homeMapper;
 
 
-    // 게시판 글 조회
+    // 토탈 게시판 글목록 조회 (페이징 x)
     @Override
     public List<BoardDto> getAllBoards() {
         return boardMapper.getAllBoards();
+    }
+
+    // 페이지 별 게시판 글목록 조회
+    @Override
+    public List<BoardDto> getBoardsByPage(int currentPage, int pageSize) {
+        int offset = (currentPage - 1) * pageSize; // 현재 2페이지고 페이지사이즈가 10이면 offset은 10
+
+        Map<String, Integer> params = new HashMap<>();
+        params.put("pageSize", pageSize);
+        params.put("offset", offset);
+        return boardMapper.getBoardsByPage(params);
+    }
+
+    // 총 페이지 수 조회
+    @Override
+    public int getTotalPages(int pageSize) {
+        return boardMapper.getTotalPages(pageSize); // 총 게시물 수가 101이고, 페이지사이즈가 10이면 -> 총 페이지 수는 11
     }
 
 
@@ -216,34 +237,6 @@ public class BoardServiceImpl implements BoardService {
         boardMapper.deleteComment(commentId);
     }
 
-    /**
-     * 게시글 리스트 조회
-     * @param params - search conditions
-     * @return list & pagination information
-     */
-    @Override
-    public PagingResponse<BoardDto> findAllBoards(final SearchDto params) {
-
-        // 조건에 해당하는 데이터가 없는 경우, 응답 데이터에 비어있는 리스트와 null을 담아 반환
-        int count = boardMapper.countBoards(params);
-        if (count < 1) {
-            return new PagingResponse<>(Collections.emptyList(), null);
-        }
-
-        // Pagination 객체를 생성해서 페이지 정보 계산 후 SearchDto 타입의 객체인 params에 계산된 페이지 정보 저장
-        Pagination pagination = new Pagination(count, params);
-        params.setPagination(pagination);
-
-        // 계산된 페이지 정보의 일부(limitStart, recordSize)를 기준으로 리스트 데이터 조회 후 응답 데이터 반환
-        List<BoardDto> list = boardMapper.findAllBoards(params);
-        for (BoardDto boardDto : list) {
-            System.out.println(" 보드 서비스 임플 / 전체 게시글 조회 (페이징) - boardDto.getBoardId() = " + boardDto.getBoardId());
-            System.out.println(" 보드 서비스 임플 / 전체 게시글 조회 (페이징) - boardDto.getTitle() = " + boardDto.getTitle());
-            System.out.println(" 보드 서비스 임플 / 전체 게시글 조회 (페이징) - boardDto.getNickname() = " + boardDto.getNickname());
-            System.out.println(" 보드 서비스 임플 / 전체 게시글 조회 (페이징) - boardDto.getCreatedAt() = " + boardDto.getCreatedAt());
-        }
-        return new PagingResponse<>(list, pagination);
-    }
 
     @Override
     public BoardMultiFile findBoardMultiFileBySeq(Long fileId) {

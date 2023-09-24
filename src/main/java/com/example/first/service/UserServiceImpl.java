@@ -44,23 +44,32 @@ public class UserServiceImpl implements UserService{
     public UserDto signUp(UserDto userDto) throws UserException {
         UserDto foundUserByUsername = homeMapper.findByUsername(userDto.getUsername());
 
-        // 이미 가입된 계정일 때
-//        System.out.println("디비에서 가져온 유저 dto의 유저네임 ::: " + foundUserByUsername.getUsername());
         if (foundUserByUsername != null) {
             throw new UserException("해당 이메일이 이미 존재합니다.", HttpStatus.BAD_REQUEST, null);
         }
+
+        // 가입일 지정
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String regDate = now.format(formatter); // 날짜를 문자열로 포맷팅
+
+        // 문자열을 LocalDateTime로 파싱하여 저장
+//        LocalDateTime regDate = LocalDateTime.parse(regDateStr, formatter);
+        userDto.setRegDate(regDate);
+
 
         String encodedPassword = encoder.encode(userDto.getPassword());
         userDto.setPassword(encodedPassword);
 
         System.out.println("인코딩된 비밀번호 : " + encodedPassword);
 
-//        ProfilePicture recentProfilePicture = homeMapper.getRecentProfilePicture();
-//
-//        System.out.println(" 유저 서비스 임플 / 회원가입 - recentProfilePicture = " + recentProfilePicture);
-//
-//        recentProfilePicture.setUsername(userDto.getUsername());
-//        homeMapper.updateProfilePicture(recentProfilePicture);
+// 관리자 지정
+        if (userDto.getRole() != null && userDto.getRole().equals("admin")) {
+            userDto.setRole("admin");
+        } else {
+            userDto.setRole("user");
+        }
+
 
         return homeMapper.signUp(userDto);
 

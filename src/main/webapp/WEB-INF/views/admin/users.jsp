@@ -7,7 +7,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판</title>
+    <title>사용자 목록</title>
+
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -43,14 +44,8 @@
 
         /* 세로 구분선 스타일 */
         .vertical-divider {
-            border-left: 1px solid #8C8C8C;
+            border-left: 5px solid #8C8C8C;
             height: 100%;
-        }
-        .admin-mode {
-            background-color: #ccc; /* 배경색을 회색(#ccc)으로 지정 */
-            padding: 5px 10px; /* 내부 여백 설정 */
-            border-radius: 10px; /* 둥근 모서리를 위한 설정 */
-            display: inline-block; /* 텍스트 크기와 일치하는 너비로 설정 */
         }
     </style>
 </head>
@@ -67,57 +62,61 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/boards">자유게시판</a>
                 </li>
-                <!-- 사용자 역할이 "admin"인 경우에만 아래 두 메뉴 표시 -->
-                <c:if test="${role == 'admin'}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/statistics">사용자 통계</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/users">사용자 정보</a>
-                    </li>
-                </c:if>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/statistics">사용자 통계</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/users">사용자 정보</a>
+                </li>
             </ul>
         </div>
         <!-- 세로 구분선 -->
         <div class="col-md-1 vertical-divider"></div>
         <div class="col-md-8">
+            <!-- 마이페이지 버튼 -->
             <div class="text-right mt-2">
-                <c:if test="${not empty username && username != 'anonymousUser'}">
-                    <c:if test="${role == 'admin'}">
-                        <h6><span class="admin-mode">관리자모드</span></h6>
-                    </c:if>
-                    <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
-                    <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
-                </c:if>
-                <c:if test="${empty username || username == 'anonymousUser'}">
-                    <a href="/login" class="btn btn-primary">로그인</a>
-                </c:if>
+                <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
+                <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <h2 class="center-title">사용자 목록</h2>
+            <br>
+            <br>
+
+            <!-- 사용자 목록과 표 사이에 다운로드 버튼 추가 -->
+            <div class="text-right">
+                <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload()">
+                <button class="btn btn-success" onclick="uploadFile()">사용자 정보 업로드</button>
+                <a href="/admin/downloadUsers" class="btn btn-primary">사용자 정보 다운로드</a>
             </div>
 
-            <br>
-            <br>
-            <br>
-            <br>
-            <h2 class="center-title">게시판</h2>
 
-            <!-- 글 작성 버튼 -->
-            <a href="/boards/create" class="btn btn-primary mb-3">글 작성</a>
+            <br>
 
-            <!-- 글 목록 -->
+            <!-- 사용자 목록 -->
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">제목</th>
-                    <th scope="col">작성자</th>
-                    <th scope="col">작성일</th>
+                    <th scope="col">사용자 ID</th>
+                    <th scope="col">이름</th>
+                    <th scope="col">닉네임</th>
+                    <th scope="col">전화번호</th>
+                    <th scope="col">가입일</th>
+                    <!-- 원하는 다른 사용자 정보 컬럼들을 추가하세요 -->
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${boards}" var="board">
+                <c:forEach items="${users}" var="user">
                     <tr>
-                        <td><a href="/boards/${board.boardId}">${board.title}</a></td>
-                        <td>${board.nickname}</td>
-                        <td>${board.createdAt}</td>
+                        <td>${user.userId}</td>
+                        <td><a href="/admin/userDetails?username=${user.username}">${user.name}</a></td>
+                        <td>${user.nickname}</td>
+                        <td>${user.phoneNumber}</td>
+                        <td>${user.regDate}</td>
+                        <!-- 원하는 다른 사용자 정보 컬럼들을 추가하세요 -->
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -126,8 +125,8 @@
             <br>
             <br>
 
-            <!-- 글 목록 아래 검색창 -->
-            <form action="/boards/search" method="GET" style="max-width: 300px; margin: 0 auto;">
+            <!-- 사용자 목록 아래 검색창 -->
+            <form action="/users/search" method="GET" style="max-width: 300px; margin: 0 auto;">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword" aria-label="검색어"
                            aria-describedby="basic-addon2">
@@ -146,7 +145,7 @@
                     <li class="page-item">
                         <c:choose>
                             <c:when test="${currentPage > 1}">
-                                <a class="page-link" href="/boards?currentPage=${currentPage - 1}">이전</a>
+                                <a class="page-link" href="/admin/users?currentPage=${currentPage - 1}">이전</a>
                             </c:when>
                             <c:otherwise>
                                 <span class="page-link">이전</span>
@@ -160,7 +159,7 @@
                                     <span class="page-link current-page">${pageNumber}</span>
                                 </c:when>
                                 <c:otherwise>
-                                    <a class="page-link" href="/boards?currentPage=${pageNumber}">${pageNumber}</a>
+                                    <a class="page-link" href="/admin/users?currentPage=${pageNumber}">${pageNumber}</a>
                                 </c:otherwise>
                             </c:choose>
                         </li>
@@ -168,7 +167,7 @@
                     <li class="page-item">
                         <c:choose>
                             <c:when test="${currentPage < totalPages}">
-                                <a class="page-link" href="/boards?currentPage=${currentPage + 1}">다음</a>
+                                <a class="page-link" href="/admin/users?currentPage=${currentPage + 1}">다음</a>
                             </c:when>
                             <c:otherwise>
                                 <span class="page-link">다음</span>
@@ -182,10 +181,44 @@
 </div>
 
 <script>
-    // 사용자 이름을 가져와서 화면에 표시
-    // var userName = "John"; // 여기에 실제 사용자 이름을 가져오는 코드를 추가해야 합니다.
-    // document.getElementById("userName").textContent = userName;
+    function uploadFile() {
+        // 파일 선택 필드를 클릭합니다.
+        document.getElementById('fileInput').click();
+    }
+
+    function handleFileUpload() {
+        var fileInput = document.getElementById('fileInput');
+        if (fileInput.files.length > 0) {
+            var file = fileInput.files[0]; // 선택된 파일 가져오기
+
+            // 파일을 서버로 업로드하는 AJAX 요청을 보냅니다.
+            var formData = new FormData();
+            formData.append('file', file); // 'file'은 서버에서 파일을 받을 이름입니다.
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/admin/uploadUsers', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) { // 요청이 완료되었을 때
+                    if (xhr.status === 200) {
+                        // 서버 응답의 상태 코드가 200일 때만 실행
+                        alert('사용자 정보 업로드가 완료되었습니다!');
+                    } else {
+                        // 가입 실패 처리
+                        alert('서버에서 오류가 발생했습니다.');
+                    }
+                }
+            };
+            xhr.send(formData);
+
+            // 이벤트 리스너를 제거합니다.
+            fileInput.removeEventListener('change', handleFileUpload);
+        }
+    }
+
+    // 파일 선택 필드에서 파일을 선택하면 handleFileUpload 함수가 실행됩니다.
+    document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 </script>
+
 </body>
 
 </html>

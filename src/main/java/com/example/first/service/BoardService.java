@@ -9,6 +9,12 @@ import java.util.List;
 public interface BoardService {
     List<BoardDto> getAllBoards();
 
+    // 페이징 처리 (현재 페이지와 페이지 사이즈 넣고, 해당 게시물 가져오기 - 예) 현재 2페이지고 페이지 사이즈 10이면 11~20 번째 게시물 반환)
+    List<BoardDto> getBoardsByPage(int currentPage, int pageSize);
+
+    // 페이징 처리 (페이지 사이즈 넣고, 총 페이지 개수 가져오기 - 예) 페이지 사이즈 10이고, 토탈 게시물 수 101 이면 페이지 총 수는 11)
+    int getTotalPages(int pageSize);
+
     BoardDto getBoardById(Long boardId);
 
     // 글 작성 (단일 멀티 파일)
@@ -37,8 +43,6 @@ public interface BoardService {
     // 댓글 삭제
     void deleteComment(Long commentId);
 
-    // 게시글 리스트 조회
-    PagingResponse<BoardDto> findAllBoards(final SearchDto params);
 
     // 멀티 파일 객체 가져오기
     BoardMultiFile findBoardMultiFileBySeq(Long fileId);

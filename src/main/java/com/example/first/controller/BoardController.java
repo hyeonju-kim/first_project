@@ -4,7 +4,9 @@ package com.example.first.controller;
 import com.example.first.dto.BoardDto;
 import com.example.first.dto.BoardMultiFile;
 import com.example.first.dto.CommentDto;
+import com.example.first.dto.UserDto;
 import com.example.first.mapper.BoardMapper;
+import com.example.first.mapper.HomeMapper;
 import com.example.first.service.BoardService;
 import com.example.first.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -34,17 +37,46 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
     private final BoardMapper boardMapper;
+    private final HomeMapper homeMapper;
     private final FileUtils fileUtils;
 
 
-    // 게시판 글 조회 1 - 기본
+//    // 게시판 글 조회 1 - 기본
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<BoardDto> boards = boardService.getAllBoards();
+//
+//
+//        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards = " + boards);
+//        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards.size() = " + boards.size());
+//
+//        for (BoardDto board : boards) {
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getBoardId() ::" + board.getBoardId());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getTitle() ::" + board.getTitle());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getContent() ::" + board.getContent());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
+//        }
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//
+//        model.addAttribute("boards", boards);
+//        return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
+//    }
+
+    // 게시판 글 조회 (페이징 처리 된)
     @GetMapping
-    public String getAllBoards(Model model) {
-        List<BoardDto> boards = boardService.getAllBoards();
+    public String getAllBoards(Model model, @RequestParam(defaultValue = "1") int currentPage) {
+        int pageSize = 10; // 페이지당 게시물 수
+        List<BoardDto> boards = boardService.getBoardsByPage(currentPage, pageSize);
+        int totalPages = boardService.getTotalPages(pageSize);
 
+        model.addAttribute("boards", boards);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", currentPage);
 
-        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards = " + boards);
-        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards.size() = " + boards.size());
+        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - currentPage = " + currentPage);
+        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - totalPages = " + totalPages);
 
         for (BoardDto board : boards) {
             System.out.println("보드 컨트롤러 / 글목록 for문 - board.getBoardId() ::" + board.getBoardId());
@@ -53,37 +85,27 @@ public class BoardController {
             System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
         }
 
+        // 현재 로그인한 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName(); // 사용자 이메일
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+                model.addAttribute("role", role);
+            }
+            // 모델에 사용자 정보 추가
+            model.addAttribute("username", username);
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+            model.addAttribute("username", "");
+        }
 
-        model.addAttribute("boards", boards);
-        return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
+
+        return "board";
     }
 
-
-//    // 게시판 글 조회 2 - 페이징 처리 추가
-//    @GetMapping
-//    public String getAllBoards2(@ModelAttribute("params") final SearchDto params, Model model) throws JsonProcessingException {
-//        PagingResponse<BoardDto> response = boardService.findAllBoards(params);
-//
-//
-//
-//        List<BoardDto> list = response.getList();
-//        for (BoardDto boardDto : list) {
-//            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getBoardId() = " + boardDto.getBoardId());
-//            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getTitle() = " + boardDto.getTitle());
-//            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getNickname() = " + boardDto.getNickname());
-//            System.out.println(" 보드 컨트롤러 / 전체 게시글 조회 (페이징) - boardDto.getCreatedAt() = " + boardDto.getCreatedAt());
-//        }
-//
-////        ObjectMapper objectMapper = new ObjectMapper();
-////        String stringToObjectMapper = objectMapper.writeValueAsString(response);
-//
-//        model.addAttribute("boards", response);
-//        model.addAttribute("params", params);
-//
-//        return "board";
-//    }
 
 
 
@@ -147,8 +169,16 @@ public class BoardController {
 
     // 글 작성 폼
     @GetMapping("/create")
-    public String showCreateForm() {
-        return "board/create"; // "board/create"는 게시글 생성 폼을 보여줄 JSP 페이지 경로입니다.
+    public String showCreateForm(HttpServletRequest request, Model model) {
+        // 현재 로그인한 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName().equals("anonymousUser")) {
+            // 로그인하지 않은 사용자에게 알림을 표시
+            model.addAttribute("message", "로그인을 해주세요!");
+            return "board/alert"; // 알림을 보여줄 JSP 페이지 경로
+        }
+
+        return "board/create"; // 로그인한 사용자에게는 글 작성 폼을 보여줄 JSP 페이지 경로
     }
 
     // 글 작성
@@ -256,15 +286,21 @@ public class BoardController {
 
     // 댓글 작성
     @PostMapping("/{boardId}/addComment")
-    public String addComment(@PathVariable Long boardId, @RequestParam String content) {
-        System.out.println(" 보드 컨트롤러 / 댓글 작성 - @PathVariable Long boardId = " + boardId);
-        System.out.println(" 보드 컨트롤러 / 댓글 작성 - @RequestParam String content = " + content);
+    public String addComment(@PathVariable Long boardId, @RequestParam String content, Model model) {
 
+        // 현재 로그인한 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName().equals("anonymousUser")) {
+            // 로그인하지 않은 사용자에게 알림을 표시
+            model.addAttribute("message", "로그인을 해주세요!");
+            return "board/alert";
+        }
         CommentDto commentDto = new CommentDto();
         commentDto.setBoardId(boardId);
         commentDto.setContent(content);
 
         boardService.createComment(commentDto);
+
 
         return "redirect:/boards/" + boardId; // 댓글 추가 후 게시글 상세 페이지로 리다이렉트
     }

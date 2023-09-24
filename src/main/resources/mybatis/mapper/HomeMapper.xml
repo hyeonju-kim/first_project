@@ -20,6 +20,7 @@
     <result property="zipcode" column="zipcode"/>
     <result property="streetAdr" column="street_adr"/>
     <result property="detailAdr" column="detail_adr"/>
+    <result property="regDate" column="reg_date"/>
 
 </resultMap>
 
@@ -33,8 +34,8 @@
 
     <!--회원가입-->
     <select id="signUp" parameterType="com.example.first.dto.UserDto" resultType="com.example.first.dto.UserDto"  resultMap="userResultMap">
-        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location, zipcode, street_adr, detail_adr)
-        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode}, #{streetAdr}, #{detailAdr})
+        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location, zipcode, street_adr, detail_adr, role, reg_date)
+        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode}, #{streetAdr}, #{detailAdr}, #{role}, #{regDate})
     </select>
 
     <!--    사용자 메일로 사용자 가져오기-->

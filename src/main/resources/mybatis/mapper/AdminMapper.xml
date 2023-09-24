@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.first.mapper.AdminMapper">
+    <resultMap id="userResultMap" type="com.example.first.dto.UserDto">
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="password" column="password"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="profilePictureLocation" column="profile_picture_location"/>
+        <result property="zipcode" column="zipcode"/>
+        <result property="streetAdr" column="street_adr"/>
+        <result property="detailAdr" column="detail_adr"/>
+        <result property="regDate" column="reg_date"/>
+    </resultMap>
+
+
+    <select id="getAllUsers" resultType="com.example.first.dto.UserDto" resultMap="userResultMap">
+        SELECT * FROM postgres.first_project.users
+        ORDER BY reg_date desc
+    </select>
+
+    <select id="getUserCountByMonth" resultType="int">
+        SELECT COUNT(*)
+        FROM postgres.first_project.users
+        WHERE SUBSTRING(reg_date, 6, 2) = #{formattedMonth}
+    </select>
+
+    <select id="insertUploadUsers" parameterType="java.util.List">
+        INSERT INTO postgres.first_project.users (name, username, nickname, phone_number, zipcode, street_adr, detail_adr, reg_date)
+        VALUES
+        <foreach collection="list" item="user" separator=",">
+            (#{user.name}, #{user.username}, #{user.nickname}, #{user.phoneNumber}, #{user.zipcode}, #{user.streetAdr}, #{user.detailAdr}, #{user.regDate})
+        </foreach>
+    </select>
+
+
+</mapper>

@@ -126,6 +126,16 @@
                     </div>
                 </div>
 
+                <!-- 관리자 체크박스 -->
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="role" name="isAdmin">
+                        <label class="form-check-label" for="role">
+                            관리자
+                        </label>
+                    </div>
+                </div>
+
 
 
 
@@ -191,6 +201,7 @@
             var streetAdr = $('#streetAdr').val()
             var detailAdr = $('#detailAdr').val()
             var authNumber = $('#authNumber').val()
+            var role = $('#role').val()
 
             console.log(name);
             console.log(nickname);
@@ -202,6 +213,7 @@
             console.log(streetAdr);
             console.log(detailAdr);
             console.log(authNumber);
+            console.log(role);
 
             // 2. 유효성 검사
 
@@ -279,11 +291,12 @@
                 "password" : password,
                 "passwordConfirm" : passwordConfirm,
                 "phoneNumber" : phoneNumber,
-                "profilePicture" : profilePicture,
+                "profilePicture" : this.profilePicture,
                 "zipcode" : zipcode,
                 "streetAdr" : streetAdr,
                 "detailAdr" : detailAdr,
-                "authNumber" : authNumber
+                "authNumber" : authNumber,
+                "role" : role
             }
 
             if (fileObj) {

@@ -45,7 +45,7 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // 파일 선택
+    // 1. 파일 선택 함수
     function selectFile(element) {
         const file = element.files[0];
         const filename = element.closest('.file_input').firstElementChild;
@@ -69,7 +69,7 @@
         filename.value = file.name;
     }
 
-    // 파일 추가
+    // 2. 파일 추가 함수
     function addFile() {
         const fileDiv = document.createElement('div');
         fileDiv.innerHTML = `
@@ -88,7 +88,7 @@
         document.querySelector('.file_list').appendChild(fileDiv);
     }
 
-    // 파일 삭제
+    // 3. 파일 삭제 함수
     function removeFile(element) {
         element.parentElement.remove();
     }
