@@ -47,6 +47,12 @@
             border-left: 5px solid #8C8C8C;
             height: 100%;
         }
+        .admin-mode {
+            background-color: #ccc; /* 배경색을 회색(#ccc)으로 지정 */
+            padding: 5px 10px; /* 내부 여백 설정 */
+            border-radius: 10px; /* 둥근 모서리를 위한 설정 */
+            display: inline-block; /* 텍스트 크기와 일치하는 너비로 설정 */
+        }
     </style>
 </head>
 
@@ -68,19 +74,28 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/users">사용자 정보</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/menu">메뉴 관리</a>
+                </li>
             </ul>
         </div>
         <!-- 세로 구분선 -->
         <div class="col-md-1 vertical-divider"></div>
         <div class="col-md-8">
-            <!-- 마이페이지 버튼 -->
             <div class="text-right mt-2">
-                <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
-                <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
+                <c:if test="${not empty username && username != 'anonymousUser'}">
+                    <h6><span>${nickname}님 안녕하세요!</span></h6>
+                    <c:if test="${role == 'admin'}">
+                        <h6><span class="admin-mode">관리자모드</span></h6>
+                    </c:if>
+                    <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
+                    <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
+                </c:if>
+                <c:if test="${empty username || username == 'anonymousUser'}">
+                    <a href="/login" class="btn btn-primary">로그인</a>
+                </c:if>
             </div>
-            <br>
-            <br>
-            <br>
+
             <br>
             <h2 class="center-title">사용자 목록</h2>
             <br>
@@ -202,6 +217,7 @@
                     if (xhr.status === 200) {
                         // 서버 응답의 상태 코드가 200일 때만 실행
                         alert('사용자 정보 업로드가 완료되었습니다!');
+                        location.reload();
                     } else {
                         // 가입 실패 처리
                         alert('서버에서 오류가 발생했습니다.');

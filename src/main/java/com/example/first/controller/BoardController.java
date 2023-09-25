@@ -97,6 +97,7 @@ public class BoardController {
             }
             // 모델에 사용자 정보 추가
             model.addAttribute("username", username);
+            model.addAttribute("nickname", userDto.getNickname());
         } else {
             // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
             model.addAttribute("username", "");
@@ -113,8 +114,32 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String getBoardById(@PathVariable Long boardId, Model model) {
 
+        String username = "";
+        // 현재 로그인한 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName().equals("anonymousUser")) {
+            // 로그인하지 않은 사용자에게 알림을 표시
+            model.addAttribute("message", "로그인을 해주세요!");
+            return "board/alert"; // 알림을 보여줄 JSP 페이지 경로
+        }
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+                model.addAttribute("role", role);
+            }
+            // 모델에 사용자 정보 추가
+            model.addAttribute("username", username);
+        }
+
         BoardDto boardDto = boardService.getBoardById(boardId);
         boardDto.setBoardId(boardId);
+
+        System.out.println("boardDto.getUsername() ============================== " + boardDto.getUsername());
+        System.out.println("username ============================================ " + username);
 
         // 게시글의 멀티 파일 정보를 가져옵니다.
         List<BoardMultiFile> multiFiles = boardService.getBoardMultiFilesByBoardId(boardId);
@@ -265,7 +290,7 @@ public class BoardController {
         return "redirect:/boards/" + boardId; // 게시글 수정 후 해당 게시글 상세 페이지로 리다이렉트합니다.
     }
 
-    // 글 삭제
+    // 글 삭제 (status 만 Y로 업데이트)
     @GetMapping ("/{boardId}/delete")
     public String deleteBoard(@PathVariable Long boardId) {
         boardService.deleteBoard(boardId);
@@ -274,11 +299,35 @@ public class BoardController {
 
     // 글 검색
     @GetMapping("/search")
-    public String searchBoard(@RequestParam String keyword, Model model) {
-        List<BoardDto> boards = boardService.getSearchBoards(keyword);
+    public String searchBoard(@RequestParam String keyword, Model model, @RequestParam(defaultValue = "1") int currentPage) {
+        int pageSize = 10; // 페이지당 게시물 수
+        List<BoardDto> boards = boardService.getSearchBoardsByPage(keyword, currentPage, pageSize);
+        int totalPages = boardService.getSearchBoardsTotalPages(keyword, pageSize);
+
+        // 현재 로그인한 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName(); // 사용자 이메일
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+                model.addAttribute("role", role);
+            }
+            // 모델에 사용자 정보 추가
+            model.addAttribute("username", username);
+            model.addAttribute("nickname", userDto.getNickname());
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+            model.addAttribute("username", "");
+        }
 
         model.addAttribute("boards", boards);
-        return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", currentPage);
+
+        return "board";
 
     }
 
@@ -317,7 +366,7 @@ public class BoardController {
         return "redirect:/boards/" + boardId; // 댓글 수정 후 게시글 상세 페이지로 리다이렉트
     }
 
-    // 댓글 삭제
+    // 댓글 삭제 (status 만 Y로 업데이트)
     @GetMapping("/{boardId}/deleteComment/{commentId}")
     public String deleteComment(@PathVariable Long boardId, @PathVariable Long commentId) {
         boardService.deleteComment(commentId);

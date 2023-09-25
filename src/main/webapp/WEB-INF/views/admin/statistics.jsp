@@ -46,6 +46,12 @@
             border-left: 5px solid #8C8C8C;
             height: 100%;
         }
+        .admin-mode {
+            background-color: #ccc; /* 배경색을 회색(#ccc)으로 지정 */
+            padding: 5px 10px; /* 내부 여백 설정 */
+            border-radius: 10px; /* 둥근 모서리를 위한 설정 */
+            display: inline-block; /* 텍스트 크기와 일치하는 너비로 설정 */
+        }
     </style>
 
     <!-- Highcharts -->
@@ -70,25 +76,33 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/users">사용자 정보</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/menu">메뉴 관리</a>
+                </li>
             </ul>
         </div>
         <!-- 세로 구분선 -->
         <div class="col-md-1 vertical-divider"></div>
         <div class="col-md-8">
-            <!-- 마이페이지 버튼 -->
             <div class="text-right mt-2">
-                <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
-                <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
+                <c:if test="${not empty username && username != 'anonymousUser'}">
+                    <h6><span>${nickname}님 안녕하세요!</span></h6>
+                    <c:if test="${role == 'admin'}">
+                        <h6><span class="admin-mode">관리자모드</span></h6>
+                    </c:if>
+                    <a href="/logout" class="btn btn-danger mr-2">로그아웃</a>
+                    <a href="/mypage" class="btn btn-primary mr-2">마이페이지</a>
+                </c:if>
+                <c:if test="${empty username || username == 'anonymousUser'}">
+                    <a href="/login" class="btn btn-primary">로그인</a>
+                </c:if>
             </div>
             <br>
-            <br>
-
 
             <!-- Highcharts 차트 컨테이너 -->
             <div class="text-center" style="margin-top: 20px;">
-                <div id="chartContainer" style="width: 800px; height: 400px;"></div>
+                <div id="chartContainer" style="width: 800px; height: 600px;"></div>
             </div>
-
 
 
             <!-- Highcharts 스크립트 -->

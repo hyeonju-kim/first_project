@@ -52,7 +52,6 @@
             border-radius: 10px; /* 둥근 모서리를 위한 설정 */
             display: inline-block; /* 텍스트 크기와 일치하는 너비로 설정 */
         }
-
     </style>
 </head>
 
@@ -99,101 +98,39 @@
                 </c:if>
             </div>
 
-            <br>
-            <h2 class="center-title">게시판</h2>
 
-            <!-- 글 작성 버튼 -->
-            <a href="/boards/create" class="btn btn-primary mb-3">글 작성</a>
+            <br>
+            <h2 class="center-title">메뉴 목록</h2>
+
 
             <!-- 글 목록 -->
-            <table class="table">
+            <table class="table table-striped mt-4">
                 <thead>
                 <tr>
-                    <th scope="col">제목</th>
-                    <th scope="col">작성자</th>
-                    <th scope="col">작성일</th>
+                    <th>메뉴 이름</th>
+                    <th>URL</th>
+                    <th>권한</th>
+                    <th>사용 여부</th>
+                    <th>순서</th>
+                    <th>등록 일자</th>
+                    <th>등록자</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${boards}" var="board">
+                <!-- 메뉴 목록을 반복해서 표시 -->
+                <c:forEach var="menu" items="${menu}">
                     <tr>
-                        <td><a href="/boards/${board.boardId}">${board.title}</a></td>
-                        <td>${board.nickname}</td>
-                        <td>${board.createdAt}</td>
+                        <td><c:out value="${menu.menuName}" /></td>
+                        <td><c:out value="${menu.url}" /></td>
+                        <td><c:out value="${menu.auth}" /></td>
+                        <td><c:out value="${menu.useYN}" /></td>
+                        <td><c:out value="${menu.order}" /></td>
+                        <td><c:out value="${menu.regDate}" /></td>
+                        <td><c:out value="${menu.regId}" /></td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
-
-            <br>
-            <br>
-
-            <!-- 글 목록 아래 검색창 -->
-            <form action="/boards/search" method="GET" style="max-width: 300px; margin: 0 auto;">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword" aria-label="검색어"
-                           aria-describedby="basic-addon2"  value="${keyword}">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">검색</button>
-                    </div>
-                </div>
-            </form>
-
-            <br>
-            <br>
-
-            <!-- 페이징 처리 -->
-            <div class="text-center">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <c:choose>
-                            <c:when test="${currentPage > 1}">
-                                <c:if test="${empty keyword}">
-                                    <a class="page-link" href="/boards?currentPage=${currentPage - 1}">이전</a>
-                                </c:if>
-                                <c:if test="${not empty keyword}">
-                                    <a class="page-link" href="/boards/search?keyword=${keyword}&currentPage=${currentPage - 1}">이전</a>
-                                </c:if>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="page-link">이전</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </li>
-                    <c:forEach begin="1" end="${totalPages}" var="pageNumber">
-                        <li class="page-item">
-                            <c:choose>
-                                <c:when test="${pageNumber == currentPage}">
-                                    <span class="page-link current-page">${pageNumber}</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:if test="${empty keyword}">
-                                        <a class="page-link" href="/boards?currentPage=${pageNumber}">${pageNumber}</a>
-                                    </c:if>
-                                    <c:if test="${not empty keyword}">
-                                        <a class="page-link" href="/boards/search?keyword=${keyword}&currentPage=${pageNumber}">${pageNumber}</a>
-                                    </c:if>
-                                </c:otherwise>
-                            </c:choose>
-                        </li>
-                    </c:forEach>
-                    <li class="page-item">
-                        <c:choose>
-                            <c:when test="${currentPage < totalPages}">
-                                <c:if test="${empty keyword}">
-                                    <a class="page-link" href="/boards?currentPage=${currentPage + 1}">다음</a>
-                                </c:if>
-                                <c:if test="${not empty keyword}">
-                                    <a class="page-link" href="/boards/search?keyword=${keyword}&currentPage=${currentPage + 1}">다음</a>
-                                </c:if>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="page-link">다음</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </li>
-                </ul>
-            </div>
 
         </div>
     </div>

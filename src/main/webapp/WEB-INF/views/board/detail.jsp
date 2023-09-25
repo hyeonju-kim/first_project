@@ -114,8 +114,10 @@
                             <div class="comment-meta">
                                 <span class="comment-nickname">${comment.nickname}</span>
                                 <span class="comment-date">${comment.createdAt}</span>
-                                <a href="/boards/${board.boardId}/editComment?commentId=${comment.commentId}" class="btn btn-sm btn-primary ml-2">수정</a>
-                                <a href="#" class="btn btn-sm btn-danger ml-2" onclick="deleteComment(${comment.commentId})">삭제</a>
+                                <c:if test="${username == comment.username}">
+                                    <a href="/boards/${board.boardId}/editComment?commentId=${comment.commentId}" class="btn btn-sm btn-primary ml-2">수정</a>
+                                    <a href="#" class="btn btn-sm btn-danger ml-2" onclick="deleteComment(${comment.commentId})">삭제</a>
+                                </c:if>
                                 <a href="#" class="btn btn-sm btn-success ml-2" onclick="toggleReplyForm(${comment.commentId})">답글 작성</a>
                             </div>
                             <div class="comment-content">${comment.content}</div>
@@ -131,8 +133,6 @@
                             </div>
                         </div>
                     </c:forEach>
-
-
                 </div>
             </div>
         </div>
@@ -161,8 +161,10 @@
     <br>
     <div class="row mt-4">
         <div class="col-md-12">
-            <a href="/boards/${board.boardId}/edit" class="btn btn-primary" >수정</a>
-            <a href="/boards/${board.boardId}/delete" class="btn btn-danger" onclick="deleteBoard()">삭제</a>
+            <c:if test="${username == board.username}">
+                <a href="/boards/${board.boardId}/edit" class="btn btn-primary" >수정</a>
+                <a href="/boards/${board.boardId}/delete" class="btn btn-danger" onclick="deleteBoard()">삭제</a>
+            </c:if>
         </div>
         <br>
         <br>

@@ -21,7 +21,7 @@
     <result property="streetAdr" column="street_adr"/>
     <result property="detailAdr" column="detail_adr"/>
     <result property="regDate" column="reg_date"/>
-
+    <result property="lastLoginDate" column="last_login_date"/>
 </resultMap>
 
 
@@ -122,26 +122,29 @@
     </update>
 
 
+    <!--    모든 유저 객체 조회 (스케줄링 용)-->
+    <select id="findAllUsers"  resultMap="userResultMap">
+        SELECT *
+        FROM postgres.first_project.users
+    </select>
 
 
+    <!--    마지막 로그인 일시 업데이트-->
+    <select id="updateUserLastLoginDate"  parameterType="com.example.first.dto.UserDto" >
+        UPDATE postgres.first_project.users
+        SET last_login_date = #{lastLoginDate}
+        WHERE username = #{username}
+    </select>
 
-    <!--&lt;!&ndash;    마이페이지 정보 가져오기&ndash;&gt;-->
-<!--    <select id="getUserInfo" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto">-->
-<!--        SELECT "userId", password, name, username, nickname, phone_number, zipcode, street_adr, detail_adr-->
-<!--        FROM postgres.first_project.users-->
-<!--        WHERE username = #{username}-->
-<!--    </select>-->
+
+    <!--  휴면 처리 로직 -->
+    <select id="updateUserStatusToN"  parameterType="com.example.first.dto.UserDto" >
+        UPDATE postgres.first_project.users
+        SET status = 'N'
+        WHERE username = #{username}
+    </select>
 
 
-    <!--    개인정보 확인-->
-<!--    <select id="personalInfo"  resultType="com.example.first.dto.UserResponseDto">-->
-<!--        <![CDATA[-->
-<!--        SELECT sum(total_price) FROM sales total_price-->
-<!--        WHERE store_id = #{store_id}-->
-<!--          AND (ORDER_AT > LAST_DAY(NOW() - interval 1 month)-->
-<!--            AND ORDER_AT <= LAST_DAY(NOW()))-->
-<!--        ]]>-->
-<!--    </select>-->
 
 <!--    계정 중복확인-->
     <select id="isUsernameUnique" parameterType="java.lang.String" resultType="java.lang.Boolean">

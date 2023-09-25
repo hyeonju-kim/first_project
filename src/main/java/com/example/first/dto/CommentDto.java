@@ -11,6 +11,6 @@ public class CommentDto {
     private String username; // 댓글 작성자의 사용자 이름
     private String nickname; // 댓글 작성자의 닉네임
     private Long parentCommentId;
-    private String status;
+    private String status = "N";  // 기본 값은 "N", 삭제 되면 "Y"
     private int level;
 }

@@ -7,6 +7,7 @@ import com.example.first.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -23,6 +24,7 @@ public interface HomeMapper {
 
     // username 으로 인증번호 가져오기
     TempAuthInfo findAuthNumberByUsername(String username);
+
 
     // 로그인
 //    UserDto login(UserDto userDto);
@@ -64,5 +66,14 @@ public interface HomeMapper {
 
     // 계정 중복확인
     boolean isUsernameUnique(String username);
+
+    // 모든 유저 객체 조회 (스케줄링 용)
+    List<UserDto> findAllUsers();
+
+    // 마지막 로그인 시간을 업데이트
+    void updateUserLastLoginDate(UserDto userDto);
+
+    // 유저의 휴면처리
+    void updateUserStatusToN(UserDto userDto);
 
 }

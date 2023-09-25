@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService{
         userDto.setPassword(encodedPassword);
 
         System.out.println("인코딩된 비밀번호 : " + encodedPassword);
+        System.out.println("인증 번호 : " + userDto.getAuthNumber());
 
 // 관리자 지정
         if (userDto.getRole() != null && userDto.getRole().equals("admin")) {
@@ -229,6 +230,15 @@ public class UserServiceImpl implements UserService{
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         UserDto retrievedUser = homeMapper.findByUsername(username);
+
+        // 현재 로그인한 시간을 lastLoginDate에 업데이트
+        LocalDateTime now = LocalDateTime.now();
+        userDto.setLastLoginDate(now);
+        homeMapper.updateUserLastLoginDate(userDto);
+
+        System.out.println("now = " + now);
+        System.out.println("userDto.getLastLoginDate() = " + userDto.getLastLoginDate());
+        System.out.println("userDto.getUsername() = " + userDto.getUsername());
 
         System.out.println(" 유저서비스임플 / 로그인 - foundUserDto.getUsername(): " + retrievedUser.getUsername());
         System.out.println(" 유저서비스임플 / 로그인 - foundUserDto.getUsername(): " + retrievedUser.getStreetAdr());

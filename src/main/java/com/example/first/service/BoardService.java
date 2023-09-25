@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface BoardService {
-    List<BoardDto> getAllBoards();
+//    List<BoardDto> getAllBoards();
 
     // 페이징 처리 (현재 페이지와 페이지 사이즈 넣고, 해당 게시물 가져오기 - 예) 현재 2페이지고 페이지 사이즈 10이면 11~20 번째 게시물 반환)
     List<BoardDto> getBoardsByPage(int currentPage, int pageSize);
@@ -29,7 +29,11 @@ public interface BoardService {
 
     void deleteBoard(Long boardId);
 
-    List<BoardDto> getSearchBoards(String keyword);
+    // 글 검색 (페이징 적용)
+    List<BoardDto> getSearchBoardsByPage(String keyword, int currentPage, int pageSize);
+
+    // 검색된 게시물의 총 페이지 수 조회
+    int getSearchBoardsTotalPages(String keyword, int pageSize);
 
     // 특정 게시글의 댓글 리스트 가져오기
     List<CommentDto> getAllCommentsByBoardId(Long boardId);

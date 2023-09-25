@@ -12,7 +12,7 @@ public class BoardDto {
     private Long boardId;
     private String title;
     private String content;
-    private String status = "N";
+    private String status = "N";  // 기본 값은 "N", 삭제 되면 "Y"
     private String createdAt;
     private Long userId;
     private MultipartFile file;

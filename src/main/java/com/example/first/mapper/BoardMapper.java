@@ -36,7 +36,12 @@ public interface BoardMapper {
 
     void deleteBoard(Long boardId);
 
-    List<BoardDto> getSearchBoards(String keyword);
+
+    //======== 검색 ==========
+
+    List<BoardDto> getSearchBoardsByPage(Map<String, Object> params);
+
+    int getSearchBoardsTotalPages(Map<String, Object> params);
 
     //======== 댓글 ==========
 

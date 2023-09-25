@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY) //비어있지 않은 필드만 나타내는 어노테이션
@@ -42,6 +44,10 @@ public class UserDto {
 
     private String role;
     private String regDate; // 2023-09-24
+
+    private LocalDateTime lastLoginDate;
+
+    private String status = "Y"; // 60일 이상일 시, N(휴면계정)으로 전환
 
 
     public UserDto(String name, String username, String nickname, String phoneNumber, String zipcode, String streetAdr, String detailAdr, String regDate) {

@@ -1,5 +1,6 @@
 package com.example.first.service;
 
+import com.example.first.dto.MenuDto;
 import com.example.first.dto.UserDto;
 
 import java.util.List;
@@ -11,4 +12,7 @@ public interface AdminService {
 
     // 월별 가입자 수 통계 조회
     List<Map<String, Integer>> getUsersStatisticsByMonth();
+
+    // 메뉴 정보 조회
+    List<MenuDto> getMenuTable();
 }

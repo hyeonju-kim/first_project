@@ -30,11 +30,11 @@ public class BoardServiceImpl implements BoardService {
     private final HomeMapper homeMapper;
 
 
-    // 토탈 게시판 글목록 조회 (페이징 x)
-    @Override
-    public List<BoardDto> getAllBoards() {
-        return boardMapper.getAllBoards();
-    }
+//    // 토탈 게시판 글목록 조회 (페이징 x)
+//    @Override
+//    public List<BoardDto> getAllBoards() {
+//        return boardMapper.getAllBoards();
+//    }
 
     // 페이지 별 게시판 글목록 조회
     @Override
@@ -185,10 +185,28 @@ public class BoardServiceImpl implements BoardService {
         boardMapper.deleteBoard(boardId);
     }
 
-    // 글 검색
+    // 글 검색 (페이징 적용)
     @Override
-    public List<BoardDto> getSearchBoards(String keyword) {
-        return boardMapper.getSearchBoards(keyword);
+    public List<BoardDto> getSearchBoardsByPage(String keyword, int currentPage, int pageSize) {
+
+        int offset = (currentPage - 1) * pageSize; // 현재 2페이지고 페이지사이즈가 10이면 offset은 10
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("pageSize", pageSize);
+        params.put("offset", offset);
+        params.put("keyword", keyword);
+
+        return boardMapper.getSearchBoardsByPage(params);
+    }
+
+    // 검색된 게시물의 총 페이지 수 조회
+    @Override
+    public int getSearchBoardsTotalPages(String keyword, int pageSize) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("keyword", keyword);
+        params.put("pageSize", pageSize);
+
+        return boardMapper.getSearchBoardsTotalPages(params); // 총 게시물 수가 101이고, 페이지사이즈가 10이면 -> 총 페이지 수는 11
     }
 
     // 특정 게시글의 댓글 리스트 가져오기

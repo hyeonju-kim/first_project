@@ -1,6 +1,7 @@
 package com.example.first.controller;
 
 
+import com.example.first.dto.MenuDto;
 import com.example.first.dto.UserDto;
 import com.example.first.mapper.AdminMapper;
 import com.example.first.mapper.HomeMapper;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,6 @@ import java.util.*;
 @CrossOrigin
 @RequestMapping("/admin")
 public class AdminController {
-
     private final AdminService adminService;
     private final HomeMapper homeMapper;
     private final AdminMapper adminMapper;
@@ -39,6 +41,27 @@ public class AdminController {
     @GetMapping("/users")
     public String getAllUsers(Model model) {
         List<UserDto> users = adminService.getAllUsers(); // UserService에서 모든 사용자 정보 가져오기
+
+
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName(); // 사용자 이메일
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+                model.addAttribute("role", role);
+            }
+            // 모델에 사용자 정보 추가
+            model.addAttribute("username", username);
+            model.addAttribute("nickname", userDto.getNickname());
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+            model.addAttribute("username", "");
+        }
+        // ==============================================================
+
 
         model.addAttribute("users", users);
         return "admin/users";
@@ -64,7 +87,7 @@ public class AdminController {
 
         homeMapper.updateUserInsertSavePath(params);
 
-        File file = new File("/img/"+profilePictureFileName);
+        File file = new File("/img/" + profilePictureFileName);
 
         ModelAndView mv = new ModelAndView();
         mv.setViewName("admin/userDetails");
@@ -213,7 +236,7 @@ public class AdminController {
             String nickname = row.getCell(2).getStringCellValue();
             String phoneNumber = row.getCell(3).getStringCellValue();
 //            String zipcode = row.getCell(4).getStringCellValue();
-            String zipcode = String.valueOf((long)row.getCell(4).getNumericCellValue()); // 숫자 셀을 문자열로 변환
+            String zipcode = String.valueOf((long) row.getCell(4).getNumericCellValue()); // 숫자 셀을 문자열로 변환
             String streetAdr = row.getCell(5).getStringCellValue();
             String detailAdr = row.getCell(6).getStringCellValue();
             String regDate = row.getCell(7).getStringCellValue();
@@ -223,17 +246,36 @@ public class AdminController {
             adminMapper.insertUploadUsers(userlist);
         }
 
-            workbook.close();
-            inputStream.close();
+        workbook.close();
+        inputStream.close();
 
         return "redirect:/admin/users";
     }
 
     // 월별 가입자 수 통계 조회
     @GetMapping("/statistics")
-    public String getUsersStatisticsPerMonth(Model model){
+    public String getUsersStatisticsPerMonth(Model model) {
         // 월별 가입자 수 통계 데이터를 서비스에서 가져옴
         List<Map<String, Integer>> statistics = adminService.getUsersStatisticsByMonth();
+
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName(); // 사용자 이메일
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+                model.addAttribute("role", role);
+            }
+            // 모델에 사용자 정보 추가
+            model.addAttribute("username", username);
+            model.addAttribute("nickname", userDto.getNickname());
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+            model.addAttribute("username", "");
+        }
+        // ==============================================================
 
         // 모델에 데이터를 추가
         model.addAttribute("statistics", statistics);
@@ -241,5 +283,34 @@ public class AdminController {
         return "admin/statistics";
     }
 
+    // 메뉴관리 조회
+    @GetMapping("/menu")
+    public String viewMenuTable(Model model) {
+        List<MenuDto> menuDtoList = adminService.getMenuTable();
+        model.addAttribute("menu", menuDtoList);
 
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName(); // 사용자 이메일
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+                model.addAttribute("role", role);
+            }
+            // 모델에 사용자 정보 추가
+            model.addAttribute("username", username);
+            model.addAttribute("nickname", userDto.getNickname());
+
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+            model.addAttribute("username", "");
+        }
+        // ==============================================================
+
+
+        return "admin/menu";
+
+    }
 }

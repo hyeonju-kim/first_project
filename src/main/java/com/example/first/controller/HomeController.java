@@ -169,17 +169,12 @@ public class HomeController {
         System.out.println("TEST");
         System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getUsername());
         System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getPassword());
+
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
 
-        System.out.println(" 홈 컨트롤러 / 로그인 - authentication = " + authentication);
-        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getName() = " + authentication.getName()); // yocu1784@naver.com
-        System.out.println(" 홈 컨트롤러 / 로그인 - .getAuthorities() = " + authentication.getAuthorities());
-        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getDetails() = " + authentication.getDetails());
-        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getCredentials() = " + authentication.getCredentials());
-        System.out.println(" 홈 컨트롤러 / 로그인 - authentication.getPrincipal() = " + authentication.getPrincipal());
-        System.out.println("principal = " + principal.getUsername());
 
         userService.login(userDto);
         return userDto;

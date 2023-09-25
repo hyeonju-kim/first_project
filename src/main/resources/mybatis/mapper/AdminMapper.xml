@@ -19,6 +19,18 @@
         <result property="regDate" column="reg_date"/>
     </resultMap>
 
+    <resultMap id="menuResultMap" type="com.example.first.dto.MenuDto">
+        <result property="seq" column="seq"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="url" column="url"/>
+        <result property="auth" column="auth"/>
+        <result property="useYN" column="use_yn"/>
+        <result property="order" column="order"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="regId" column="reg_id"/>
+    </resultMap>
+
+
 
     <select id="getAllUsers" resultType="com.example.first.dto.UserDto" resultMap="userResultMap">
         SELECT * FROM postgres.first_project.users
@@ -38,6 +50,11 @@
             (#{user.name}, #{user.username}, #{user.nickname}, #{user.phoneNumber}, #{user.zipcode}, #{user.streetAdr}, #{user.detailAdr}, #{user.regDate})
         </foreach>
     </select>
+
+    <select id="getMenuTable" resultType="com.example.first.dto.MenuDto" resultMap="menuResultMap">
+        SELECT * FROM postgres.first_project.menu
+    </select>
+
 
 
 </mapper>

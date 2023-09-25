@@ -1,6 +1,8 @@
 package com.example.first.config;
 
+import com.example.first.interceptor.SessionCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,4 +24,16 @@ public class WebConfig implements WebMvcConfigurer{
          reg2.addResourceLocations("file:C:\\multifile\\");
     
     }
+
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SessionCheckInterceptor())  // 30분 마다 세션 체크하는 인터셉터 추가
+                .addPathPatterns("/boards/create")
+                .addPathPatterns("/boards/**/addComment")
+                .addPathPatterns("/admin/**")
+                .addPathPatterns("/mypage/**");
+
+    }
 }
+

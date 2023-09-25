@@ -1,5 +1,6 @@
 package com.example.first.service;
 
+import com.example.first.dto.MenuDto;
 import com.example.first.dto.UserDto;
 import com.example.first.mapper.AdminMapper;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,18 @@ public class AdminServiceImpl implements AdminService{
             statisticsMap.add(monthStats);
         }
         return statisticsMap;
+    }
+
+    @Override
+    public List<MenuDto> getMenuTable() {
+        List<MenuDto> menuTable = adminMapper.getMenuTable();
+        for (MenuDto menuDto : menuTable) {
+
+            System.out.println(" menuDto.getMenuName() ================ " + menuDto.getMenuName());
+            System.out.println(" menuDto.getUrl() ================ " + menuDto.getUrl());
+            System.out.println(" menuDto.getAuth() ================ " + menuDto.getAuth());
+            System.out.println(" menuDto.getRegDate() ================ " + menuDto.getRegDate());
+        }
+        return menuTable;
     }
 }

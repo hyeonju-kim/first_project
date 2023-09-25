@@ -21,6 +21,7 @@ public class BoardMultiFile {
     private String username;
     private String fileOriginalName;
     private MultipartFile file;
+    private String status = "N";
 
 
 

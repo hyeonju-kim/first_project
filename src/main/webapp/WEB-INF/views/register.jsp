@@ -126,10 +126,13 @@
                     </div>
                 </div>
 
+
+
+
                 <!-- 관리자 체크박스 -->
                 <div class="form-group">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="role" name="isAdmin">
+                        <input class="form-check-input" type="checkbox" id="role" name="role" value="admin">
                         <label class="form-check-label" for="role">
                             관리자
                         </label>
@@ -525,7 +528,7 @@
                     error: function(response, status, xhr) {
                         console.log('실패했다...');
                         console.log(response);
-                        alert('서버 요청 실패');
+                        // alert('서버 요청 실패');
                     }
                 });
             }
