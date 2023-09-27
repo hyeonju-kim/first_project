@@ -48,6 +48,9 @@ dependencies {
 //    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
     implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+//    // Oracle PKI 및 OSDT 라이브러리 추가
+//    implementation group: 'com.oracle.database.security', name: 'oraclepki', version: '21.3.0.0'
+//    implementation group: 'com.oracle.database.security', name: 'oracle.osdt', version: '21.3.0.0'
 
 
     compileOnly 'org.projectlombok:lombok'

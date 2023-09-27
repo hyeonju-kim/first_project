@@ -34,5 +34,5 @@ public interface UserService {
 //    UserResponseDto personalInfo();
     // 계정 중복확인
 
-    boolean isUsernameUnique(String username);
+//    boolean isUsernameUnique(String username);
 }

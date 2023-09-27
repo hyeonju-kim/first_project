@@ -1,9 +1,6 @@
 package com.example.first.mapper;
 
-import com.example.first.dto.PasswordDto;
-import com.example.first.dto.ProfilePicture;
-import com.example.first.dto.TempAuthInfo;
-import com.example.first.dto.UserDto;
+import com.example.first.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -65,7 +62,7 @@ public interface HomeMapper {
 //    UserResponseDto personalInfo();
 
     // 계정 중복확인
-    boolean isUsernameUnique(String username);
+//    boolean isUsernameUnique(String username);
 
     // 모든 유저 객체 조회 (스케줄링 용)
     List<UserDto> findAllUsers();
@@ -75,5 +72,8 @@ public interface HomeMapper {
 
     // 유저의 휴면처리
     void updateUserStatusToN(UserDto userDto);
+
+    // 에러 인서트
+    void insertError(ErrorDto errorDto);
 
 }

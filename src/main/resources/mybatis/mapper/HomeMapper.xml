@@ -154,4 +154,12 @@
         WHERE username = #{username}
         ]]>
     </select>
+
+<!--    에러 인서트 -->
+    <select id="insertError" parameterType="com.example.first.dto.ErrorDto" >
+        INSERT INTO postgres.first_project.error (username, nickname, error_time, error_type, error_message)
+        VALUES ( #{username}, #{nickname}, #{errorTime}, #{errorType}, #{errorMessage})
+    </select>
+
+
 </mapper>

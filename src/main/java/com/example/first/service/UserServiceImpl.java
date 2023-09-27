@@ -276,8 +276,8 @@ public class UserServiceImpl implements UserService{
 //        return homeMapper.personalInfo();
 //    }
 
-    @Override
-    public boolean isUsernameUnique(String username) {
-        return homeMapper.isUsernameUnique(username);
-    }
+//    @Override
+//    public boolean isUsernameUnique(String username) {
+//        return homeMapper.isUsernameUnique(username);
+//    }
 }
