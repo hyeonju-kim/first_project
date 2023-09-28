@@ -9,10 +9,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <%-- 스마트 에디터 추가 --%>
+    <%-- smart Editor 위해 추가 --%>
     <script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
-<%--    <script type="text/javascript" src="../../../resources/static/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>--%>
-<%--    <script type="application/javascript" src="/resources/static/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>--%>
 
 </head>
 <body>
@@ -24,10 +22,11 @@
             <input type="text" class="form-control" id="title" name="title" required>
         </div>
         <div class="form-group mt-4">
-            <label for="content"><strong>내용</strong></label>
-            <!-- 스마트 에디터 추가: 에디터를 넣을 위치 -->
+            <label><strong>내용</strong></label>
+
+            <!-- smart Editor 위해 추가 -->
             <div id="smarteditor">
-                <textarea name="content" id="content" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 500px"></textarea>
+                <textarea name="content" id="editorTxt" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 500px"></textarea>
             </div>
         </div>
         <div class="form-group mt-4">
@@ -45,7 +44,8 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-4">게시글 생성</button>
+        <!-- smart Editor 위해 추가 ( onclick="submitPost();" 부분만)-->
+        <button type="submit" onclick="submitPost();" class="btn btn-primary mt-4">게시글 생성</button>
     </form>
 </div>
 
@@ -100,6 +100,7 @@
     }
 
 
+    // smart Editor 위해 추가
     // 4. 스마트 에디터 설정 함수
     let oEditors = [];
 
@@ -110,17 +111,33 @@
         nhn.husky.EZCreator.createInIFrame({
             oAppRef: oEditors,
             // 에디터를 넣을 위치의 textarea의 id를 지정
-            elPlaceHolder: "content",
+            elPlaceHolder: "editorTxt",
             // 스킨 파일의 경로 (static 폴더 하위 경로로 설정)
             sSkinURI: "/smarteditor/SmartEditor2Skin.html",
             fCreator: "createSEditor2"
         });
     }
 
+    // smart Editor 위해 추가
     // 문서가 준비되면 스마트 에디터 설정 함수 호출
     $(document).ready(function() {
         smartEditor();
     });
+
+    // smart Editor 위해 추가
+    // 5. 에디터에 입력한 내용 가져오기
+    function submitPost() {
+        oEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", [])
+        let content = document.getElementById("editorTxt").value
+
+        if(content == '') {
+            alert("내용을 입력해주세요.")
+            oEditors.getById["editorTxt"].exec("FOCUS")
+            return
+        } else {
+            console.log(content)
+        }
+    }
 </script>
 
 </body>
