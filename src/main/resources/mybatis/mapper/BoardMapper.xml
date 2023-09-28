@@ -70,10 +70,10 @@
         RETURNING board_id;
     </select>
 
-    <!--멀티파일 업로드 (단일) -->
+    <!--멀티파일 업로드 (단일) - 반복문 돌면서 저장할 때 필요함 -->
     <select id="storeBoardMultiFile" parameterType="com.example.first.dto.BoardMultiFile" >
-        INSERT INTO postgres.first_project.board_multi_file (board_id, file_name, save_path, reg_date, flag_del, file_ext, username, file_original_name)
-        VALUES ( #{boardId}, #{fileName}, #{savePath}, #{regDate}, #{flagDel}, #{fileExt}, #{username}, #{fileOriginalName})
+        INSERT INTO postgres.first_project.board_multi_file (board_id, file_name, save_path, reg_date, flag_del, file_ext, username, file_original_name, status)
+        VALUES ( #{boardId}, #{fileName}, #{savePath}, #{regDate}, #{flagDel}, #{fileExt}, #{username}, #{fileOriginalName}, #{status})
     </select>
 
     <!-- 멀티파일 업로드 (다중) -->
@@ -264,7 +264,7 @@
           AND status = 'N'
     </select>
 
-    <!-- boardId로 멀티파일 객체 (단일) 가져오기 -->
+    <!-- boardId로 멀티파일 객체 가져오기 -->
     <select id="findBoardMultiFileByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
         SELECT *
         FROM postgres.first_project.board_multi_file
@@ -272,13 +272,13 @@
           AND status = 'N'
     </select>
 
-    <!-- fileId로 멀티파일 객체 가져오기 -->
-    <select id="findBoardMultiFileBySeq" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
-        SELECT *
-        FROM postgres.first_project.board_multi_file
-        WHERE seq = #{fileId}
-          AND status = 'N'
-    </select>
+<!--    &lt;!&ndash; fileId로 멀티파일 객체 가져오기 &ndash;&gt;-->
+<!--    <select id="findBoardMultiFileBySeq" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">-->
+<!--        SELECT *-->
+<!--        FROM postgres.first_project.board_multi_file-->
+<!--        WHERE seq = #{fileId}-->
+<!--          AND status = 'N'-->
+<!--    </select>-->
 
 
 

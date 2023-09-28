@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,6 +33,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/boards")
 @RequiredArgsConstructor
+//@CrossOrigin
 public class BoardController {
     private final BoardService boardService;
     private final BoardMapper boardMapper;
@@ -136,6 +136,7 @@ public class BoardController {
         }
 
         BoardDto boardDto = boardService.getBoardById(boardId);
+        System.out.println("boardDto.getStatus() ============================== " + boardDto.getStatus());
         boardDto.setBoardId(boardId);
 
         System.out.println("boardDto.getUsername() ============================== " + boardDto.getUsername());
@@ -143,6 +144,9 @@ public class BoardController {
 
         // 게시글의 멀티 파일 정보를 가져옵니다.
         List<BoardMultiFile> multiFiles = boardService.getBoardMultiFilesByBoardId(boardId);
+
+        System.out.println("multiFiles.toString() = " + multiFiles.toString());
+        System.out.println("multiFiles.size() = " + multiFiles.size());
 
         model.addAttribute("board", boardDto);
         model.addAttribute("multiFiles", multiFiles); // 멀티 파일 리스트를 모델에 추가합니다.
@@ -216,36 +220,36 @@ public class BoardController {
 
 
     // 글 작성 (단일 멀티파일 업로드)
-    @PostMapping("/create_old")
-    public String createBoardOld(@RequestParam("title") String title,
-                              @RequestParam("content") String content,
-                              @RequestParam("file") MultipartFile file) throws IOException {
-
-        // 내가 업로드 파일을 저장할 경로
-        String originalName = file.getOriginalFilename();
-        String fileName = System.currentTimeMillis() + "_" + originalName;
-
-        // 업로드 할 디렉토리 경로 설정
-        String saveRootPath = "C:\\multifile";
-        // 저장할 파일, 생성자로 경로와 이름을 지정해줌.
-        File saveFile2 = new File(saveRootPath, fileName);
-
-        BoardDto boardDto = new BoardDto(title, content);
-
-        Long boardId = boardService.createBoard(boardDto, file, fileName, originalName);
-        System.out.println(" 보드 컨트롤러 / 글 작성 / boardId = " + boardId);
-
-        try {
-            // void transferTo(File dest) throws IOException 업로드한 파일 데이터를 지정한 파일에 저장
-            file.transferTo(saveFile2);
-            return "redirect:/boards/" + boardId; // 게시글 생성 후 해당 게시글 상세 페이지로 리다이렉트
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            // 파일 업로드 실패 처리를 여기에 추가할 수 있습니다.
-            throw new IOException("파일 업로드 실패 ㅠㅠ");
-        }
-    }
+//    @PostMapping("/create_old")
+//    public String createBoardOld(@RequestParam("title") String title,
+//                              @RequestParam("content") String content,
+//                              @RequestParam("file") MultipartFile file) throws IOException {
+//
+//        // 내가 업로드 파일을 저장할 경로
+//        String originalName = file.getOriginalFilename();
+//        String fileName = System.currentTimeMillis() + "_" + originalName;
+//
+//        // 업로드 할 디렉토리 경로 설정
+//        String saveRootPath = "C:\\multifile";
+//        // 저장할 파일, 생성자로 경로와 이름을 지정해줌.
+//        File saveFile2 = new File(saveRootPath, fileName);
+//
+//        BoardDto boardDto = new BoardDto(title, content);
+//
+//        Long boardId = boardService.createBoard(boardDto, file, fileName, originalName);
+//        System.out.println(" 보드 컨트롤러 / 글 작성 / boardId = " + boardId);
+//
+//        try {
+//            // void transferTo(File dest) throws IOException 업로드한 파일 데이터를 지정한 파일에 저장
+//            file.transferTo(saveFile2);
+//            return "redirect:/boards/" + boardId; // 게시글 생성 후 해당 게시글 상세 페이지로 리다이렉트
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//            // 파일 업로드 실패 처리를 여기에 추가할 수 있습니다.
+//            throw new IOException("파일 업로드 실패 ㅠㅠ");
+//        }
+//    }
 
     // 글 작성 (다중 멀티파일 업로드)
     // 컨트롤러에서 인자로 MultiFileDto 리스트를 받도록 수정

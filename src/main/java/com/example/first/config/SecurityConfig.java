@@ -55,13 +55,20 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.
-                csrf().disable().
-                authorizeRequests()
+                csrf().disable()
+                .headers() // 에디터 적용 위해 추가
+                .frameOptions().sameOrigin()// 에디터 적용 위해 추가
+
+                .and()
+                .authorizeRequests()
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
+
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint);
 
     }
+
+
 }

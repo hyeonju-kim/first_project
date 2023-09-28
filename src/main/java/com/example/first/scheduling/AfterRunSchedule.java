@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AfterRun {
+public class AfterRunSchedule {
     private final HomeMapper homeMapper;
 
     // 매일 자정마다 모든 유저의 마지막 로그인 시간을 불러와서 , 60일이 지난 경우 휴면처리(status = "N") 한다.
@@ -47,12 +47,11 @@ public class AfterRun {
                 System.out.println("secondsElapsed (미 접속 시간) ================= " + secondsElapsed);
 
                 // 미접속 기간이 60일 이상인지 확인
-                if (secondsElapsed >= 600) { // 10분(600초)  // 60일을 초로 계산 (60*60*24*60)
+                if (secondsElapsed >= 600) { // 100분(6000초)  // 60일을 초로 계산 (60*60*24*60)
                     // 휴면 처리 로직을 실행
                     homeMapper.updateUserStatusToN(user);
                     System.out.println( "================"+ user.getNickname() + " 님을 휴면처리 함 ===============");
                 }
-
             }
         }
     }

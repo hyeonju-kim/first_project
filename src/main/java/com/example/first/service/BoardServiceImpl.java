@@ -81,43 +81,43 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 글 작성 (단일 멀티 파일)
-    @Override
-    public Long createBoard(BoardDto boardDto, MultipartFile file, String fileName, String originalName) throws IOException {
-
-        String savePath =  "C:\\multifile\\" + fileName;
-        String fileExt = getFileExtension(fileName);
-
-        // 현재 시간 지정
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String regDate = now.format(formatter);
-        boardDto.setCreatedAt(regDate);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        System.out.println(" 보드 서비스 임플 / 글 작성 - authentication =  " + authentication);
-        System.out.println(" 보드 서비스 임플 / 글 작성 - authentication.getName() =  " + authentication.getName());
-
-        UserDto user = homeMapper.findByUsername(username);
-        String nickname = user.getNickname();
-        System.out.println(" 보드 서비스 임플 / 글 작성 - nickname =  " + nickname);
-
-        boardDto.setNickname(nickname);
-        boardDto.setUsername(username);
-        boardDto.setFileLocation(savePath);
-        boardDto.setFileOriginalName(originalName);
-
-        Long boardId = boardMapper.createBoard(boardDto);
-
-        BoardMultiFile boardMultiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
-        String s = boardMapper.storeBoardMultiFile(boardMultiFile);
-
-        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / boardId =  " + boardId);
-        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / picture.getFileName()=  " + boardMultiFile.getFileName());
-
-        return boardId;
-    }
+//    @Override
+//    public Long createBoard(BoardDto boardDto, MultipartFile file, String fileName, String originalName) throws IOException {
+//
+//        String savePath =  "C:\\multifile\\" + fileName;
+//        String fileExt = getFileExtension(fileName);
+//
+//        // 현재 시간 지정
+//        LocalDateTime now = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        String regDate = now.format(formatter);
+//        boardDto.setCreatedAt(regDate);
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//
+//        System.out.println(" 보드 서비스 임플 / 글 작성 - authentication =  " + authentication);
+//        System.out.println(" 보드 서비스 임플 / 글 작성 - authentication.getName() =  " + authentication.getName());
+//
+//        UserDto user = homeMapper.findByUsername(username);
+//        String nickname = user.getNickname();
+//        System.out.println(" 보드 서비스 임플 / 글 작성 - nickname =  " + nickname);
+//
+//        boardDto.setNickname(nickname);
+//        boardDto.setUsername(username);
+//        boardDto.setFileLocation(savePath);
+//        boardDto.setFileOriginalName(originalName);
+//
+//        Long boardId = boardMapper.createBoard(boardDto);
+//
+//        BoardMultiFile boardMultiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
+//        String s = boardMapper.storeBoardMultiFile(boardMultiFile);
+//
+//        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / boardId =  " + boardId);
+//        System.out.println(" 보드 서비스 임플 / 글 작성 - boardMapper.createBoard(boardDto) / picture.getFileName()=  " + boardMultiFile.getFileName());
+//
+//        return boardId;
+//    }
 
     // 글 작성 (다중 멀티 파일)
     @Override
@@ -160,6 +160,8 @@ public class BoardServiceImpl implements BoardService {
 
 
                         BoardMultiFile multiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
+                        System.out.println("multiFile.getStatus() =============== " + multiFile.getStatus());
+
                         boardMapper.storeBoardMultiFile(multiFile);
 
                     } catch (IOException e) {
