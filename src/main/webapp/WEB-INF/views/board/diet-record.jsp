@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -10,7 +10,7 @@
     <title>식단 기록</title>
 
     <!-- FullCalendar 스타일 시트 및 스크립트 로드 -->
-    <link href="/fullcalendar/main.css" rel="stylesheet" />
+    <link href="/fullcalendar/main.css" rel="stylesheet"/>
     <script src="/fullcalendar/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
@@ -27,17 +27,21 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <!-- 달력을 표시할 div 요소 -->
-<%--            <div id="calendar"></div>--%>
+            <%--            <div id="calendar"></div>--%>
         </div>
     </div>
 
-    <c:set var="dietResult" value="${dietMap[date]}" />
+    <c:set var="dietResult" value="${dietMap[date]}"/>
     <div id="calendar" data-dietResult="<c:out value="${dietResult}" />"></div>
 </div>
 
 <script>
     // JavaScript로 달력을 생성하고 표시하는 코드
     document.addEventListener('DOMContentLoaded', function () {
+
+
+
+
         var calendarEl = document.getElementById('calendar');
         var dietResult = calendarEl.getAttribute('data-dietResult'); // 데이터 속성에서 dietResult 값을 읽어옴
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -83,9 +87,8 @@
                 var dietResult = '<c:out value="${dietMap[' + formattedDate + ']}" />';
 
                 var dietResultHtml = '<div class="diet-result">' + dietResult + '</div>';
-                return { html: dateHtml + dietResultHtml };
+                return {html: dateHtml + dietResultHtml};
             },
-
 
 
             // Create new event (달력 숫자 클릭 시, 아침/점심/저녁 정보 입력)
@@ -96,6 +99,7 @@
                            <div class='mt-3'>아침: <input type='number' class='form-control' name='intakeCaloriesMorning' /></div>
                            <div class='mt-3'>점심: <input type='number' class='form-control' name='intakeCaloriesLunch' /></div>
                            <div class='mt-3'>저녁: <input type='number' class='form-control' name='intakeCaloriesDinner' /></div>
+                           <div><img src="/images/calories_table.jpg" alt="식단 테이블" /></div> <!-- 이미지 추가 -->
                             <input type="submit" style="display: none;" /> <!-- Submit 버튼을 숨김 -->
                         </form>`,
                     icon: "info",
@@ -131,17 +135,20 @@
                         calendar.unselect()
                     } else if (result.dismiss === "cancel") {
                         // Swal.fire({
-                            // text: "Event creation was declined!.",
-                            // icon: "error",
-                            // buttonsStyling: false,
-                            // confirmButtonText: "Ok, got it!",
-                            // customClass: {
-                            //     confirmButton: "btn btn-primary",
-                            // }
+                        // text: "Event creation was declined!.",
+                        // icon: "error",
+                        // buttonsStyling: false,
+                        // confirmButtonText: "Ok, got it!",
+                        // customClass: {
+                        //     confirmButton: "btn btn-primary",
+                        // }
                         // });
                     }
                 });
             },
+
+
+
 
 
             // Delete event
@@ -175,13 +182,16 @@
             },
             dayMaxEvents: true, // allow "more" link when too many events
             // 이벤트 객체 필드 document : https://fullcalendar.io/docs/event-object
-            events: [
-            ]
+            events: []
         });
+
+
+
 
         calendar.render();
 
     });
+
 </script>
 </body>
 
