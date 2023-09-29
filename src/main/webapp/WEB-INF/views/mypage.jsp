@@ -59,7 +59,26 @@
                     <label for="detailAdr">상세 주소</label>
                     <input type="text" class="form-control" id="detailAdr" name="detailAdr" value="${user.detailAdr}" readonly>
                 </div>
-
+                <div class="mb-3">
+                    <label for="weight">체중 (kg)</label>
+                    <input type="text" class="form-control" id="weight" name="weight" value="${user.weight}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="height">키 (cm)</label>
+                    <input type="text" class="form-control" id="height" name="height" value="${user.height}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="gender">성별</label>
+                    <input type="text" class="form-control" id="gender" name="gender" value="${user.gender}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="bmi">BMI</label>
+                    <input type="text" class="form-control" id="bmi" name="bmi" value="${user.bmi}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="requiredCalories">필요 섭취 칼로리</label>
+                    <input type="text" class="form-control" id="requiredCalories" name="requiredCalories" value="${user.requiredCalories}" readonly>
+                </div>
 
                 <hr class="mb-4">
                 <div class="text-center">

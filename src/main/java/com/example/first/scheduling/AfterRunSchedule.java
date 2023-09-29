@@ -21,13 +21,13 @@ public class AfterRunSchedule {
 
     // 매일 자정마다 모든 유저의 마지막 로그인 시간을 불러와서 , 60일이 지난 경우 휴면처리(status = "N") 한다.
 
-    @Scheduled(fixedRate = 100000) // 100초
+    @Scheduled(fixedRate = 1000000) // 1000초
     public void inactiveDetector() throws Exception {
         List<UserDto> allUsers = homeMapper.findAllUsers();
 
         // 현재 시간
         LocalDateTime currentTime = LocalDateTime.now();
-        System.out.println("currentTime (현재 시간) =============== " + currentTime);
+//        System.out.println("currentTime (현재 시간) =============== " + currentTime);
 
 
         // TODO 반복분 돌리지말고 쿼리에서 바로 가져오도록 수정 ( )
@@ -40,17 +40,17 @@ public class AfterRunSchedule {
                 Instant lastLoginInstant = lastLoginTimestamp.toInstant();
                 LocalDateTime lastLoginTime = lastLoginInstant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-                System.out.println("lastLoginTime (유저의 마지막 접속 시간) ================ " + lastLoginTime);
+//                System.out.println("lastLoginTime (유저의 마지막 접속 시간) ================ " + lastLoginTime);
 
                 // 두 시간 간격 계산
                 long secondsElapsed = ChronoUnit.SECONDS.between((Temporal) lastLoginTime, currentTime);
-                System.out.println("secondsElapsed (미 접속 시간) ================= " + secondsElapsed);
+//                System.out.println("secondsElapsed (미 접속 시간) ================= " + secondsElapsed);
 
                 // 미접속 기간이 60일 이상인지 확인
                 if (secondsElapsed >= 600) { // 100분(6000초)  // 60일을 초로 계산 (60*60*24*60)
                     // 휴면 처리 로직을 실행
                     homeMapper.updateUserStatusToN(user);
-                    System.out.println( "================"+ user.getNickname() + " 님을 휴면처리 함 ===============");
+//                    System.out.println( "================"+ user.getNickname() + " 님을 휴면처리 함 ===============");
                 }
             }
         }

@@ -1,10 +1,7 @@
 package com.example.first.controller;
 
 
-import com.example.first.dto.BoardDto;
-import com.example.first.dto.BoardMultiFile;
-import com.example.first.dto.CommentDto;
-import com.example.first.dto.UserDto;
+import com.example.first.dto.*;
 import com.example.first.mapper.BoardMapper;
 import com.example.first.mapper.HomeMapper;
 import com.example.first.service.BoardService;
@@ -26,7 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -40,29 +40,46 @@ public class BoardController {
     private final HomeMapper homeMapper;
     private final FileUtils fileUtils;
 
+    public String getUsername() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
 
-//    // 게시판 글 조회 1 - 기본
-//    @GetMapping
-//    public String getAllBoards(Model model) {
-//        List<BoardDto> boards = boardService.getAllBoards();
-//
-//
-//        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards = " + boards);
-//        System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - boards.size() = " + boards.size());
-//
-//        for (BoardDto board : boards) {
-//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getBoardId() ::" + board.getBoardId());
-//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getTitle() ::" + board.getTitle());
-//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getContent() ::" + board.getContent());
-//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
-//        }
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//
-//        model.addAttribute("boards", boards);
-//        return "board"; // "board/list"는 게시판 목록을 보여줄 JSP 페이지 경로입니다.
-//    }
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return username;
+    }
+
+    public UserDto getUserDto() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
+
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return userDto;
+    }
+
 
     // 게시판 글 조회 (페이징 처리 된)
     @GetMapping
@@ -78,12 +95,12 @@ public class BoardController {
         System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - currentPage = " + currentPage);
         System.out.println(" 보드 컨트롤러 / 게시판 글목록 조회 - totalPages = " + totalPages);
 
-        for (BoardDto board : boards) {
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getBoardId() ::" + board.getBoardId());
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getTitle() ::" + board.getTitle());
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getContent() ::" + board.getContent());
-            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
-        }
+//        for (BoardDto board : boards) {
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getBoardId() ::" + board.getBoardId());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getTitle() ::" + board.getTitle());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getContent() ::" + board.getContent());
+//            System.out.println("보드 컨트롤러 / 글목록 for문 - board.getCreatedAt() ::" + board.getCreatedAt());
+//        }
 
         // 현재 로그인한 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -210,46 +227,6 @@ public class BoardController {
         return "board/create"; // 로그인한 사용자에게는 글 작성 폼을 보여줄 JSP 페이지 경로
     }
 
-    // 글 작성
-//    @ResponseBody
-//    @PostMapping("/create")
-//    public String createBoard(@RequestBody BoardDto boardDto) {
-//        Long boardId = boardService.createBoard(boardDto);
-//        return "redirect:/boards/" + boardId; // 게시글 생성 후 해당 게시글 상세 페이지로 리다이렉트합니다.
-//    }
-
-
-    // 글 작성 (단일 멀티파일 업로드)
-//    @PostMapping("/create_old")
-//    public String createBoardOld(@RequestParam("title") String title,
-//                              @RequestParam("content") String content,
-//                              @RequestParam("file") MultipartFile file) throws IOException {
-//
-//        // 내가 업로드 파일을 저장할 경로
-//        String originalName = file.getOriginalFilename();
-//        String fileName = System.currentTimeMillis() + "_" + originalName;
-//
-//        // 업로드 할 디렉토리 경로 설정
-//        String saveRootPath = "C:\\multifile";
-//        // 저장할 파일, 생성자로 경로와 이름을 지정해줌.
-//        File saveFile2 = new File(saveRootPath, fileName);
-//
-//        BoardDto boardDto = new BoardDto(title, content);
-//
-//        Long boardId = boardService.createBoard(boardDto, file, fileName, originalName);
-//        System.out.println(" 보드 컨트롤러 / 글 작성 / boardId = " + boardId);
-//
-//        try {
-//            // void transferTo(File dest) throws IOException 업로드한 파일 데이터를 지정한 파일에 저장
-//            file.transferTo(saveFile2);
-//            return "redirect:/boards/" + boardId; // 게시글 생성 후 해당 게시글 상세 페이지로 리다이렉트
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//            // 파일 업로드 실패 처리를 여기에 추가할 수 있습니다.
-//            throw new IOException("파일 업로드 실패 ㅠㅠ");
-//        }
-//    }
 
     // 글 작성 (다중 멀티파일 업로드)
     // 컨트롤러에서 인자로 MultiFileDto 리스트를 받도록 수정
@@ -396,4 +373,42 @@ public class BoardController {
 
         return "redirect:/boards/" + boardId; // 대댓글 추가 후 게시글 상세 페이지로 리다이렉트
     }
+
+    // ========= 다이어트 레코드 ==============
+    @GetMapping ("/diet-record")
+    public String dietRecord(Model model) {
+
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+        List<DietDto> dietDtoList = boardMapper.findDietListByUsername(username);
+        System.out.println("dietDtoList.size() = " + dietDtoList.size());
+
+        Map<LocalDate, String> map = new HashMap<>();
+        for (DietDto dietDto : dietDtoList) {
+            System.out.println("dietDto.getIntakeDate() = " + dietDto.getIntakeDate());
+            System.out.println("dietDto.getIntakeResult() = " + dietDto.getIntakeResult());
+            map.put(dietDto.getIntakeDate(), dietDto.getIntakeResult());
+        }
+
+        model.addAttribute("dietMap", map);
+        model.addAttribute("role", userDto.getRole());
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+
+        return "board/diet-record";
+    }
+
+    @PostMapping ("/diet-record")
+    public String dietRecord(DietDto dietDto) {
+        System.out.println("dietDto.getIntakeCaloriesMorning() = " + dietDto.getIntakeCaloriesMorning());
+        System.out.println("dietDto.getIntakeCaloriesLunch() = " + dietDto.getIntakeCaloriesLunch());
+        System.out.println("dietDto.getIntakeCaloriesDinner() = " + dietDto.getIntakeCaloriesDinner());
+
+
+        DietDto dto = new DietDto(dietDto.getIntakeCaloriesMorning(), dietDto.getIntakeCaloriesLunch(), dietDto.getIntakeCaloriesDinner());
+        boardService.insertDietRecord(dietDto);
+
+        return "board/diet-record";
+    }
+
 }

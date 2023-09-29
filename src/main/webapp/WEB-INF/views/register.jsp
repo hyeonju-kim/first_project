@@ -45,7 +45,6 @@
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
-<%--            <form  method="post">--%>
             <form class="validation-form" novalidate onsubmit="return register();">
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -81,7 +80,6 @@
 
                 <div class="mb-3">
                     <label for="username">이메일</label>
-<%--                    인증하기 버튼을 누르면 작성한 email이 사라지는 것을 방지하기 위해 readonly 추가 --%>
                     <input type="email" class="form-control" id="username" placeholder="weaver123@example.com" required >
                     <span id="usernameError" style="color: red;"></span>
                 </div>
@@ -125,8 +123,30 @@
                         이미지 파일을 업로드해주세요.
                     </div>
                 </div>
-
-
+                <!-- 키, 몸무게, 성별 추가 -->
+                <div class="mb-3">
+                    <label for="height">키 (cm)</label>
+                    <input type="number" class="form-control" id="height" placeholder="키 (cm)" required>
+                </div>
+                <div class="mb-3">
+                    <label for="weight">몸무게 (kg)</label>
+                    <input type="number" class="form-control" id="weight" placeholder="몸무게 (kg)" required>
+                </div>
+                <div class="mb-3">
+                    <label>성별</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+                        <label class="form-check-label" for="male">
+                            남자
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                        <label class="form-check-label" for="female">
+                            여자
+                        </label>
+                    </div>
+                </div>
 
 
                 <!-- 관리자 체크박스 -->
@@ -139,24 +159,6 @@
                     </div>
                 </div>
 
-
-
-
-
-<%--                <div class="mb-3">--%>
-<%--                    <label for="address">주소</label>--%>
-<%--                    <input type="text" class="form-control" id="address" placeholder="서울특별시 강남구" required>--%>
-<%--                    <div class="invalid-feedback">--%>
-<%--                        주소를 입력해주세요.--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-
-<%--                <div class="mb-3">--%>
-<%--                    <label for="address2">상세주소<span class="text-muted">&nbsp;(필수 아님)</span></label>--%>
-<%--                    <input type="text" class="form-control" id="address2" placeholder="상세주소를 입력해주세요.">--%>
-<%--                </div>--%>
-
-
                 <div class="mb-4"></div>
                 <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register(); storeProfilePicture()">가입 완료</button>
 
@@ -167,210 +169,213 @@
         <p class="mb-1">&copy; 2021 YD</p>
     </footer>
 </div>
+<!-- Bootstrap JS (팝업 메시지 등을 위해 필요) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXnALea6EFD5E/5O5w5Pj5Bf5"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYlT"
+        crossorigin="anonymous"></script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-
-    // 1. 😊 유효성 검사 로직
-    // window.addEventListener('load', () => {
-    //     const forms = document.getElementsByClassName('validation-form');
-    //
-    //     Array.prototype.filter.call(forms, (form) => {
-    //         form.addEventListener('submit', function (event) {
-    //             if (form.checkValidity() === false) {
-    //                 event.preventDefault();
-    //                 event.stopPropagation();
-    //             }
-    //
-    //             form.classList.add('was-validated');
-    //         }, false);
-    //     });
-    // }, false);
-
     // 1. 😊 가입완료 메서드
     function register() {
-            // e.preventDefault(); // 폼 제출 방지
+        // e.preventDefault(); // 폼 제출 방지
 
-            // 1. 여기서 내가 화면에서 post 로 입력하는 정보를 하나하나 가져오기
-            var name = $('#name').val()
-            var nickname = $('#nickname').val()
-            var username = $('#username').val()
-            var password = $('#password').val()
-            var passwordConfirm = $('#passwordConfirm').val()
-            var phoneNumber = $('#phoneNumber').val()
-            var zipcode = $('#zipcode').val()
-            var streetAdr = $('#streetAdr').val()
-            var detailAdr = $('#detailAdr').val()
-            var authNumber = $('#authNumber').val()
-            var role = $('#role').val()
+        // 1. 여기서 내가 화면에서 post 로 입력하는 정보를 하나하나 가져오기
+        var name = $('#name').val()
+        var nickname = $('#nickname').val()
+        var username = $('#username').val()
+        var password = $('#password').val()
+        var passwordConfirm = $('#passwordConfirm').val()
+        var phoneNumber = $('#phoneNumber').val()
+        var zipcode = $('#zipcode').val()
+        var streetAdr = $('#streetAdr').val()
+        var detailAdr = $('#detailAdr').val()
+        var authNumber = $('#authNumber').val()
+        var role = $('#role').val()
+        var weight = $('#weight').val()
+        var height = $('#height').val()
+        var gender = document.querySelector('input[name="gender"]:checked').value;
 
-            console.log(name);
-            console.log(nickname);
-            console.log(username);
-            console.log(password);
-            console.log(passwordConfirm);
-            console.log(phoneNumber);
-            console.log(zipcode);
-            console.log(streetAdr);
-            console.log(detailAdr);
-            console.log(authNumber);
-            console.log(role);
+        console.log(name);
+        console.log(nickname);
+        console.log(username);
+        console.log(password);
+        console.log(passwordConfirm);
+        console.log(phoneNumber);
+        console.log(zipcode);
+        console.log(streetAdr);
+        console.log(detailAdr);
+        console.log(authNumber);
+        console.log(role);
+        console.log(weight);
+        console.log(height);
+        console.log(gender);
 
-            // 2. 유효성 검사
+        // 2. 유효성 검사
 
-            // 각 필드의 유효성을 검사합니다.
-            var isValid = true;
+        // 각 필드의 유효성을 검사합니다.
+        var isValid = true;
 
-            // 비밀번호가 8~16자 영문, 숫자, 특수문자를 사용하도록 검증
-            var passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
+        // 비밀번호가 8~16자 영문, 숫자, 특수문자를 사용하도록 검증
+        var passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
 
-            if (!passwordRegex.test(password)) {
-                alert('비밀번호는 8~16자 영문, 숫자, 특수문자를 사용해야 합니다.');
-                return;
-            }
+        if (!passwordRegex.test(password)) {
+            alert('비밀번호는 8~16자 영문, 숫자, 특수문자를 사용해야 합니다.');
+            return;
+        }
 
-            // 비밀번호 확인 유효성 검사
-            if (passwordConfirm.trim() === "") {
-                $("#passwordConfirmError").text("비밀번호 확인을 입력하세요.");
-                isValid = false;
-            } else if (password !== passwordConfirm) {
-                $("#passwordConfirmError").text("비밀번호가 일치하지 않습니다.");
-                isValid = false;
-            } else {
-                $("#passwordConfirmError").text("");
-            }
+        // 비밀번호 확인 유효성 검사
+        if (passwordConfirm.trim() === "") {
+            $("#passwordConfirmError").text("비밀번호 확인을 입력하세요.");
+            isValid = false;
+        } else if (password !== passwordConfirm) {
+            $("#passwordConfirmError").text("비밀번호가 일치하지 않습니다.");
+            isValid = false;
+        } else {
+            $("#passwordConfirmError").text("");
+        }
 
-            // 이름 유효성 검사
-            if (name.trim() === "") {
-                $("#nameError").text("이름을 입력하세요.");
-                isValid = false;
-            } else {
-                $("#nameError").text("");
-            }
+        // 이름 유효성 검사
+        if (name.trim() === "") {
+            $("#nameError").text("이름을 입력하세요.");
+            isValid = false;
+        } else {
+            $("#nameError").text("");
+        }
 
-            // 이메일 유효성 검사 (이메일 형식 체크)
-            var emailPattern = /^(?:\w+\.?)*\w+@(?:\w+\.)+\w+$/;
-            if (!emailPattern.test(username)) {
-                $("#usernameError").text("올바른 이메일 형식이 아닙니다.");
-                isValid = false;
-            } else {
-                $("#usernameError").text("");
-            }
+        // 이메일 유효성 검사 (이메일 형식 체크)
+        var emailPattern = /^(?:\w+\.?)*\w+@(?:\w+\.)+\w+$/;
+        if (!emailPattern.test(username)) {
+            $("#usernameError").text("올바른 이메일 형식이 아닙니다.");
+            isValid = false;
+        } else {
+            $("#usernameError").text("");
+        }
 
-            // 닉네임 유효성 검사
-            var nicknamePattern = /^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/;
-            if (!nicknamePattern.test(nickname)) {
-                $("#nicknameError").text("닉네임은 특수문자를 제외한 2~10자리여야 합니다.");
-                isValid = false;
-            } else {
-                $("#nicknameError").text("");
-            }
+        // 닉네임 유효성 검사
+        var nicknamePattern = /^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/;
+        if (!nicknamePattern.test(nickname)) {
+            $("#nicknameError").text("닉네임은 특수문자를 제외한 2~10자리여야 합니다.");
+            isValid = false;
+        } else {
+            $("#nicknameError").text("");
+        }
 
-            // 휴대폰 번호 유효성 검사
-            if (phoneNumber.trim() === "") {
-                $("#phoneNumberError").text("휴대폰 번호를 입력하세요.");
-                isValid = false;
-            } else {
-                $("#phoneNumberError").text("");
-            }
+        // 휴대폰 번호 유효성 검사
+        if (phoneNumber.trim() === "") {
+            $("#phoneNumberError").text("휴대폰 번호를 입력하세요.");
+            isValid = false;
+        } else {
+            $("#phoneNumberError").text("");
+        }
 
+        // 키, 몸무게, 성별 유효성 검사
+        if (!height || isNaN(height) || !weight || isNaN(weight) || !gender) {
+            alert('키, 몸무게, 성별을 올바르게 입력하세요.');
+            return false;
+        }
 
+        if (!isValid) {
+            // 유효성 검사에 실패한 경우 경고 메시지만 표시하고 폼을 서버로 제출하지 않음
+            return;
+        }
 
-            if (!isValid) {
-                // 유효성 검사에 실패한 경우 경고 메시지만 표시하고 폼을 서버로 제출하지 않음
-                return;
-            }
+        // 3. 가져온 정보를 data로 묶기
+        let fileInput = $("input[name=uploadFile]")[0];
+        let fileObj = fileInput.files[0];
 
-           // 3. 가져온 정보를 data로 묶기
-            let fileInput = $("input[name=uploadFile]")[0];
-            let fileObj = fileInput.files[0];
+        let data = {
+            "name" : name,
+            "nickname" : nickname,
+            "username" : username,
+            "password" : password,
+            "passwordConfirm" : passwordConfirm,
+            "phoneNumber" : phoneNumber,
+            "profilePicture" : this.profilePicture,
+            "zipcode" : zipcode,
+            "streetAdr" : streetAdr,
+            "detailAdr" : detailAdr,
+            "authNumber" : authNumber,
+            "role" : role,
+            "height": height,
+            "weight": weight,
+            "gender": gender
+        }
 
-            let data = {
-                "name" : name,
-                "nickname" : nickname,
-                "username" : username,
-                "password" : password,
-                "passwordConfirm" : passwordConfirm,
-                "phoneNumber" : phoneNumber,
-                "profilePicture" : this.profilePicture,
-                "zipcode" : zipcode,
-                "streetAdr" : streetAdr,
-                "detailAdr" : detailAdr,
-                "authNumber" : authNumber,
-                "role" : role
-            }
+        if (fileObj) {
+            let formData = new FormData();
+            formData.append("uploadFile", fileObj);
 
-            if (fileObj) {
-                let formData = new FormData();
-                formData.append("uploadFile", fileObj);
+            console.log("fileObj: " + fileObj);
+            console.log("fileObj.name: " + fileObj.name);
+            console.log("fileObj.size: " + fileObj.size);
+            console.log("fileObj.type: " + fileObj.type);
 
-                console.log("fileObj: " + fileObj);
-                console.log("fileObj.name: " + fileObj.name);
-                console.log("fileObj.size: " + fileObj.size);
-                console.log("fileObj.type: " + fileObj.type);
-
-                $.ajax({
-                    url: '/upload-profilePicture',
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    type: 'POST',
-                    // dataType: 'json',
-                    success: function (response) {
-                        console.log(response);
-                        // 파일 업로드 성공 처리를 추가할 수 있습니다.
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                        // 파일 업로드 실패 처리를 추가할 수 있습니다.
-                    }
-                });
-            }
-
-            // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
             $.ajax({
+                url: '/upload-profilePicture',
+                processData: false,
+                contentType: false,
+                data: formData,
                 type: 'POST',
-                url: '/register', // 가입완료 버튼을 누르면 이 URL로 매핑!!! 마지막에 가는게xx
-
-                // 사용자가 입력한 정보들이 위에 변수로 수집되고, 그 정보는 아래의 data라는 객체에 저장된다.
-                // 이 객체는 json 데이터형식을 가지며, 각 입력필드의 값을 해당 필드의 이름으로 매핑한다!!
-                // 이 요청은 /register url로 보내지며, 서버의 컨트롤러 중에 @PostMappling("/register")가 달린 메소드가 호출된다.
-                // 이 메서드는 json형식의 데이터인 'userDto' 객체를 파라미터로 받는다.
-
-                data: JSON.stringify(data),
-                contentType: 'application/json', // JSON 형식의 데이터를 전송
-                success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
-                    console.log(response); //응답 body부 데이터
-                    console.log(status); //"succes"로 고정인듯함
-                    console.log(xhr);
-                    if (xhr.status === 200) {
-                        // 서버 응답의 상태 코드가 200일 때만 실행
-                        alert('가입이 완료되었습니다!');
-                        location.href = "/login";
-                    } else {
-                        // 가입 실패 처리
-                        alert('서버에서 오류가 발생했습니다.');
-                    }
+                // dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    // 파일 업로드 성공 처리를 추가할 수 있습니다.
                 },
-                error: function (response, status, xhr) {
-                    // 서버 요청 실패 시 실행
-                    console.log('실패했다...')
-                    console.log(response); //응답 body부 데이터
-
-                    alert('서버 요청 실패');
+                error: function (xhr, status, error) {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                    // 파일 업로드 실패 처리를 추가할 수 있습니다.
                 }
             });
+        }
 
-            return true;
+        // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
+        $.ajax({
+            type: 'POST',
+            url: '/register', // 가입완료 버튼을 누르면 이 URL로 매핑!!! 마지막에 가는게xx
 
-            // // 5. 모든 필드가 유효한 경우 폼을 서버로 제출할 수 있습니다.
-            // if (isValid) {
-            //     $("#registrationForm")[0].submit();
-            // }
+            // 사용자가 입력한 정보들이 위에 변수로 수집되고, 그 정보는 아래의 data라는 객체에 저장된다.
+            // 이 객체는 json 데이터형식을 가지며, 각 입력필드의 값을 해당 필드의 이름으로 매핑한다!!
+            // 이 요청은 /register url로 보내지며, 서버의 컨트롤러 중에 @PostMappling("/register")가 달린 메소드가 호출된다.
+            // 이 메서드는 json형식의 데이터인 'userDto' 객체를 파라미터로 받는다.
+
+            data: JSON.stringify(data),
+            contentType: 'application/json', // JSON 형식의 데이터를 전송
+            success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
+                console.log(response); //응답 body부 데이터
+                console.log(status); //"succes"로 고정인듯함
+                console.log(xhr);
+                if (xhr.status === 200) {
+                    // 서버 응답의 상태 코드가 200일 때만 실행
+                    alert('가입이 완료되었습니다!');
+                    location.href = "/login";
+                } else {
+                    // 가입 실패 처리
+                    alert('서버에서 오류가 발생했습니다.');
+                }
+            },
+            error: function (response, status, xhr) {
+                // 서버 요청 실패 시 실행
+                console.log('실패했다...')
+                console.log(response); //응답 body부 데이터
+
+                alert('서버 요청 실패');
+            }
+        });
+
+        return true;
+
+        // // 5. 모든 필드가 유효한 경우 폼을 서버로 제출할 수 있습니다.
+        // if (isValid) {
+        //     $("#registrationForm")[0].submit();
+        // }
     }
 
     // 파일 업로드 메소드

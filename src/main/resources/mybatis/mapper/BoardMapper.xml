@@ -34,11 +34,16 @@
         <result property="fileOriginalName" column="file_original_name"/>
     </resultMap>
 
-    <!-- 게시글 목록 조회 쿼리 -->
-<!--    <select id="getAllBoards" resultType="com.example.first.dto.BoardDto" resultMap="boardResultMap">-->
-<!--        SELECT * FROM postgres.first_project.boards-->
-<!--        ORDER BY created_at DESC;-->
-<!--    </select>-->
+    <resultMap id="DietResultMap" type="com.example.first.dto.DietDto">
+        <id property="seq" column="seq"/>
+        <result property="foodName" column="food_name"/>
+        <result property="intakeCaloriesMorning" column="intake_calories_morning"/>
+        <result property="intakeCaloriesLunch" column="intake_calories_lunch"/>
+        <result property="intakeCaloriesDinner" column="intake_calories_dinner"/>
+        <result property="intakeCaloriesSnack" column="intake_calories_snack"/>
+        <result property="intakeDate" column="intake_date"/>
+        <result property="intakeResult" column="intake_result"/>
+    </resultMap>
 
 
 <!--    페이지 별 게시판 글목록 조회-->
@@ -264,7 +269,7 @@
           AND status = 'N'
     </select>
 
-    <!-- boardId로 멀티파일 객체 가져오기 -->
+    <!-- boardId로 멀티파일 객체 리스트 가져오기 -->
     <select id="findBoardMultiFileByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
         SELECT *
         FROM postgres.first_project.board_multi_file
@@ -272,13 +277,28 @@
           AND status = 'N'
     </select>
 
-<!--    &lt;!&ndash; fileId로 멀티파일 객체 가져오기 &ndash;&gt;-->
-<!--    <select id="findBoardMultiFileBySeq" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">-->
-<!--        SELECT *-->
-<!--        FROM postgres.first_project.board_multi_file-->
-<!--        WHERE seq = #{fileId}-->
-<!--          AND status = 'N'-->
-<!--    </select>-->
+    <!-- fileId로 멀티파일 객체 가져와서 다운로드 (게시물에서 클릭 시 )-->
+    <select id="findBoardMultiFileBySeq" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
+        SELECT *
+        FROM postgres.first_project.board_multi_file
+        WHERE seq = #{fileId}
+          AND status = 'N'
+    </select>
+
+    <!-- 식이 저장 쿼리 -->
+    <select id="insertDietRecord" parameterType="com.example.first.dto.DietDto" >
+        INSERT INTO postgres.first_project.diet (food_name, intake_calories_morning, intake_calories_lunch, intake_calories_dinner , intake_calories_snack , intake_date, intake_result, username )
+        VALUES (#{foodName}, #{intakeCaloriesMorning}, #{intakeCaloriesLunch}, #{intakeCaloriesDinner}, #{intakeCaloriesSnack}, #{intakeDate}, #{intakeResult}, #{username})
+    </select>
+
+    <!-- username으로 모든 식이 리스트 가져오기 -->
+    <select id="findDietListByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.DietDto" resultMap="DietResultMap">
+        SELECT *
+        FROM postgres.first_project.diet
+        WHERE username = #{username}
+    </select>
+
+
 
 
 

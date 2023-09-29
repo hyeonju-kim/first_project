@@ -15,6 +15,19 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/boards">자유게시판</a>
                         </li>
+
+                        <!-- 사용자 역할이 "user"인 경우에만 아래 메뉴 표시 -->
+                        <c:if test="${role == 'user'}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/boards/diet-record">식단 기록</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/boards/statistics">통계</a>
+                            </li>
+                        </c:if>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/boards/rank">랭킹</a>
+                        </li>
                         <!-- 사용자 역할이 "admin"인 경우에만 아래 메뉴 표시 -->
                         <c:if test="${role == 'admin'}">
                             <li class="nav-item">
@@ -25,6 +38,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/menu">메뉴 관리</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/error">에러</a>
                             </li>
                         </c:if>
                     </ul>

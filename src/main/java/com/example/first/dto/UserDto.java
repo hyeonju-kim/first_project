@@ -49,6 +49,14 @@ public class UserDto {
 
     private String status = "Y"; // 60일 이상일 시, N(휴면계정)으로 전환
 
+    private double weight;
+    private double height;
+    private String gender;
+    private double bmi;
+    private double requiredCalories;
+
+//    private List<DietDto> dietDtoList;
+
 
     public UserDto(String name, String username, String nickname, String phoneNumber, String zipcode, String streetAdr, String detailAdr, String regDate) {
         this.name = name;

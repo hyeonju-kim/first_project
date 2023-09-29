@@ -19,7 +19,7 @@
     <form action="/boards/create" method="post" enctype="multipart/form-data">
         <div class="form-group mt-4">
             <label for="title"><strong>제목</strong></label>
-            <input type="text" class="form-control" id="title" name="title" required>
+            <input type="text" class="form-control" id="title" name="title"  required>
         </div>
         <div class="form-group mt-4">
             <label><strong>내용</strong></label>

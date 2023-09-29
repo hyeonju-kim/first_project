@@ -22,6 +22,7 @@
     <result property="detailAdr" column="detail_adr"/>
     <result property="regDate" column="reg_date"/>
     <result property="lastLoginDate" column="last_login_date"/>
+    <result property="requiredCalories" column="required_calories"/>
 </resultMap>
 
 
@@ -34,8 +35,8 @@
 
     <!--회원가입-->
     <select id="signUp" parameterType="com.example.first.dto.UserDto" resultType="com.example.first.dto.UserDto"  resultMap="userResultMap">
-        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location, zipcode, street_adr, detail_adr, role, reg_date)
-        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode}, #{streetAdr}, #{detailAdr}, #{role}, #{regDate})
+        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location, zipcode, street_adr, detail_adr, role, reg_date, weight, height, gender, bmi, required_calories)
+        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode}, #{streetAdr}, #{detailAdr}, #{role}, #{regDate}, #{weight}, #{height}, #{gender}, #{bmi}, #{requiredCalories})
     </select>
 
     <!--    사용자 메일로 사용자 가져오기-->

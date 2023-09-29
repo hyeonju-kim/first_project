@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -48,6 +49,20 @@ public class UserServiceImpl implements UserService{
             throw new UserException("해당 이메일이 이미 존재합니다.", HttpStatus.BAD_REQUEST, null);
         }
 
+        System.out.println("userDto.getWeight() = " + userDto.getWeight());
+        System.out.println("userDto.getHeight() = " + userDto.getHeight());
+        System.out.println("userDto.getGender() = " + userDto.getGender());
+
+        // BMI 계산
+        double bmi = calculateBMI(userDto.getGender(), userDto.getHeight(), userDto.getWeight());
+        userDto.setBmi(bmi);
+        System.out.println("bmi = " + bmi);
+
+        // 필요 칼로리 계산
+        double requiredCalories = calculateDailyCalories(userDto.getGender(), userDto.getHeight(), userDto.getWeight());
+        userDto.setRequiredCalories(requiredCalories);
+        System.out.println("requiredCalories = " + requiredCalories);
+
         // 가입일 지정
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -64,7 +79,7 @@ public class UserServiceImpl implements UserService{
         System.out.println("인코딩된 비밀번호 : " + encodedPassword);
         System.out.println("인증 번호 : " + userDto.getAuthNumber());
 
-// 관리자 지정
+        // 관리자 지정
         if (userDto.getRole() != null && userDto.getRole().equals("admin")) {
             userDto.setRole("admin");
         } else {
@@ -75,6 +90,47 @@ public class UserServiceImpl implements UserService{
         return homeMapper.signUp(userDto);
 
     }
+
+
+
+    // BMI 계산 공식
+    public static double calculateBMI(String gender, double height, double weight) {
+        double bmi;
+        if (Objects.equals(gender, "male")) {
+            // 남성의 경우 BMI 계산
+            bmi = weight / (height * height) * 10000;
+        } else {
+            // 여성의 경우 BMI 계산 (여성의 경우 평균적으로 체지방률이 조금 높기 때문에 상수를 조정)
+            bmi = weight / (height * height) * 1.1 * 10000;
+        }
+
+        // 소수점 첫째 자리까지 나타냄
+        return Math.round(bmi * 10.0) / 10.0;
+    }
+
+    // 하루 권장 칼로리 계산 (Mifflin-St Jeor Equation 공식을 사용)
+    public static double calculateDailyCalories(String gender, double height, double weight) {
+        double activityLevelFactor = 1.55; // "보통 활동" 활동 수준 계수 가정
+        int age = 30; // 나이를 30세로 가정
+
+        double baseCalories;
+
+        if (Objects.equals(gender, "male")) {
+            baseCalories = 10 * weight + 6.25 * height - 5 * age + 5;
+        } else {
+            baseCalories = 10 * weight + 6.25 * height - 5 * age - 161;
+        }
+
+        // "보통 활동" 활동 수준에 따른 칼로리 계산
+        double requiredCalories = baseCalories * activityLevelFactor;
+
+        // 소수점 첫째 자리까지 나타냄
+        return Math.round(requiredCalories * 10.0) / 10.0;
+    }
+
+
+
+
 
     // 프로필 사진 경로 반환 및 업로드
     public String storeProfilePicture(MultipartFile profilePicture, String fileName, String username, String originalName) throws IOException {

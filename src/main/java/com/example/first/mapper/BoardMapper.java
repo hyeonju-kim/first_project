@@ -3,6 +3,7 @@ package com.example.first.mapper;
 import com.example.first.dto.BoardDto;
 import com.example.first.dto.BoardMultiFile;
 import com.example.first.dto.CommentDto;
+import com.example.first.dto.DietDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -77,7 +78,11 @@ public interface BoardMapper {
     // fileId로 멀티 파일 리스트 가져오기
     List<BoardMultiFile> findBoardMultiFileByBoardId(Long boardId);
 
-    // fileId로 멀티 파일 객체 가져오기
+    //  fileId로 멀티파일 객체 가져와서 다운로드 (게시물에서 클릭 시 )
     BoardMultiFile findBoardMultiFileBySeq(Long fileId);
+
+    void insertDietRecord(DietDto dietDto);
+
+    List<DietDto> findDietListByUsername(String username);
 }
 

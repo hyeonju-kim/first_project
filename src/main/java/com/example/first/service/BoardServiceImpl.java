@@ -1,10 +1,7 @@
 package com.example.first.service;
 
 
-import com.example.first.dto.BoardDto;
-import com.example.first.dto.BoardMultiFile;
-import com.example.first.dto.CommentDto;
-import com.example.first.dto.UserDto;
+import com.example.first.dto.*;
 import com.example.first.mapper.BoardMapper;
 import com.example.first.mapper.HomeMapper;
 import lombok.RequiredArgsConstructor;
@@ -258,9 +255,58 @@ public class BoardServiceImpl implements BoardService {
     }
 
 
+    // fileId로 멀티파일 객체 가져와서 다운로드 (게시물에서 클릭 시 )
     @Override
     public BoardMultiFile findBoardMultiFileBySeq(Long fileId) {
         return boardMapper.findBoardMultiFileBySeq(fileId);
+    }
+
+    // 식단 정보 저장
+    @Override
+    public void insertDietRecord(DietDto dietDto) {
+        String username = "";
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
+
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+
+
+        UserDto userDto = homeMapper.findByUsername(username);
+
+        double requiredCalories = userDto.getRequiredCalories();
+
+        Double intakeCaloriesMorning = dietDto.getIntakeCaloriesMorning();
+        Double intakeCaloriesLunch = dietDto.getIntakeCaloriesLunch();
+        Double intakeCaloriesDinner = dietDto.getIntakeCaloriesDinner();
+        Double totalIntake = intakeCaloriesMorning + intakeCaloriesLunch + intakeCaloriesDinner;
+
+        String intakeResult;
+
+        //하루 권장 칼로리보다 15%이상 많이 섭취하면 과다 , 15% 미만으로 섭취하면 부족, 그 외에는 적정
+        if (totalIntake > requiredCalories * 1.15) {
+            intakeResult = "과다";
+        } else if (totalIntake < requiredCalories * 0.85) {
+            intakeResult = "부족";
+        } else {
+            intakeResult = "적정";
+        }
+
+        dietDto.setIntakeResult(intakeResult);
+        System.out.println("하루 섭취 상태: " + intakeResult);
+        System.out.println("하루 권장 칼로리 :" + requiredCalories);
+        System.out.println("하루에 총 섭취한 칼로리 :" + totalIntake);
+
+        boardMapper.insertDietRecord(dietDto);
     }
 
 

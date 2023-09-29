@@ -50,4 +50,6 @@ public interface BoardService {
 
     // 멀티 파일 객체 가져오기
     BoardMultiFile findBoardMultiFileBySeq(Long fileId);
+
+    void insertDietRecord(DietDto dietDto);
 }
