@@ -424,6 +424,7 @@ public class BoardController {
         model.addAttribute("role", userDto.getRole());
         model.addAttribute("username", username);
         model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("userDto", userDto);
 
         DietDto dietListByUsernameDaily = boardMapper.findDietListByUsernameDaily(username);
         model.addAttribute("dietDaily" , dietListByUsernameDaily);

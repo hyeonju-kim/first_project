@@ -53,9 +53,13 @@
 
             <!-- 차트를 표시할 div -->
             <div id="container" style="height: 400px; margin-top: 20px;"></div>
+            <%-- 적정부족과다 이미지 추가--%>
+            <div class="logo-container  text-center">
+                <img src="/images/적정부족과다.png" alt="적정/부족/과다">
+            </div>
 
-            <!-- 모델에서 담아온 dietWeekList. 자바 객체의 문자열 표현이다. -->
-            <div id="dietWeeklyList" data-diet-weekly-list="${dietWeeklyList}"></div>
+            <!-- 모델에서 담아온 dietWeekList, userDto -->
+            <div id="dietWeeklyList" data-diet-weekly-list="${dietWeeklyList}" data-required-calories="${userDto.requiredCalories}"></div>
 
 
         </div>
@@ -75,6 +79,10 @@
     console.log('리스트를 파싱한 다음에 찍어보자')
     var dietWeeklyList = JSON.parse('${dietWeeklyList}');
     console.log(dietWeeklyList)
+
+    var requiredCalories = $('#dietWeeklyList').data('required-calories');
+    console.log('requiredCalories 는 얼마인가??')
+    console.log(requiredCalories)
 
     // Create an array to hold the chart data
     var chartData = [];
@@ -107,9 +115,21 @@
             yAxis: {
                 title: {
                     text: 'Total Calories'
-                }
+                },
+                plotLines: [{
+                    // 유저의 하루 섭취 필요한 칼로리를 표시하는 가로 선 만들기
+                    color: 'red', // 빨간색
+                    width: 2, // 두께
+                    value: requiredCalories, // 표시할 값 (유저의 하루 섭취 필요한 칼로리)
+                    zIndex: 5, // 다른 그래프와 겹치지 않도록 zIndex 설정
+                    label: {
+                        text: '내가 하루에 섭취해야 할 kcal', // 라벨 텍스트
+                        align: 'right',
+                        x: -10 // 라벨 위치 조정
+                    }
+                }]
             },
-            legend: {
+            legend: { // 범례
                 enabled: false
             },
             plotOptions: {
@@ -117,13 +137,28 @@
                     dataLabels: {
                         enabled: true,
                         format: '{point.y:.0f} kcal'
-                    }
+                    },
+                    colorByPoint: true,
+                    colors: chartData.map(function(item) {
+                        var totalCalories = item.y;
+                        //하루 권장 칼로리보다 15%이상 많이 섭취하면 과다 , 15% 미만으로 섭취하면 부족, 그 외에는 적정
+                        if (totalCalories >= requiredCalories * 1.15) {
+                            return 'purple'; // 2000 칼로리 이상은 보라색
+                        } else if (totalCalories >= requiredCalories * 0.85) {
+                            return 'green'; // 1600 칼로리 이상은 초록색
+                        } else {
+                            return 'red'; // 나머지는 빨간색
+                        }
+                    })
                 }
             },
-            series: [{
+            series: [
+                {
                 data: chartData
-            }]
+                }
+            ]
         });
+
     }
 
     // Call the createChart function to generate the chart
