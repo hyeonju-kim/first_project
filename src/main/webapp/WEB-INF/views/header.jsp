@@ -44,6 +44,7 @@
                             </li>
                         </c:if>
                     </ul>
+
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
                             <c:if test="${not empty username && username != 'anonymousUser'}">
@@ -59,8 +60,14 @@
                             </c:if>
                         </li>
                     </ul>
+
                 </div>
             </nav>
+            <%-- 로고 추가--%>
+            <div class="logo-container  text-center">
+<%--                image앞에 /를 안붙이면 다른 페이지에서 안보임. / 를 붙여서 절대경로임을 나타내야 한다!! --%>
+                <img src="/images/diet-record_logo.png" alt="Diet Record 로고">
+            </div>
         </div>
     </div>
 </div>
@@ -108,6 +115,14 @@
         padding: 5px 10px; /* 내부 여백 설정 */
         border-radius: 10px; /* 둥근 모서리를 위한 설정 */
         display: inline-block; /* 텍스트 크기와 일치하는 너비로 설정 */
+    }
+
+    /* 로고 이미지 크기 조정 스타일 추가 */
+    .logo-container img {
+        max-width: 25%;
+        height: auto;
+        margin-bottom: 10px;
+        margin-top: 20px;
     }
 
 </style>

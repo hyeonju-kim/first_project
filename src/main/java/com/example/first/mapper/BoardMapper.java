@@ -81,8 +81,16 @@ public interface BoardMapper {
     //  fileId로 멀티파일 객체 가져와서 다운로드 (게시물에서 클릭 시 )
     BoardMultiFile findBoardMultiFileBySeq(Long fileId);
 
+    // 식이 관련
     void insertDietRecord(DietDto dietDto);
 
+    // 해당 유저 식이 기록 모두 조회
     List<DietDto> findDietListByUsername(String username);
+
+    // 해당 유저 식이 기록 최근 7일 조회
+    List<DietDto> findDietListByUsernameWeekly(String username);
+
+    // 해당 유저 식이 기록 오늘 것만 조회
+    DietDto findDietListByUsernameDaily(String username);
 }
 

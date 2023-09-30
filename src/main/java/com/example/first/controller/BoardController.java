@@ -6,6 +6,9 @@ import com.example.first.mapper.BoardMapper;
 import com.example.first.mapper.HomeMapper;
 import com.example.first.service.BoardService;
 import com.example.first.utils.FileUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -375,6 +378,7 @@ public class BoardController {
     }
 
     // ========= 다이어트 레코드 ==============
+    // 식단 기록 폼
     @GetMapping ("/diet-record")
     public String dietRecord(Model model) {
 
@@ -398,6 +402,7 @@ public class BoardController {
         return "board/diet-record";
     }
 
+    // 식단 기록 달력에 식단 기록하기
     @PostMapping ("/diet-record")
     public String dietRecord(DietDto dietDto) {
         System.out.println("dietDto.getIntakeCaloriesMorning() = " + dietDto.getIntakeCaloriesMorning());
@@ -409,6 +414,33 @@ public class BoardController {
         boardService.insertDietRecord(dietDto);
 
         return "board/diet-record";
+    }
+
+    // 통계 폼
+    @GetMapping("/statistics")
+    public String showStatistics(Model model) throws JsonProcessingException {
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+        model.addAttribute("role", userDto.getRole());
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+
+        DietDto dietListByUsernameDaily = boardMapper.findDietListByUsernameDaily(username);
+        model.addAttribute("dietDaily" , dietListByUsernameDaily);
+
+        List<DietDto> dietListByUsernameWeekly = boardMapper.findDietListByUsernameWeekly(username);
+
+        // Java 객체 목록을 JSON 문자열로 변환하여 모델에 추가합니다.
+        // jsp에서 사용할거면 그냥 오브젝터매퍼 없이 모델에 담아도 되지만,
+        // 자바스크립트에서 동적으로 차트만들기로 쓸거라서 오브젝트매퍼로 자바객체 -> json 문자열로 변환하여 모델로 넘겨야 한다.
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String dietWeeklyListJson = objectMapper.writeValueAsString(dietListByUsernameWeekly);
+
+        model.addAttribute("dietWeeklyList", dietWeeklyListJson);
+
+
+        return "board/statistics";
     }
 
 }

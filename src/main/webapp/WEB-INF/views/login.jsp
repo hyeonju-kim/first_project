@@ -38,13 +38,24 @@
             -moz-box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
             box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15)
         }
+        /* 로고 이미지 크기 조정 스타일 추가 */
+        .logo-container img {
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 40px;
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
+
     <div class="input-form-backgroud row">
-        <div class="input-form col-md-12 mx-auto">
+        <div class="input-form col-md-12 mx-auto  text-center">
+            <%-- 로고 추가--%>
+            <div class="logo-container">
+                <img src="images/diet-record_logo.png" alt="Diet Record 로고">
+            </div>
             <h4 class="mb-3">로그인</h4>
 
             <%--   추가 !!! --%>

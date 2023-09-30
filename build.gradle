@@ -51,6 +51,7 @@ dependencies {
 //    // Oracle PKI 및 OSDT 라이브러리 추가
 //    implementation group: 'com.oracle.database.security', name: 'oraclepki', version: '21.3.0.0'
 //    implementation group: 'com.oracle.database.security', name: 'oracle.osdt', version: '21.3.0.0'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.0' // 원하는 Jackson 버전을 지정
 
 
     compileOnly 'org.projectlombok:lombok'

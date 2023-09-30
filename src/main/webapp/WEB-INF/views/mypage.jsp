@@ -98,7 +98,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 </script>
-
+<!-- Bootstrap JavaScript 및 jQuery 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>

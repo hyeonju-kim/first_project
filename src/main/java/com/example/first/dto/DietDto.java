@@ -9,7 +9,10 @@ import java.time.LocalDate;
 @Setter
 public class DietDto {
     private Long seq;
-    private String foodName;
+    private String foodNameMorning;
+    private String foodNameLunch;
+    private String foodNameDinner;
+    private String foodNameSnack;
     private Double intakeCaloriesMorning;
     private Double intakeCaloriesLunch;
     private Double intakeCaloriesDinner;
