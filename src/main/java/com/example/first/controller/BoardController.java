@@ -380,26 +380,32 @@ public class BoardController {
     // ========= 다이어트 레코드 ==============
     // 식단 기록 폼
     @GetMapping ("/diet-record")
-    public String dietRecord(Model model) {
+    public String dietRecord(Model model) throws JsonProcessingException {
 
         String username = getUsername();
         UserDto userDto = getUserDto();
         List<DietDto> dietDtoList = boardMapper.findDietListByUsername(username);
         System.out.println("dietDtoList.size() = " + dietDtoList.size());
 
-        Map<LocalDate, String> map = new HashMap<>();
+        Map<LocalDate, String> dietMap = new HashMap<>();
         for (DietDto dietDto : dietDtoList) {
             System.out.println("dietDto.getIntakeDate() = " + dietDto.getIntakeDate());
             System.out.println("dietDto.getIntakeResult() = " + dietDto.getIntakeResult());
-            map.put(dietDto.getIntakeDate(), dietDto.getIntakeResult());
+            dietMap.put(dietDto.getIntakeDate(), dietDto.getIntakeResult());
         }
 
-        model.addAttribute("dietMap", map);
+//        model.addAttribute("dietMap", dietMap);
         model.addAttribute("role", userDto.getRole());
         model.addAttribute("username", username);
         model.addAttribute("nickname", userDto.getNickname());
 
-        return "board/diet-record";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String dietRecordMap = objectMapper.writeValueAsString(dietMap);
+
+        model.addAttribute("dietRecordMap", dietRecordMap);
+
+        return "board/diet-record_old";
     }
 
     // 식단 기록 달력에 식단 기록하기

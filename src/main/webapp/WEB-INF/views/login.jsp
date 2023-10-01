@@ -16,12 +16,14 @@
     <style>
         body {
             min-height: 100vh;
+            background: url("/images/background_salad.png"); /* 이미지 폴더에 있는 이미지를 사용 */
+            background-size: cover;
 
-            background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));
-            background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
-            background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
-            background: -o-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
-            background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);
+            /*background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));*/
+            /*background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
+            /*background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
+            /*background: -o-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
+            /*background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);*/
         }
 
         .input-form {
@@ -51,7 +53,7 @@
 <div class="container">
 
     <div class="input-form-backgroud row">
-        <div class="input-form col-md-12 mx-auto  text-center">
+        <div class="input-form col-md-5 mx-auto  text-center">
             <%-- 로고 추가--%>
             <div class="logo-container">
                 <img src="images/diet-record_logo.png" alt="Diet Record 로고">

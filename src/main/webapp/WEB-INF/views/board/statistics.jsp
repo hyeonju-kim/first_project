@@ -107,7 +107,7 @@
             },
             title: {
                 align: 'center',
-                text: 'Weekly Diet Statistics'
+                text: ''
             },
             xAxis: {
                 categories: chartData.map(function(item) { return item.name; })

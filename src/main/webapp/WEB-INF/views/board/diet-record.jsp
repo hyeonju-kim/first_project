@@ -30,20 +30,32 @@
             <%--            <div id="calendar"></div>--%>
         </div>
     </div>
-
-    <c:set var="dietResult" value="${dietMap[date]}"/>
-    <div id="calendar" data-dietResult="<c:out value="${dietResult}" />"></div>
+    <!-- 모델에서 담아온 dietRecordMap -->
+    <div id="dietRecordMap" data-diet-map="${dietRecordMap}" ></div>
 </div>
+
+
 
 <script>
     // JavaScript로 달력을 생성하고 표시하는 코드
     document.addEventListener('DOMContentLoaded', function () {
 
-
-
-
         var calendarEl = document.getElementById('calendar');
-        var dietResult = calendarEl.getAttribute('data-dietResult'); // 데이터 속성에서 dietResult 값을 읽어옴
+
+        // jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
+        console.log(' dietRecordMap을 파싱한 다음에 찍어보자')
+        var dietRecordMap = JSON.parse('${dietRecordMap}');
+        console.log(dietRecordMap)
+
+        // // dietRecordMap 객체 순회
+        // for (var date in dietRecordMap) {
+        //     if (dietRecordMap.hasOwnProperty(date)) {
+        //         var dietResult = dietRecordMap[date];
+        //         console.log("날짜: " + date + ", 결과: " + dietResult);
+        //
+        //     }
+        // }
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             // 달력 옵션 설정
             height: 1000, // 달력의 높이 설정 (픽셀 단위)
@@ -58,37 +70,29 @@
             navLinks: true, // 클릭 시 세부 화면으로 들어감
             editable: true,
 
-            // // dayRender 이벤트 추가
-            // dayRender: function (info) {
-            //     var dayCell = info.el.getElementsByClassName('fc-daygrid-day-number')[0]; // 날짜 칸 요소
-            //     var helloElement = document.createElement('div');
-            //     helloElement.className = 'hello-text';
-            //     helloElement.textContent = 'hello';
-            //     dayCell.appendChild(helloElement);
-            // },
-
-            // // dayCellContent 콜백을 사용하여 날짜 칸에 dietResult 표시
+            // // 날짜 칸에 dietResult 표시
             // dayCellContent: function (arg) {
             //     var dateHtml = '<span class="fc-daygrid-day-number">' + arg.dayNumberText + '</span>';
-            //     var dietResultHtml = '<div class="diet-result">' + dietResult + '</div>';
-            //     return { html: dateHtml + dietResultHtml };
+            //
+            //     // 현재 날짜
+            //     var currentDate = new Date(arg.date);
+            //     // 날짜를 YYYY-MM-DD 형식의 문자열로 변환
+            //     var formattedDate = currentDate.toISOString().split('T')[0];
+            //
+            //     // map에서 dietResult 가져오기
+            //     var dietResult = dietRecordMap[formattedDate];
+            //
+            //     var dietResultHtml = '';
+            //     if (dietResult === '적정') {
+            //         dietResultHtml = '<div class="diet-result text-success">' + dietResult + '</div>';
+            //     } else if (dietResult === '과다') {
+            //         dietResultHtml = '<div class="diet-result text-danger">' + dietResult + '</div>';
+            //     } else if (dietResult === '부족') {
+            //         dietResultHtml = '<div class="diet-result text-warning">' + dietResult + '</div>';
+            //     }
+            //
+            //     return {html: dateHtml + dietResultHtml};
             // },
-
-            // dayCellContent 콜백을 사용하여 날짜 칸에 dietResult 표시
-            dayCellContent: function (arg) {
-                var dateHtml = '<span class="fc-daygrid-day-number">' + arg.dayNumberText + '</span>';
-
-                // 현재 날짜
-                var currentDate = new Date(arg.date);
-                // 날짜를 YYYY-MM-DD 형식의 문자열로 변환
-                var formattedDate = currentDate.toISOString().split('T')[0];
-
-                // map에서 dietResult 가져오기
-                var dietResult = '<c:out value="${dietMap[' + formattedDate + ']}" />';
-
-                var dietResultHtml = '<div class="diet-result">' + dietResult + '</div>';
-                return {html: dateHtml + dietResultHtml};
-            },
 
 
             // Create new event (달력 숫자 클릭 시, 아침/점심/저녁 정보 입력)
