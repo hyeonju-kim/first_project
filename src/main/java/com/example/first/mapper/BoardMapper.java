@@ -7,6 +7,7 @@ import com.example.first.dto.DietDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,7 @@ public interface BoardMapper {
     void insertDietRecord(DietDto dietDto);
 
     // 해당 유저 식이 기록 모두 조회
-    List<DietDto> findDietListByUsername(String username);
+    List<HashMap<String, Object>> findDietListByUsername(String username);
 
     // 해당 유저 식이 기록 최근 7일 조회
     List<DietDto> findDietListByUsernameWeekly(String username);

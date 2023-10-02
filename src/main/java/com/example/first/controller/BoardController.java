@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -378,23 +379,65 @@ public class BoardController {
     }
 
     // ========= 다이어트 레코드 ==============
+    // 1. 식단 기록 페이지
     // 식단 기록 폼
     @GetMapping ("/diet-record")
     public String dietRecord(Model model) throws JsonProcessingException {
 
         String username = getUsername();
         UserDto userDto = getUserDto();
-        List<DietDto> dietDtoList = boardMapper.findDietListByUsername(username);
-        System.out.println("dietDtoList.size() = " + dietDtoList.size());
+
+        // 그냥 map 으로 받자... List<Map<컬럼명, 값>>  -> 한 row씩 하나의 map으로 읽어온다.
+        List<HashMap<String, Object>> hashMapList = boardMapper.findDietListByUsername(username);//PSQLException: Bad value for type int : 삼겹살 ->csv 데이터타입문제
+        System.out.println("hashMapList.size() =************************** " + hashMapList.size());
+        System.out.println("hashMapList = " + hashMapList);
+
 
         Map<LocalDate, String> dietMap = new HashMap<>();
-        for (DietDto dietDto : dietDtoList) {
-            System.out.println("dietDto.getIntakeDate() = " + dietDto.getIntakeDate());
-            System.out.println("dietDto.getIntakeResult() = " + dietDto.getIntakeResult());
-            dietMap.put(dietDto.getIntakeDate(), dietDto.getIntakeResult());
+        for (HashMap<String, Object> map : hashMapList) {
+            System.out.println("map.entrySet() =***************** " + map.entrySet());
+            for (Map.Entry<String, Object> entrySet : map.entrySet()) {
+                System.out.println("entrySet.getKey() 😊= " + entrySet.getKey() + "💋 entrySet.getValue() 😊= " + entrySet.getValue());
+            }
+
+            Date localDate = (Date) map.get("intake_date");
+            LocalDate intakeDate = localDate.toLocalDate();
+            Object intakeResult = map.get("intake_result");
+            dietMap.put(intakeDate, (String) intakeResult);
         }
 
+        // 날짜별로 총 섭취량을 map으로 . 달력 날짜마다 칼로리 나오도록
+        Map<LocalDate, Integer> dietMap2 = new HashMap<>();
+        for (HashMap<String, Object> map : hashMapList) {
+
+            Object intakeCaloriesMorning = map.get("intake_calories_morning");
+            Object intakeCaloriesLunch = map.get("intake_calories_lunch");
+            Object intakeCaloriesDinner = map.get("intake_calories_dinner");
+            Object intakeCaloriesSnack = map.get("intake_calories_snack");
+
+            Integer intakeCaloriesMorning1 = (Integer) intakeCaloriesMorning;
+            Integer intakeCaloriesLunch1 = (Integer) intakeCaloriesLunch;
+            Integer intakeCaloriesDinner1 = (Integer) intakeCaloriesDinner;
+            Integer intakeCaloriesSnack1 = (Integer) intakeCaloriesSnack;
+
+            Integer morning = intakeCaloriesMorning1 != null ? intakeCaloriesMorning1 : (int) 0.0;
+            Integer lunch = intakeCaloriesLunch1 != null ? intakeCaloriesLunch1 : (int) 0.0;
+            Integer dinner = intakeCaloriesDinner1 != null ? intakeCaloriesDinner1 : (int) 0.0;
+            Integer snack = intakeCaloriesSnack1 != null ? intakeCaloriesSnack1 : (int) 0.0;
+
+            Integer totalIntake = morning + lunch + dinner + snack;
+
+            Date localDate = (Date) map.get("intake_date");
+            LocalDate intakeDate = localDate.toLocalDate();
+
+            dietMap2.put( intakeDate, totalIntake);
+            System.out.println("intakeDate : totalIntake ===============🤣 " + intakeDate + " ✨: " + totalIntake);
+        }
+
+        System.out.println("userDto.getRequiredCalories() =🤣🤣 " + userDto.getRequiredCalories());
+
 //        model.addAttribute("dietMap", dietMap);
+        model.addAttribute("user", userDto);
         model.addAttribute("role", userDto.getRole());
         model.addAttribute("username", username);
         model.addAttribute("nickname", userDto.getNickname());
@@ -402,10 +445,13 @@ public class BoardController {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         String dietRecordMap = objectMapper.writeValueAsString(dietMap);
+        String dietRecordMap2 = objectMapper.writeValueAsString(dietMap2);
+
 
         model.addAttribute("dietRecordMap", dietRecordMap);
+        model.addAttribute("dietRecordMap2", dietRecordMap2);
 
-        return "board/diet-record_old";
+        return "board/diet-record";
     }
 
     // 식단 기록 달력에 식단 기록하기
@@ -422,6 +468,7 @@ public class BoardController {
         return "board/diet-record";
     }
 
+    // 2. 통계 페이지
     // 통계 폼
     @GetMapping("/statistics")
     public String showStatistics(Model model) throws JsonProcessingException {
@@ -448,6 +495,20 @@ public class BoardController {
 
 
         return "board/statistics";
+    }
+
+    // 3. 랭킹 페이지
+    @GetMapping("/rank")
+    public String showRank(Model model){
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+        model.addAttribute("role", userDto.getRole());
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("userDto", userDto);
+
+
+        return "board/rank";
     }
 
 }

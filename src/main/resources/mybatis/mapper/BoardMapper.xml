@@ -36,7 +36,10 @@
 
     <resultMap id="DietResultMap" type="com.example.first.dto.DietDto">
         <id property="seq" column="seq"/>
-        <result property="foodNameMorning" column="food_name_morning"/>
+        <result property="intakeDate" column="intake_date"/>
+        <result property="username" column="username"/>
+        <result property="intakeResult" column="intake_result"/>
+        <result property="foodNameMorning" column="food_name_morning" />
         <result property="foodNameLunch" column="food_name_lunch"/>
         <result property="foodNameDinner" column="food_name_dinner"/>
         <result property="foodNameSnack" column="food_name_snack"/>
@@ -44,8 +47,6 @@
         <result property="intakeCaloriesLunch" column="intake_calories_lunch"/>
         <result property="intakeCaloriesDinner" column="intake_calories_dinner"/>
         <result property="intakeCaloriesSnack" column="intake_calories_snack"/>
-        <result property="intakeDate" column="intake_date"/>
-        <result property="intakeResult" column="intake_result"/>
     </resultMap>
 
 
@@ -295,10 +296,11 @@
     </select>
 
     <!-- username으로 모든 식이 리스트 가져오기 -->
-    <select id="findDietListByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.DietDto" resultMap="DietResultMap">
+    <select id="findDietListByUsername" parameterType="java.lang.String" resultType="hashmap">
         SELECT *
         FROM postgres.first_project.diet
-        WHERE username = #{username};
+        WHERE username = #{username}
+        ORDER BY intake_date;
     </select>
 
     <!-- username으로 오늘의 식이 리스트 가져오기 -->

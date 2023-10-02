@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -8,12 +8,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>식단 기록</title>
+    <style>
+        .mytitle {
+            width: 100%;
+            height: 150px;
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/diet-record_back.png');
+            background-position: center;
+            background-size: cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+    </style>
 
     <!-- FullCalendar 스타일 시트 및 스크립트 로드 -->
-    <link href="/fullcalendar/main.css" rel="stylesheet"/>
+    <link href="/fullcalendar/main.css" rel="stylesheet" />
     <script src="/fullcalendar/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
 
 </head>
 
@@ -22,43 +37,96 @@
 <%@ include file="../header.jsp" %>
 
 <div class="container">
-    <br>
-    <h2 class="center-title">식단 기록</h2>
+    <div class="mytitle">
+        <h4>매일 식단을 기록하고 체크하세요</h4>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <!-- 달력을 표시할 div 요소 -->
-            <%--            <div id="calendar"></div>--%>
+            <div id="calendar"></div>
+            <%-- 적정부족과다2 이미지 추가--%>
+            <div class="logo-container  text-center">
+                <img src="/images/적정부족과다2.png" alt="적정/부족/과다">
+            </div>
+            <div class="text-center mt-3" style="font-size: 20px; font-weight: bold; text-align: center; color: dodgerblue;">
+                나의 하루 권장 칼로리: ${user.requiredCalories} kcal
+            </div>
+
         </div>
     </div>
     <!-- 모델에서 담아온 dietRecordMap -->
     <div id="dietRecordMap" data-diet-map="${dietRecordMap}" ></div>
+    <div id="dietRecordMap2" data-diet-map2="${dietRecordMap2}" ></div>
 </div>
-
-
 
 <script>
     // JavaScript로 달력을 생성하고 표시하는 코드
     document.addEventListener('DOMContentLoaded', function () {
-
         var calendarEl = document.getElementById('calendar');
 
-        // jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
-        console.log(' dietRecordMap을 파싱한 다음에 찍어보자')
-        var dietRecordMap = JSON.parse('${dietRecordMap}');
-        console.log(dietRecordMap)
+        <%--// JavaScript 코드 내에서 JSP 모델의 requiredCalories 값을 사용--%>
+        <%--var requiredCalories = <c:out value="${requiredCalories}" />;--%>
+        <%--console.log('requiredCalories: ' + requiredCalories);--%>
 
-        // // dietRecordMap 객체 순회
-        // for (var date in dietRecordMap) {
-        //     if (dietRecordMap.hasOwnProperty(date)) {
-        //         var dietResult = dietRecordMap[date];
-        //         console.log("날짜: " + date + ", 결과: " + dietResult);
+
+        // 😊 1) jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
+        console.log(' map들을 파싱해보자~~')
+        var dietRecordMap = JSON.parse('${dietRecordMap}');
+        var dietRecordMap2 = JSON.parse('${dietRecordMap2}');
+        console.log(' dietRecordMap을 파싱한 다음에 찍어보자')
+        console.log(dietRecordMap)
+        console.log(' dietRecordMap2를 파싱한 다음에 찍어보자')
+        console.log(dietRecordMap2)
+
+        // 특정 키에 대한 값을 가져오기
+        // const value = dietRecordMap.get("2023-09-29");
+        const value = dietRecordMap["2023-09-29"];
+        const value2 = dietRecordMap2["2023-09-29"];
+        console.log(value); // "부족"
+        console.log(value2); // 700
+
+        // dietRecordMap 객체의 모든 키를 가져오기
+        const keys = Object.keys(dietRecordMap);
+        const keys2 = Object.keys(dietRecordMap2);
+
+        // 키를 정렬 (예: 오름차순)
+        keys.sort();
+        keys2.sort();
+
+        // 키 배열을 반복하여 값을 출력
+        console.log('keys 모든 날짜와 해당 값 출력');
+        for (const key of keys) {
+            const value = dietRecordMap[key];
+            console.log(key + ': ' + value);
+        }
+        console.log('keys2 모든 날짜와 하루 총 섭취량 출력');
+        for (const key of keys2) {
+            const value = dietRecordMap2[key];
+            console.log(key + ': ' + value);
+        }
+
+        // // 키 배열을 모두 출력
+        // console.log('모든 키 값을 출력해보자')
+        // console.log(keys);
+
+        // // JavaScript 객체를 Map 객체로 변환
+        // console.log(' dietRecordMap2 를 찍어보자')
+        // const dietRecordMap2 = new Map(Object.entries(dietRecordMap));
+        // console.log(dietRecordMap2)
         //
-        //     }
+        // // 모든 key 값 출력
+        // const keysArray = Array.from(dietRecordMap2.keys()); // 키 값(날짜) 모두 가져오기
+        //
+        // for (const key of keysArray) {
+        //     console.log('모든 키 값 반복문으로 출력')
+        //     console.log(key);
+        //
         // }
+
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             // 달력 옵션 설정
-            height: 1000, // 달력의 높이 설정 (픽셀 단위)
+            // height: 1000, // 달력의 높이 설정 (픽셀 단위)
             initialView: 'dayGridMonth', // 월별 달력
             headerToolbar: {
                 left: 'prev,next today',
@@ -67,32 +135,60 @@
             },
             selectable: true,
             selectMirror: true,
-            navLinks: true, // 클릭 시 세부 화면으로 들어감
+
+            navLinks: true, // can click day/week names to navigate views
             editable: true,
 
-            // // 날짜 칸에 dietResult 표시
-            // dayCellContent: function (arg) {
-            //     var dateHtml = '<span class="fc-daygrid-day-number">' + arg.dayNumberText + '</span>';
-            //
-            //     // 현재 날짜
-            //     var currentDate = new Date(arg.date);
-            //     // 날짜를 YYYY-MM-DD 형식의 문자열로 변환
-            //     var formattedDate = currentDate.toISOString().split('T')[0];
-            //
-            //     // map에서 dietResult 가져오기
-            //     var dietResult = dietRecordMap[formattedDate];
-            //
-            //     var dietResultHtml = '';
-            //     if (dietResult === '적정') {
-            //         dietResultHtml = '<div class="diet-result text-success">' + dietResult + '</div>';
-            //     } else if (dietResult === '과다') {
-            //         dietResultHtml = '<div class="diet-result text-danger">' + dietResult + '</div>';
-            //     } else if (dietResult === '부족') {
-            //         dietResultHtml = '<div class="diet-result text-warning">' + dietResult + '</div>';
-            //     }
-            //
-            //     return {html: dateHtml + dietResultHtml};
-            // },
+            // 😊 2) 해당 날짜에 있는 value 값을 달력에 넣어주기
+            dayCellContent: function (arg) {
+                var dateHtml = '<span class="fc-daygrid-day-number">' + arg.dayNumberText + '</span>';
+                var isoDate = arg.date.toISOString();
+                // var dateStr = isoDate.split('T')[0];
+
+                var date = new Date(isoDate);
+                date.setDate(date.getDate()); // 날짜에 1을 더해줘서 월을 올바르게 표시
+                var year = date.getFullYear();
+                var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월을 2자리로 표시
+                var day = date.getDate().toString().padStart(2, '0'); // 일을 2자리로 표시
+                var formattedDate = year + '-' + month + '-' + day;
+
+                var value = dietRecordMap[formattedDate];
+                var value2 = dietRecordMap2[formattedDate];
+
+                console.log('==============');
+                console.log(formattedDate);
+                console.log(arg.dayNumberText);
+                console.log(value);
+                console.log(value2);
+                console.log('==============');
+
+                var imageHtml = '';
+
+                if (value === '적정') {
+                    imageHtml = '<img src="/images/good.png" alt="적정" class="diet-image" style="width: 50%;" />';
+                } else if (value === '부족') {
+                    imageHtml = '<img src="/images/low.png" alt="부족" class="diet-image" style="width: 50%;" />';
+                } else if (value === '과다') {
+                    imageHtml = '<img src="/images/over.png" alt="과다" class="diet-image" style="width: 50%;" />';
+                }
+
+                // 토탈 칼로리 계산
+                var totalCalories = parseFloat(value2) || 0; // value2를 숫자로 파싱, 실패하면 0으로 처리
+
+                // 칼로리 정보 표시
+                var caloriesHtml = '<div class="calories-info" style="font-size: 12px; font-weight: bold; text-align: center; color: darkgray;">' + totalCalories + 'kcal </div>';
+
+
+                return {
+                    html: '<div style="width: 100%; height: 100%;">' +
+                        dateHtml +
+                        '<div style="display: flex; justify-content: center; align-items: center;">' + imageHtml + '</div>' +
+                        caloriesHtml + // 칼로리 정보 추가
+                        '</div>'
+                };
+            },
+
+
 
 
             // Create new event (달력 숫자 클릭 시, 아침/점심/저녁 정보 입력)
@@ -150,11 +246,6 @@
                     }
                 });
             },
-
-
-
-
-
             // Delete event
             eventClick: function (arg) {
                 Swal.fire({
@@ -186,17 +277,11 @@
             },
             dayMaxEvents: true, // allow "more" link when too many events
             // 이벤트 객체 필드 document : https://fullcalendar.io/docs/event-object
-            events: []
+            events: [
+            ]
         });
-
-
-
-
         calendar.render();
-
     });
-
 </script>
 </body>
-
 </html>

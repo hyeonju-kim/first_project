@@ -38,7 +38,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1' // JAXB API 종속성 추가  - 디비에서 불러올때 DataTypeConverter가 없어서 ClassNotFoundException이 났음
     implementation 'commons-io:commons-io:2.11.0' // 파일업로드 위해서 2가지 종속성 추가
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
-    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16' // 쿼리문 로그에 찍히도록
+//    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16' // 쿼리문 로그에 찍히도록 log4jdbc
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation group: 'com.oracle.database.jdbc', name: 'ojdbc6', version: '11.2.0.4'
     implementation 'commons-fileupload:commons-fileupload:1.4' // 멀티파일첨부

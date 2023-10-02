@@ -8,6 +8,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
+    <style>
+    .mytitle {
+        width: 100%;
+        height: 150px;
+        background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/board_back.png');
+        background-position: center;
+        background-size: cover;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    </style>
 </head>
 
 <body>
@@ -15,8 +31,9 @@
 <%@ include file="header.jsp" %>
 
 <div class="container">
-    <br>
-    <h2 class="center-title">게시판</h2>
+    <div class="mytitle">
+        <h4>다양한 사람들과 소통해보세요</h4>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
 

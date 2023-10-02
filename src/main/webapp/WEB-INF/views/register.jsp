@@ -41,7 +41,7 @@
         }
         /* 로고 이미지 크기 조정 스타일 추가 */
         .logo-container img {
-            max-width: 50%;
+            max-width: 80%;
             height: auto;
             margin-bottom: 40px;
 
@@ -57,17 +57,15 @@
             <div class="logo-container" >
                 <img src="images/diet-record_logo.png" alt="Diet Record 로고">
             </div>
-            <h4 class="mb-3">회원가입</h4>
+            <h5 class="mb-3">가입하고 매일 식단을 기록하고 소통하세요!</h5>
             <form class="validation-form" novalidate onsubmit="return register();">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="name">이름</label>
-                        <input type="text" class="form-control" id="name" placeholder="홍길동" value="" required>
+                        <input type="text" class="form-control" id="name" placeholder="이름" value="" required>
                         <span id="nameError" style="color: red;"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="nickname">별명</label>
-                        <input type="text" class="form-control" id="nickname" placeholder="별명" value="" required>
+                        <input type="text" class="form-control" id="nickname" placeholder="닉네임" value="" required>
                         <span id="nicknameError" style="color: red;"></span>
                     </div>
                 </div>
@@ -79,21 +77,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="zipcode">우편번호</label>
-                    <input type="text" name="zipcode" id="zipcode" class="form-control" placeholder="우편번호를 입력하세요" readonly onclick="findAddr()">
+                    <input type="text" name="zipcode" id="zipcode" class="form-control" placeholder="우편번호" readonly onclick="findAddr()">
                 </div>
                 <div class="form-group">
-                    <label for="streetAdr">도로명 주소</label>
-                    <input type="text" name="streetAdr" id="streetAdr" class="form-control" placeholder="도로명 주소를 입력하세요" readonly>
+                    <input type="text" name="streetAdr" id="streetAdr" class="form-control" placeholder="도로명 주소" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="detailAdr">상세주소</label>
-                    <input type="text" name="detailAdr" id="detailAdr" class="form-control" placeholder="상세주소를 입력하세요">
+                    <input type="text" name="detailAdr" id="detailAdr" class="form-control" placeholder="상세주소">
                 </div>
 
                 <div class="mb-3">
-                    <label for="username">이메일</label>
-                    <input type="email" class="form-control" id="username" placeholder="weaver123@example.com" required >
+                    <input type="email" class="form-control" id="username" placeholder="이메일" required >
                     <span id="usernameError" style="color: red;"></span>
                 </div>
                 <!-- 이메일 인증 버튼 추가 -->
@@ -103,50 +97,43 @@
 
                 <!-- 인증번호 입력 칸 (숨겨진 상태로 시작) -->
                 <div class="mb-3" id="verificationCodeDiv" style="display: none;">
-                    <label for="authNumber">인증번호</label>
-                    <input type="text" class="form-control" id="authNumber" placeholder="인증번호를 입력하세요" required>
+                    <input type="text" class="form-control" id="authNumber" placeholder="인증번호" required>
                     <div class="invalid-feedback">
                         인증번호를 입력해주세요.
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" placeholder="비밀번호는 8~16자 영문, 숫자, 특수문자를 사용하세요" required>
+                    <input type="password" class="form-control" id="password" placeholder="비밀번호(8~16자 영문, 숫자, 특수문자)" required>
                     <span id="passwordError" style="color: red;"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="passwordConfirm">비밀번호 확인</label>
-                    <input type="password" class="form-control" id="passwordConfirm" placeholder="비밀번호를 다시 입력해주세요" required>
+                    <input type="password" class="form-control" id="passwordConfirm" placeholder="비밀번호 확인" required>
                     <span id="passwordConfirmError" style="color: red;"></span>
                 </div>
 
 
                 <div class="mb-3">
-                    <label for="phoneNumber">휴대폰 번호</label>
-                    <input type="text" class="form-control" id="phoneNumber" placeholder="휴대폰번호를 입력해주세요" required>
+                    <input type="text" class="form-control" id="phoneNumber" placeholder="휴대폰번호" required>
                     <span id="phoneNumberError" style="color: red;"></span>
                 </div>
 
                 <div class="mb-3">
                     <label for="profilePicture">프로필 사진</label>
-                    <input type="file" class="form-control-file" id="profilePicture" name="uploadFile" accept=".jpg, .jpeg, .png">
+                    <input type="file" class="form-control-file" id="profilePicture" name="uploadFile"  accept=".jpg, .jpeg, .png">
                     <div class="invalid-feedback">
                         이미지 파일을 업로드해주세요.
                     </div>
                 </div>
                 <!-- 키, 몸무게, 성별 추가 -->
                 <div class="mb-3">
-                    <label for="height">키 (cm)</label>
                     <input type="number" class="form-control" id="height" placeholder="키 (cm)" required>
                 </div>
                 <div class="mb-3">
-                    <label for="weight">몸무게 (kg)</label>
                     <input type="number" class="form-control" id="weight" placeholder="몸무게 (kg)" required>
                 </div>
                 <div class="mb-3">
-                    <label>성별</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="gender" id="male" value="male">
                         <label class="form-check-label" for="male">
@@ -174,7 +161,9 @@
 
                 <div class="mb-4"></div>
                 <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register(); storeProfilePicture()">가입 완료</button>
-
+                <div class="mt-3 text-center">
+                    계정이 있으신가요? <a href="/login" class="text-primary">로그인</a>
+                </div>
             </form>
         </div>
     </div>

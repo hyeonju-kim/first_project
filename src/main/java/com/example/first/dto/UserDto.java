@@ -28,6 +28,7 @@ public class UserDto {
     private String message;
 
     private String authNumber; // 인증번호
+    private String userLevel; // 계층형 쿼리 위해
 
 
     // 경로를 저장하기 (파일경로명)

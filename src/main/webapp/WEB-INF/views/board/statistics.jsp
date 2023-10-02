@@ -8,6 +8,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>통계</title>
+    <style>
+        .mytitle {
+            width: 100%;
+            height: 150px;
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/statistics_back.png');
+            background-position: center;
+            background-size: cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+    </style>
     <!-- jQuery 라이브러리 추가 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Highcharts 라이브러리 추가 -->
@@ -24,8 +40,10 @@
 <!-- 만들어 놓은 헤더 포함 !!!!  -->
 <%@ include file="../header.jsp" %>
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">통계</h2>
+<div class="container">
+    <div class="mytitle">
+        <h4>최근 섭취량을 비교해보세요</h4>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-8 text-center">
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AfterRunSchedule {
+public class AfterRunSchedule {    // TODO 로그4jdbc 추가하니까 갑자기 스케줄어쩌고 에러나서 잠시 주석처리함 !! 해결하자 ㅠㅠ
     private final HomeMapper homeMapper;
 
     // 매일 자정마다 모든 유저의 마지막 로그인 시간을 불러와서 , 60일이 지난 경우 휴면처리(status = "N") 한다.

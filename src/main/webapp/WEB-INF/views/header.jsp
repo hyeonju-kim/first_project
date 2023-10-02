@@ -10,6 +10,10 @@
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <!-- 로고를 왼쪽에 배치하기 위한 변경 -->
+                <a class="navbar-brand" href="#">
+                    <img src="/images/diet-record_logo2.png" alt="Diet Record 로고" class="logo-img">
+                </a>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
@@ -60,17 +64,17 @@
                             </c:if>
                         </li>
                     </ul>
-
                 </div>
+
             </nav>
-            <%-- 로고 추가--%>
-            <div class="logo-container  text-center">
-<%--                image앞에 /를 안붙이면 다른 페이지에서 안보임. / 를 붙여서 절대경로임을 나타내야 한다!! --%>
-                <img src="/images/diet-record_logo.png" alt="Diet Record 로고">
-            </div>
+
+
         </div>
+
     </div>
+
 </div>
+
 
 
 <!-- Bootstrap CSS -->
@@ -117,6 +121,12 @@
         display: inline-block; /* 텍스트 크기와 일치하는 너비로 설정 */
     }
 
+    /* 로고 이미지 크기 조정 스타일 추가 */
+    .logo-img {
+        max-width: 6em; /* 로고 이미지의 최대 너비 설정 (가로 길이 조절) */
+        height: auto; /* 높이 자동 조절 */
+        margin-right: 10px; /* 로고 이미지와 메뉴 사이 여백 설정 */
+    }
     /* 로고 이미지 크기 조정 스타일 추가 */
     .logo-container img {
         max-width: 25%;

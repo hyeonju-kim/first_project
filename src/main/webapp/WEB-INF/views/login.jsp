@@ -42,7 +42,7 @@
         }
         /* 로고 이미지 크기 조정 스타일 추가 */
         .logo-container img {
-            max-width: 50%;
+            max-width: 80%;
             height: auto;
             margin-bottom: 40px;
         }
@@ -58,22 +58,22 @@
             <div class="logo-container">
                 <img src="images/diet-record_logo.png" alt="Diet Record 로고">
             </div>
-            <h4 class="mb-3">로그인</h4>
+<%--            <h4 class="mb-3">로그인</h4>--%>
 
             <%--   추가 !!! --%>
             <c:url value="/login" var="loginUrl"/>
             <form name="login_form" class="validation-form" action="/login" method="post">
                 <div class="mb-3">
-                    <label for="username">이메일</label>
-                    <input type="email" class="form-control" id="username" name="username" placeholder="weaver123@example.com" required>
+<%--                    <label for="username">이메일</label>--%>
+                    <input type="email" class="form-control" id="username" name="username" placeholder="이메일" required>
                     <div class="invalid-feedback">
                         이메일을 입력해주세요.
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="" required>
+<%--                    <label for="password">비밀번호</label>--%>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호" required>
                     <div class="invalid-feedback">
                         비밀번호를 입력해주세요.
                     </div>
@@ -82,7 +82,7 @@
                 <hr class="mb-4">
                 <button class="btn btn-primary btn-lg btn-block" type="button" onclick="login()">로그인</button>
                 <div class="mt-3 text-center">
-                    <a href="/forgot-password" class="mr-2 text-primary">비밀번호 찾기</a>|&nbsp;
+                    <a href="/forgot-password" class="mr-2 text-primary">비밀번호를 잊으셨나요?</a>|&nbsp;
                     <a href="/register" class="text-primary">회원가입</a>
                 </div>
             </form>

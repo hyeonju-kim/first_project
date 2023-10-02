@@ -285,10 +285,10 @@ public class BoardServiceImpl implements BoardService {
 
         double requiredCalories = userDto.getRequiredCalories();
 
-        Double intakeCaloriesMorning = dietDto.getIntakeCaloriesMorning();
-        Double intakeCaloriesLunch = dietDto.getIntakeCaloriesLunch();
-        Double intakeCaloriesDinner = dietDto.getIntakeCaloriesDinner();
-        Double totalIntake = intakeCaloriesMorning + intakeCaloriesLunch + intakeCaloriesDinner;
+        Integer intakeCaloriesMorning = dietDto.getIntakeCaloriesMorning();
+        Integer intakeCaloriesLunch = dietDto.getIntakeCaloriesLunch();
+        Integer intakeCaloriesDinner = dietDto.getIntakeCaloriesDinner();
+        Integer totalIntake = intakeCaloriesMorning + intakeCaloriesLunch + intakeCaloriesDinner;
 
         String intakeResult;
 

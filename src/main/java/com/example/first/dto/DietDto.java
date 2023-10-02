@@ -8,15 +8,15 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class DietDto {
-    private Long seq;
+    private Integer seq;
     private String foodNameMorning;
     private String foodNameLunch;
     private String foodNameDinner;
     private String foodNameSnack;
-    private Double intakeCaloriesMorning;
-    private Double intakeCaloriesLunch;
-    private Double intakeCaloriesDinner;
-    private Double intakeCaloriesSnack;
+    private Integer intakeCaloriesMorning;
+    private Integer intakeCaloriesLunch;
+    private Integer intakeCaloriesDinner;
+    private Integer intakeCaloriesSnack;
     private LocalDate intakeDate = LocalDate.now();
 //    private String intakeType;
     private String intakeResult; // 적정, 부족, 과다
@@ -24,7 +24,7 @@ public class DietDto {
 
 
 
-    public DietDto(Double intakeCaloriesMorning, Double intakeCaloriesLunch, Double intakeCaloriesDinner) {
+    public DietDto(Integer intakeCaloriesMorning, Integer intakeCaloriesLunch, Integer intakeCaloriesDinner) {
         this.intakeCaloriesMorning = intakeCaloriesMorning;
         this.intakeCaloriesLunch = intakeCaloriesLunch;
         this.intakeCaloriesDinner = intakeCaloriesDinner;
