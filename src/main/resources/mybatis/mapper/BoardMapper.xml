@@ -47,6 +47,7 @@
         <result property="intakeCaloriesLunch" column="intake_calories_lunch"/>
         <result property="intakeCaloriesDinner" column="intake_calories_dinner"/>
         <result property="intakeCaloriesSnack" column="intake_calories_snack"/>
+        <result property="intakeTotal" column="intake_total"/>
     </resultMap>
 
 
@@ -291,9 +292,11 @@
 
     <!-- 식이 저장 쿼리 -->
     <select id="insertDietRecord" parameterType="com.example.first.dto.DietDto" >
-        INSERT INTO postgres.first_project.diet (food_name, intake_calories_morning, intake_calories_lunch, intake_calories_dinner , intake_calories_snack , intake_date, intake_result, username )
-        VALUES (#{foodName}, #{intakeCaloriesMorning}, #{intakeCaloriesLunch}, #{intakeCaloriesDinner}, #{intakeCaloriesSnack}, #{intakeDate}, #{intakeResult}, #{username})
+        INSERT INTO postgres.first_project.diet (intake_date, intake_calories_morning, intake_calories_lunch, intake_calories_dinner, intake_result, intake_total, username)
+        VALUES (#{intakeDate}, #{intakeCaloriesMorning}, #{intakeCaloriesLunch}, #{intakeCaloriesDinner},#{intakeResult}, #{intakeTotal}, #{username})
     </select>
+
+
 
     <!-- username으로 모든 식이 리스트 가져오기 -->
     <select id="findDietListByUsername" parameterType="java.lang.String" resultType="hashmap">

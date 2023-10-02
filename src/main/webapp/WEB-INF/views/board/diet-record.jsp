@@ -57,8 +57,11 @@
         </div>
     </div>
     <!-- 모델에서 담아온 dietRecordMap -->
-    <div id="dietRecordMap" data-diet-map="${dietRecordMap}" ></div> // 날짜와 섭취상태(적정/과다/부족)
-    <div id="dietRecordMap2" data-diet-map2="${dietRecordMap2}" ></div> // 날짜와 하루 총 섭취 칼로리
+
+    <%--    날짜와 섭취상태(적정/과다/부족)--%>
+    <div id="dietRecordMap" data-diet-map="${dietRecordMap}" ></div>
+    <%--    날짜와 하루 총 섭취 칼로리--%>
+    <div id="dietRecordMap2" data-diet-map2="${dietRecordMap2}" ></div>
 
 </div>
 
@@ -229,14 +232,14 @@
                     Swal.fire({
                         title: "식사를 기록하세요!",
                         text: formattedDate,
-                        html: `<form id="dietForm"  method="post" action="/boards/diet-record">
-                               <div class='mb-7'>`+formattedDate +`</div><br>
-                               <div class='mt-3'>아침: <input type='number' class='form-control' name='intakeCaloriesMorning' /></div>
-                               <div class='mt-3'>점심: <input type='number' class='form-control' name='intakeCaloriesLunch' /></div>
-                               <div class='mt-3'>저녁: <input type='number' class='form-control' name='intakeCaloriesDinner' /></div>
-                               <div><img src="/images/calories_table.jpg" alt="식단 테이블" /></div> <!-- 이미지 추가 -->
-                                <input type="submit" style="display: none;" /> <!-- Submit 버튼을 숨김 -->
-                            </form>`
+                        html: `<div class='mb-7'>`+formattedDate +`</div><br>
+                               <form id="dietForm"  method="post" action="/boards/diet-record">
+                                   <div class='mt-3'>아침: <input type='number' class='form-control' name='intakeCaloriesMorning' /></div>
+                                   <div class='mt-3'>점심: <input type='number' class='form-control' name='intakeCaloriesLunch' /></div>
+                                   <div class='mt-3'>저녁: <input type='number' class='form-control' name='intakeCaloriesDinner' /></div>
+                                    <input type="submit" style="display: none;" /> <!-- Submit 버튼을 숨김 -->
+                               </form>
+                            <div><img src="/images/calories_table.jpg" alt="식단 테이블" /></div> <!-- 이미지 추가 -->`
                         ,
                         icon: "info",
                         showCancelButton: true,
@@ -254,7 +257,7 @@
                             var lunch = document.querySelector("input[name='intakeCaloriesLunch']").value;
                             var dinner = document.querySelector("input[name='intakeCaloriesDinner']").value;
 
-                            // 폼을 서버로 제출
+                            // 폼을 서버로 제출!!!!
                             document.getElementById("dietForm").submit();
                             console.log('폼을 서버로 제출 성공!')
 

@@ -397,7 +397,7 @@ public class BoardController {
         for (HashMap<String, Object> map : hashMapList) {
             System.out.println("map.entrySet() =***************** " + map.entrySet());
             for (Map.Entry<String, Object> entrySet : map.entrySet()) {
-                System.out.println("entrySet.getKey() 😊= " + entrySet.getKey() + "💋 entrySet.getValue() 😊= " + entrySet.getValue());
+                System.out.println("entrySet.getKey() 😊= " + entrySet.getKey() + ", 💋 entrySet.getValue() 😊= " + entrySet.getValue());
             }
 
             Date localDate = (Date) map.get("intake_date");
@@ -451,7 +451,7 @@ public class BoardController {
         model.addAttribute("dietRecordMap", dietRecordMap);
         model.addAttribute("dietRecordMap2", dietRecordMap2);
 
-        return "board/diet-record_old";
+        return "board/diet-record";
     }
 
     // 식단 기록 달력에 식단 기록하기
@@ -461,11 +461,9 @@ public class BoardController {
         System.out.println("dietDto.getIntakeCaloriesLunch() = " + dietDto.getIntakeCaloriesLunch());
         System.out.println("dietDto.getIntakeCaloriesDinner() = " + dietDto.getIntakeCaloriesDinner());
 
-
-        DietDto dto = new DietDto(dietDto.getIntakeCaloriesMorning(), dietDto.getIntakeCaloriesLunch(), dietDto.getIntakeCaloriesDinner());
         boardService.insertDietRecord(dietDto);
 
-        return "board/diet-record";
+        return "redirect:diet-record";
     }
 
     // 2. 통계 페이지
