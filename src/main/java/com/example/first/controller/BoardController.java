@@ -451,7 +451,7 @@ public class BoardController {
         model.addAttribute("dietRecordMap", dietRecordMap);
         model.addAttribute("dietRecordMap2", dietRecordMap2);
 
-        return "board/diet-record";
+        return "board/diet-record_old";
     }
 
     // 식단 기록 달력에 식단 기록하기
