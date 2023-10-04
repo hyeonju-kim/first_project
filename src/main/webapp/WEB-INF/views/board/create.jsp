@@ -6,6 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 생성</title>
+    <style>
+        .mytitle {
+            width: 100%;
+            height: 150px;
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/board_back.png');
+            background-position: center;
+            background-size: cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+    </style>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -14,39 +30,52 @@
 
 </head>
 <body>
+<!-- 만들어 놓은 헤더 포함 !!!!  -->
+<%@ include file="../header.jsp" %>
 <div class="container">
-    <h2 class="text-center mt-4"> 글 작성 </h2>
-    <form action="/boards/create" method="post" enctype="multipart/form-data">
-        <div class="form-group mt-4">
-            <label for="title"><strong>제목</strong></label>
-            <input type="text" class="form-control" id="title" name="title"  required>
-        </div>
-        <div class="form-group mt-4">
-            <label><strong>내용</strong></label>
+    <div class="mytitle">
+        <h4>다양한 사람들과 소통해보세요</h4>
+    </div>
 
-            <!-- smart Editor 위해 추가 -->
-            <div id="smarteditor">
-                <textarea name="content" id="editorTxt" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 500px"></textarea>
-            </div>
-        </div>
-        <div class="form-group mt-4">
-            <label for="files"><strong>첨부 파일</strong></label>
-            <div class="file_list">
-                <div class="file_input_group">
-                    <div class="file_input">
-                        <input type="text" readonly />
-                        <label> 첨부파일
-                            <input type="file" name="files" id="files" onchange="selectFile(this);" />
-                        </label>
-                        <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
-                        <button type="button" onclick="addFile();" class="btns fn_add_btn"><span>파일 추가</span></button>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <form action="/boards/create" method="post" enctype="multipart/form-data">
+                <div class="form-group mt-4">
+                    <label for="title"><strong>제목</strong></label>
+                    <input type="text" class="form-control" id="title" name="title"  required>
+                </div>
+                <div class="form-group mt-4">
+                    <label><strong>내용</strong></label>
+
+                    <!-- smart Editor 위해 추가 -->
+                    <div id="smarteditor">
+                        <textarea name="content" id="editorTxt" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 500px"></textarea>
                     </div>
                 </div>
-            </div>
+                <div class="form-group mt-4">
+                    <label for="files"><strong>첨부 파일</strong></label>
+                    <div class="file_list">
+                        <div class="file_input_group">
+                            <div class="file_input">
+                                <input type="text" readonly />
+                                <label> 첨부파일
+                                    <input type="file" name="files" id="files" onchange="selectFile(this);" />
+                                </label>
+                                <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
+                                <button type="button" onclick="addFile();" class="btns fn_add_btn"><span>파일 추가</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- smart Editor 위해 추가 ( onclick="submitPost();" 부분만)-->
+                <button type="submit" onclick="submitPost();" class="btn btn-primary mt-4">게시글 생성</button>
+            </form>
+
         </div>
-        <!-- smart Editor 위해 추가 ( onclick="submitPost();" 부분만)-->
-        <button type="submit" onclick="submitPost();" class="btn btn-primary mt-4">게시글 생성</button>
-    </form>
+    </div>
+
+
 </div>
 
 <!-- jQuery -->

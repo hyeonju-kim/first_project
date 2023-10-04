@@ -74,86 +74,123 @@
     <div class="mytitle">
         <h4>다양한 사람들과 소통해보세요</h4>
     </div>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <a href="/boards" class="btn btn-primary">게시판 목록</a>
-            <br>
+
+    <a href="/boards" class="btn btn-primary">게시판 목록</a>
+    <div class="row mt-4">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title1">제목: ${board.title}</h5>
                     <p class="card-text">작성자: ${board.nickname}</p>
                     <p class="card-text">작성일: ${board.createdAt}</p>
                 </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">내용</h5>
-                        <p class="card-text">${board.content}</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">첨부 파일</h5>
-                    </div>
-
-
-                    <c:forEach var="multiFile" items="${multiFiles}">
-                        <div class="file-info">
-                            <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
-                            <a href="/boards/posts/${multiFile.boardId}/files/${multiFile.fileId}/download">${multiFile.fileOriginalName}</a>
-                            <span>${multiFile.fileSize}kb</span>
-                        </div>
-                    </c:forEach>
-
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">댓글</h5>
-                        <c:forEach items="${board.comments}" var="comment">
-                            <div class="comment-box" style="margin-left: ${(comment.level-1) * 20}px;"> <!-- 들여쓰기 넓이 조절 -->
-                                <!-- 댓글 내용 표시 -->
-                                <div class="comment-meta">
-                                    <span class="comment-nickname">${comment.nickname}</span>
-                                    <span class="comment-date">${comment.createdAt}</span>
-                                    <c:if test="${username == comment.username}">
-                                        <a href="/boards/${board.boardId}/editComment?commentId=${comment.commentId}" class="btn btn-sm btn-primary ml-2">수정</a>
-                                        <a href="#" class="btn btn-sm btn-danger ml-2" onclick="deleteComment(${comment.commentId})">삭제</a>
-                                    </c:if>
-                                    <a href="#" class="btn btn-sm btn-success ml-2" onclick="toggleReplyForm(${comment.commentId})">답글 작성</a>
-                                </div>
-                                <div class="comment-content">${comment.content}</div>
-                                <br>
-                                <!-- 대댓글 입력 폼 -->
-                                <div id="replyForm_${comment.commentId}" style="display: none;">
-                                    <form id="recommentForm" action="/boards/${comment.boardId}/addReply/${comment.commentId}" method="post">
-                                        <div class="form-group">
-                                            <textarea class="form-control" name="content" placeholder="댓글을 작성해주세요" rows="3"></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">댓글 작성</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </div>
-                </div>
-                <!-- 댓글 작성 폼 -->
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">댓글 작성</h5>
-                        <form id="commentForm" action="/boards/${board.boardId}/addComment" method="post">
-                            <div class="form-group">
-                                <textarea class="form-control" name="content" placeholder="댓글을 입력하세요" rows="3"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">댓글 작성</button>
-                        </form>
-                    </div>
-                </div>
-                <c:if test="${username == board.username}">
-                    <a href="/boards/${board.boardId}/edit" class="btn btn-primary" >수정</a>
-                    <a href="/boards/${board.boardId}/delete" class="btn btn-danger" onclick="deleteBoard()">삭제</a>
-                </c:if>
             </div>
         </div>
     </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">내용</h5>
+                    <p class="card-text">${board.content}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">첨부 파일</h5>
+                </div>
+
+
+                <c:forEach var="multiFile" items="${multiFiles}">
+                    <div class="file-info">
+                        <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                        <a href="/boards/posts/${multiFile.boardId}/files/${multiFile.fileId}/download">${multiFile.fileOriginalName}</a>
+                        <span>${multiFile.fileSize}kb</span>
+                    </div>
+                </c:forEach>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 댓글 목록 표시 -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">댓글</h5>
+                    <c:forEach items="${board.comments}" var="comment">
+                        <div class="comment-box" style="margin-left: ${(comment.level-1) * 20}px;"> <!-- 들여쓰기 넓이 조절 -->
+                            <!-- 댓글 내용 표시 -->
+                            <div class="comment-meta">
+                                <span class="comment-nickname">${comment.nickname}</span>
+                                <span class="comment-date">${comment.createdAt}</span>
+                                <c:if test="${username == comment.username}">
+                                    <a href="/boards/${board.boardId}/editComment?commentId=${comment.commentId}" class="btn btn-sm btn-primary ml-2">수정</a>
+                                    <a href="#" class="btn btn-sm btn-danger ml-2" onclick="deleteComment(${comment.commentId})">삭제</a>
+                                </c:if>
+                                <a href="#" class="btn btn-sm btn-success ml-2" onclick="toggleReplyForm(${comment.commentId})">답글 작성</a>
+                            </div>
+                            <div class="comment-content">${comment.content}</div>
+                            <br>
+                            <!-- 대댓글 입력 폼 -->
+                            <div id="replyForm_${comment.commentId}" style="display: none;">
+                                <form id="recommentForm" action="/boards/${comment.boardId}/addReply/${comment.commentId}" method="post">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="content" placeholder="댓글을 작성해주세요" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">댓글 작성</button>
+                                </form>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 댓글 작성 폼 -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">댓글 작성</h5>
+                    <form id="commentForm" action="/boards/${board.boardId}/addComment" method="post">
+                        <div class="form-group">
+                            <textarea class="form-control" name="content" placeholder="댓글을 입력하세요" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">댓글 작성</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <c:if test="${username == board.username}">
+                <a href="/boards/${board.boardId}/edit" class="btn btn-primary" >수정</a>
+                <a href="/boards/${board.boardId}/delete" class="btn btn-danger" onclick="deleteBoard()">삭제</a>
+            </c:if>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+
 
     <script>
 

@@ -21,8 +21,8 @@
     <logger name="jdbc.sqlonly" level="INFO" appender-ref="console-infolog" />
     <logger name="jdbc.resultsettable" level="INFO" appender-ref="console-infolog" />
 
-    <!-- Root Logger -->
-    <root level="off">
+    <!-- Root Logger (off 로 했다가 에러 정보 하나도 안나와서 INFO로 바꿈)-->
+    <root level="INFO">
         <appender-ref ref="console" />
     </root>
 </configuration>

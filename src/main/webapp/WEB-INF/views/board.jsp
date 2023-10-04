@@ -41,7 +41,7 @@
             <a href="/boards/create" class="btn btn-primary mb-3">글 작성</a>
 
             <!-- 글 목록 -->
-            <table class="table">
+            <table class="table table-striped mt-4">
                 <thead>
                 <tr>
                     <th scope="col">제목</th>

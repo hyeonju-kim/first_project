@@ -9,6 +9,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <%-- smart Editor 위해 추가 --%>
+    <script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+
 </head>
 <body>
 <div class="container">
@@ -16,11 +19,15 @@
     <form action="/boards/create" method="post" enctype="multipart/form-data">
         <div class="form-group mt-4">
             <label for="title"><strong>제목</strong></label>
-            <input type="text" class="form-control" id="title" name="title" required>
+            <input type="text" class="form-control" id="title" name="title"  required>
         </div>
         <div class="form-group mt-4">
-            <label for="content"><strong>내용</strong></label>
-            <textarea class="form-control" id="content" name="content" rows="8" required></textarea>
+            <label><strong>내용</strong></label>
+
+            <!-- smart Editor 위해 추가 -->
+            <div id="smarteditor">
+                <textarea name="content" id="editorTxt" rows="20" cols="10" placeholder="내용을 입력해주세요" style="width: 500px"></textarea>
+            </div>
         </div>
         <div class="form-group mt-4">
             <label for="files"><strong>첨부 파일</strong></label>
@@ -29,16 +36,16 @@
                     <div class="file_input">
                         <input type="text" readonly />
                         <label> 첨부파일
-                            <input type="file" name="files" id="files"  onchange="selectFile(this);" />
+                            <input type="file" name="files" id="files" onchange="selectFile(this);" />
                         </label>
                         <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
                         <button type="button" onclick="addFile();" class="btns fn_add_btn"><span>파일 추가</span></button>
                     </div>
-
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-4">게시글 생성</button>
+        <!-- smart Editor 위해 추가 ( onclick="submitPost();" 부분만)-->
+        <button type="submit" onclick="submitPost();" class="btn btn-primary mt-4">게시글 생성</button>
     </form>
 </div>
 
@@ -82,7 +89,6 @@
                     <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
                     <button type="button" onclick="addFile();" class="btns fn_add_btn"><span>파일 추가</span></button>
                 </div>
-
             </div>
         `;
         document.querySelector('.file_list').appendChild(fileDiv);
@@ -91,6 +97,46 @@
     // 3. 파일 삭제 함수
     function removeFile(element) {
         element.parentElement.remove();
+    }
+
+
+    // smart Editor 위해 추가
+    // 4. 스마트 에디터 설정 함수
+    let oEditors = [];
+
+    function smartEditor() {
+        console.log("Naver SmartEditor");
+
+        // 에디터를 생성하기 위한 설정
+        nhn.husky.EZCreator.createInIFrame({
+            oAppRef: oEditors,
+            // 에디터를 넣을 위치의 textarea의 id를 지정
+            elPlaceHolder: "editorTxt",
+            // 스킨 파일의 경로 (static 폴더 하위 경로로 설정)
+            sSkinURI: "/smarteditor/SmartEditor2Skin.html",
+            fCreator: "createSEditor2"
+        });
+    }
+
+    // smart Editor 위해 추가
+    // 문서가 준비되면 스마트 에디터 설정 함수 호출
+    $(document).ready(function() {
+        smartEditor();
+    });
+
+    // smart Editor 위해 추가
+    // 5. 에디터에 입력한 내용 가져오기
+    function submitPost() {
+        oEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", [])
+        let content = document.getElementById("editorTxt").value
+
+        if(content == '') {
+            alert("내용을 입력해주세요.")
+            oEditors.getById["editorTxt"].exec("FOCUS")
+            return
+        } else {
+            console.log(content)
+        }
     }
 </script>
 

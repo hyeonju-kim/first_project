@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY) //비어있지 않은 필드만 나타내는 어노테이션
 public class UserDto {
-    private Long userId;
+    private int userId;
 
     private String password;
 
@@ -53,7 +54,7 @@ public class UserDto {
     private double weight;
     private double height;
     private String gender;
-    private double bmi;
+    private BigDecimal bmi;
     private double requiredCalories;
 
 //    private List<DietDto> dietDtoList;

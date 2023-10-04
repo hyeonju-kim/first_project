@@ -237,6 +237,7 @@
                                    <div class='mt-3'>아침: <input type='number' class='form-control' name='intakeCaloriesMorning' /></div>
                                    <div class='mt-3'>점심: <input type='number' class='form-control' name='intakeCaloriesLunch' /></div>
                                    <div class='mt-3'>저녁: <input type='number' class='form-control' name='intakeCaloriesDinner' /></div>
+                                    <input type='hidden' name='intakeDate' value=`+formattedDate+` />
                                     <input type="submit" style="display: none;" /> <!-- Submit 버튼을 숨김 -->
                                </form>
                             <div><img src="/images/calories_table.jpg" alt="식단 테이블" /></div> <!-- 이미지 추가 -->`

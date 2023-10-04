@@ -42,7 +42,7 @@
 
 <div class="container">
     <div class="mytitle">
-        <h4>최근 섭취량을 비교해보세요</h4>
+        <h4>최근 7일 간의 섭취량을 비교해보세요</h4>
     </div>
     <div class="row justify-content-center">
         <div class="col-md-8 text-center">

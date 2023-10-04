@@ -2,6 +2,7 @@ package com.example.first.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -13,25 +14,39 @@ public class DietDto {
     private String foodNameLunch;
     private String foodNameDinner;
     private String foodNameSnack;
-    private Integer intakeCaloriesMorning;
-    private Integer intakeCaloriesLunch;
-    private Integer intakeCaloriesDinner;
-    private Integer intakeCaloriesSnack;
-    private LocalDate intakeDate = LocalDate.now();
+    private double intakeCaloriesMorning;
+    private double intakeCaloriesLunch;
+    private double intakeCaloriesDinner;
+    private double intakeCaloriesSnack;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd") // wow!!!!!
+    private LocalDate intakeDate;
+
 //    private String intakeType;
     private String intakeResult; // 적정, 부족, 과다
     private String username;
-    private Integer intakeTotal;
+    private String nickname;
+    private double intakeTotal;
+
+    public DietDto() {
+
+    }
 
 
 
-    public DietDto(Integer intakeCaloriesMorning, Integer intakeCaloriesLunch, Integer intakeCaloriesDinner, String intakeResult, String username) {
+    public DietDto(double intakeCaloriesMorning, double intakeCaloriesLunch, double intakeCaloriesDinner, LocalDate intakeDate, String intakeResult, String username) {
         this.intakeCaloriesMorning = intakeCaloriesMorning;
         this.intakeCaloriesLunch = intakeCaloriesLunch;
         this.intakeCaloriesDinner = intakeCaloriesDinner;
         this.username = username;
-        this.intakeDate = LocalDate.now();
+        this.intakeDate = intakeDate;
         this.intakeTotal = intakeCaloriesMorning + intakeCaloriesLunch + intakeCaloriesDinner;
         this.intakeResult = intakeResult;
     }
+
+    public DietDto(String intakeResult, String nickname) {
+        this.intakeResult = intakeResult;
+        this.nickname = nickname;
+    }
+
 }

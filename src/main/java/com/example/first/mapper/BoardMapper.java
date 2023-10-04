@@ -93,5 +93,8 @@ public interface BoardMapper {
 
     // 해당 유저 식이 기록 오늘 것만 조회
     DietDto findDietListByUsernameDaily(String username);
+
+    // 모든 유저 식이 기록 최근 7일 조회 (적정 횟수 카운트, 유저네임, 적정 횟수가 많은 순으로 조회)
+    List<HashMap<String, Object>> findAllUserDietListWeekly();
 }
 

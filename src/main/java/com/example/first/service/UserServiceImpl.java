@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService{
         System.out.println("userDto.getGender() = " + userDto.getGender());
 
         // BMI 계산
-        double bmi = calculateBMI(userDto.getGender(), userDto.getHeight(), userDto.getWeight());
+        BigDecimal bmi = calculateBMI(userDto.getGender(), userDto.getHeight(), userDto.getWeight());
         userDto.setBmi(bmi);
         System.out.println("bmi = " + bmi);
 
@@ -94,18 +95,19 @@ public class UserServiceImpl implements UserService{
 
 
     // BMI 계산 공식
-    public static double calculateBMI(String gender, double height, double weight) {
-        double bmi;
+    public static BigDecimal  calculateBMI(String gender, double height, double weight) {
+        BigDecimal  bmi;
         if (Objects.equals(gender, "male")) {
             // 남성의 경우 BMI 계산
-            bmi = weight / (height * height) * 10000;
+            bmi = BigDecimal.valueOf(weight / (height * height) * 10000);
         } else {
             // 여성의 경우 BMI 계산 (여성의 경우 평균적으로 체지방률이 조금 높기 때문에 상수를 조정)
-            bmi = weight / (height * height) * 1.1 * 10000;
+            bmi = BigDecimal.valueOf(weight / (height * height) * 1.1 * 10000);
         }
 
         // 소수점 첫째 자리까지 나타냄
-        return Math.round(bmi * 10.0) / 10.0;
+//        return Math.round(bmi * 10.0) / 10.0;
+        return bmi;
     }
 
     // 하루 권장 칼로리 계산 (Mifflin-St Jeor Equation 공식을 사용)

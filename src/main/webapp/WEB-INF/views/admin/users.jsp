@@ -119,7 +119,7 @@
             <br>
 
             <!-- 사용자 목록 -->
-            <table class="table">
+            <table class="table table-striped mt-4">
                 <thead>
                 <tr>
                     <th scope="col">사용자 ID</th>

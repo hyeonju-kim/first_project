@@ -29,8 +29,10 @@ import java.net.URLEncoder;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -237,12 +239,23 @@ public class BoardController {
     @PostMapping("/create")
     public String createBoard(@RequestParam("title") String title,
                               @RequestParam("content") String content,
-                              @RequestParam("files") List<MultipartFile> files) throws IOException {
+                              @RequestParam("files") List<MultipartFile> files,
+                              Model model) throws IOException {
 
         BoardDto boardDto = new BoardDto(title, content);
 
         Long boardId = boardService.createBoard2(boardDto, files);
         System.out.println(" 보드 컨트롤러 / 글 작성 / boardId = " + boardId);
+
+        String username = getUsername();
+        model.addAttribute("username", username);
+
+        UserDto userDto = getUserDto();
+        if (userDto != null) {
+            String role = userDto.getRole();
+            System.out.println("role ===== " + role);
+            model.addAttribute("role", role);
+        }
 
         return "redirect:/boards/" + boardId; // 게시글 생성 후 해당 게시글 상세 페이지로 리다이렉트
     }
@@ -397,13 +410,21 @@ public class BoardController {
         for (HashMap<String, Object> map : hashMapList) {
             System.out.println("map.entrySet() =***************** " + map.entrySet());
             for (Map.Entry<String, Object> entrySet : map.entrySet()) {
-                System.out.println("entrySet.getKey() 😊= " + entrySet.getKey() + ", 💋 entrySet.getValue() 😊= " + entrySet.getValue());
+                System.out.println("entrySet.getKey() 😊= " + entrySet.getKey() + ", ✨ entrySet.getValue() 😊= " + entrySet.getValue());
             }
 
             Date localDate = (Date) map.get("intake_date");
-            LocalDate intakeDate = localDate.toLocalDate();
             Object intakeResult = map.get("intake_result");
-            dietMap.put(intakeDate, (String) intakeResult);
+
+            if (localDate != null) {
+                LocalDate intakeDate = localDate.toLocalDate();
+                dietMap.put(intakeDate, (String) intakeResult);
+            } else {
+                throw new IllegalArgumentException("날짜가 널이에요~~~~~~~~~ㅠㅠ");
+            }
+
+
+
         }
 
         // 날짜별로 총 섭취량을 map으로 . 달력 날짜마다 칼로리 나오도록
@@ -415,22 +436,23 @@ public class BoardController {
             Object intakeCaloriesDinner = map.get("intake_calories_dinner");
             Object intakeCaloriesSnack = map.get("intake_calories_snack");
 
-            Integer intakeCaloriesMorning1 = (Integer) intakeCaloriesMorning;
-            Integer intakeCaloriesLunch1 = (Integer) intakeCaloriesLunch;
-            Integer intakeCaloriesDinner1 = (Integer) intakeCaloriesDinner;
-            Integer intakeCaloriesSnack1 = (Integer) intakeCaloriesSnack;
+            double intakeCaloriesMorning1 = (double)intakeCaloriesMorning;
+            double intakeCaloriesLunch1 = (double) intakeCaloriesLunch;
+            double intakeCaloriesDinner1 = (double) intakeCaloriesDinner;
+//            double intakeCaloriesSnack1 = (double) intakeCaloriesSnack;
 
-            Integer morning = intakeCaloriesMorning1 != null ? intakeCaloriesMorning1 : (int) 0.0;
-            Integer lunch = intakeCaloriesLunch1 != null ? intakeCaloriesLunch1 : (int) 0.0;
-            Integer dinner = intakeCaloriesDinner1 != null ? intakeCaloriesDinner1 : (int) 0.0;
-            Integer snack = intakeCaloriesSnack1 != null ? intakeCaloriesSnack1 : (int) 0.0;
+//            double morning = (int)intakeCaloriesMorning1 != null ? intakeCaloriesMorning1 : (int) 0.0;
+//            double lunch = intakeCaloriesLunch1 != null ? intakeCaloriesLunch1 : (int) 0.0;
+//            double dinner = intakeCaloriesDinner1 != null ? intakeCaloriesDinner1 : (int) 0.0;
+//            double snack = intakeCaloriesSnack1 != null ? intakeCaloriesSnack1 : (int) 0.0;
 
-            Integer totalIntake = morning + lunch + dinner + snack;
+//            double totalIntake = intakeCaloriesMorning1 + intakeCaloriesLunch1 + intakeCaloriesDinner1 + intakeCaloriesSnack1;
+            double totalIntake = intakeCaloriesMorning1 + intakeCaloriesLunch1 + intakeCaloriesDinner1;
 
             Date localDate = (Date) map.get("intake_date");
             LocalDate intakeDate = localDate.toLocalDate();
 
-            dietMap2.put( intakeDate, totalIntake);
+            dietMap2.put( intakeDate, (int) totalIntake);
             System.out.println("intakeDate : totalIntake ===============🤣 " + intakeDate + " ✨: " + totalIntake);
         }
 
@@ -460,6 +482,7 @@ public class BoardController {
         System.out.println("dietDto.getIntakeCaloriesMorning() = " + dietDto.getIntakeCaloriesMorning());
         System.out.println("dietDto.getIntakeCaloriesLunch() = " + dietDto.getIntakeCaloriesLunch());
         System.out.println("dietDto.getIntakeCaloriesDinner() = " + dietDto.getIntakeCaloriesDinner());
+        System.out.println("dietDto.getIntakeDate() = " + dietDto.getIntakeDate());
 
         boardService.insertDietRecord(dietDto);
 
@@ -497,7 +520,7 @@ public class BoardController {
 
     // 3. 랭킹 페이지
     @GetMapping("/rank")
-    public String showRank(Model model){
+    public String showRank(Model model) throws JsonProcessingException {
         String username = getUsername();
         UserDto userDto = getUserDto();
         model.addAttribute("role", userDto.getRole());
@@ -505,6 +528,45 @@ public class BoardController {
         model.addAttribute("nickname", userDto.getNickname());
         model.addAttribute("userDto", userDto);
 
+        List<HashMap<String, Object>> dietList = boardMapper.findAllUserDietListWeekly();
+
+        // 랭킹에 보여줄 해시맵 생성 (닉네임, 적정 식사 횟수를 담은 맵)
+        HashMap<String, Integer> rankMap = new HashMap<>();
+
+        for (HashMap<String, Object> map : dietList) {
+            String mapUsername = (String) map.get("username");
+            UserDto mapUser = homeMapper.findByUsername(mapUsername);
+            String nickname = mapUser != null ? mapUser.getNickname() : "Unknown"; // mapUser가 null인 경우 처리
+            Long resultGoodCount = (Long) map.get("result_good_count");
+            System.out.println("resultGoodCount = " + resultGoodCount);
+
+            // 일주일 간
+            // intakeResult = "적정" 인 횟수가 가로축, 세로축이 횟수가 가장 많은 사람의 nickname 의 랭킹차트 생성
+            rankMap.put(nickname, Math.toIntExact(resultGoodCount));
+        }
+
+        // rankMap을 resultGoodCount를 기준으로 내림차순으로 정렬
+        List<Map.Entry<String, Integer>> sortedRankList = rankMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(Collectors.toList());
+
+        // 정렬된 데이터를 LinkedHashMap으로 변환
+        LinkedHashMap<String, Integer> sortedRankMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> entry : sortedRankList) {
+            sortedRankMap.put(entry.getKey(), entry.getValue());
+        }
+
+        // 직렬화 한 후에 모델에 담아 넘기기
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String rankingMap = objectMapper.writeValueAsString(sortedRankMap);
+
+        System.out.println("rankingMap = " + rankingMap);
+        for (Map.Entry<String, Integer> stringIntegerEntry : sortedRankMap.entrySet()) {
+            System.out.println("stringIntegerEntry = " + stringIntegerEntry);
+        }
+
+        model.addAttribute("rankingMap", rankingMap); // 이름 지정 안해줌 ;;;;;
 
         return "board/rank";
     }

@@ -320,9 +320,22 @@
         SELECT *
         FROM postgres.first_project.diet
         WHERE username = #{username}
-          AND DATE(intake_date) >= CURRENT_DATE - INTERVAL '7 days'
+          AND DATE(intake_date) >= CURRENT_DATE - INTERVAL '6 days'
           AND DATE(intake_date) <= CURRENT_DATE
         ORDER BY intake_date;
+        ]]>
+    </select>
+
+    <!-- 모든 유저 식이 기록 최근 7일 조회 (적정 횟수 카운트, 유저네임, 적정 횟수가 많은 순으로 조회) -->
+    <select id="findAllUserDietListWeekly" resultType="hashmap">
+        <![CDATA[
+        SELECT COUNT(intake_result) AS result_good_count, username
+        FROM postgres.first_project.diet
+        WHERE DATE (intake_date) >= CURRENT_DATE - INTERVAL '6 days'
+          AND DATE (intake_date) <= CURRENT_DATE
+          AND intake_result = '적정'
+        GROUP BY username
+        ORDER BY result_good_count DESC;
         ]]>
     </select>
 

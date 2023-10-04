@@ -30,6 +30,15 @@
         <result property="regId" column="reg_id"/>
     </resultMap>
 
+    <resultMap id="errorResultMap" type="com.example.first.dto.ErrorDto">
+        <result property="seq" column="seq"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="errorTime" column="error_time"/>
+        <result property="errorType" column="error_type"/>
+        <result property="errorMessage" column="error_message"/>
+    </resultMap>
+
 
 
     <select id="getAllUsers" resultType="com.example.first.dto.UserDto" resultMap="userResultMap">
@@ -52,7 +61,13 @@
     </select>
 
     <select id="getMenuTable" resultType="com.example.first.dto.MenuDto" resultMap="menuResultMap">
-        SELECT * FROM postgres.first_project.menu
+        SELECT *
+        FROM postgres.first_project.menu
+    </select>
+
+    <select id="getAllError" resultType="com.example.first.dto.ErrorDto" resultMap="errorResultMap">
+        SELECT *
+        FROM postgres.first_project.error
     </select>
 
 

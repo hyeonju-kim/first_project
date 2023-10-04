@@ -280,10 +280,13 @@ public class BoardServiceImpl implements BoardService {
         }
         // ==============================================================
 
+
+        System.out.println("dietDto.getIntakeDate() =================== " + dietDto.getIntakeDate());
+
         UserDto userDto = homeMapper.findByUsername(username);
         double requiredCalories = userDto.getRequiredCalories();
 
-        Integer totalIntake = dietDto.getIntakeCaloriesMorning() + dietDto.getIntakeCaloriesLunch() + dietDto.getIntakeCaloriesDinner();
+        double totalIntake = dietDto.getIntakeCaloriesMorning() + dietDto.getIntakeCaloriesLunch() + dietDto.getIntakeCaloriesDinner();
 
         String intakeResult;
 
@@ -296,11 +299,12 @@ public class BoardServiceImpl implements BoardService {
             intakeResult = "적정";
         }
 
-        DietDto dto = new DietDto(dietDto.getIntakeCaloriesMorning(), dietDto.getIntakeCaloriesLunch(), dietDto.getIntakeCaloriesDinner(), intakeResult, username);
+        DietDto dto = new DietDto(dietDto.getIntakeCaloriesMorning(), dietDto.getIntakeCaloriesLunch(), dietDto.getIntakeCaloriesDinner(), dietDto.getIntakeDate(), intakeResult, username);
         System.out.println("하루 섭취 상태: " + intakeResult);
         System.out.println("하루 권장 칼로리 :" + requiredCalories);
         System.out.println("하루에 총 섭취한 칼로리 :" + totalIntake);
-        System.out.println("dto.getIntakeDate() : " + dto.getIntakeDate());
+
+        System.out.println("dietDto.getIntakeDate() : " + dietDto.getIntakeDate());
         System.out.println("username = " + username);
 
         boardMapper.insertDietRecord(dto);

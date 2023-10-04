@@ -1,6 +1,7 @@
 package com.example.first.controller;
 
 
+import com.example.first.dto.ErrorDto;
 import com.example.first.dto.MenuDto;
 import com.example.first.dto.UserDto;
 import com.example.first.mapper.AdminMapper;
@@ -182,6 +183,7 @@ public class AdminController {
             prevRegDate = user.getRegDate();
         }
 
+
         // 마지막 남은 병합 영역 추가
         if (mergeStartRow < mergeEndRow) {
             sheet.addMergedRegion(new CellRangeAddress(mergeStartRow, mergeEndRow - 1, 8, 8)); // 가입일 열 병합
@@ -189,6 +191,7 @@ public class AdminController {
 
 //        sheet.addMergedRegion(new CellRangeAddress(2, 3, 8, 8)); // 병합 테스트
 //        sheet.addMergedRegion(new CellRangeAddress(2, 4, 8, 8)); // 병합 테스트
+
 
         // HTTP 응답 헤더 설정
         response.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
@@ -311,6 +314,40 @@ public class AdminController {
 
 
         return "admin/menu";
+
+    }
+
+    @GetMapping("/error")
+    public String viewError(Model model) {
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName(); // 사용자 이메일
+            UserDto userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+                model.addAttribute("role", role);
+            }
+            // 모델에 사용자 정보 추가
+            model.addAttribute("username", username);
+            model.addAttribute("nickname", userDto.getNickname());
+
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+            model.addAttribute("username", "");
+        }
+
+        List<ErrorDto> errorList = adminMapper.getAllError();
+
+        for (ErrorDto errorDto : errorList) {
+            String errorTime = errorDto.getErrorTime();
+            String formattedTime = errorTime.substring(0, 19); // 처음부터 19번째 문자까지 추출
+            errorDto.setErrorTime(formattedTime);
+        }
+
+        model.addAttribute("errorList", errorList);
+        return "admin/error";
 
     }
 }
