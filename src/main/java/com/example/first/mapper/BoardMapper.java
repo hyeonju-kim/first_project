@@ -1,9 +1,6 @@
 package com.example.first.mapper;
 
-import com.example.first.dto.BoardDto;
-import com.example.first.dto.BoardMultiFile;
-import com.example.first.dto.CommentDto;
-import com.example.first.dto.DietDto;
+import com.example.first.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -23,8 +20,10 @@ public interface BoardMapper {
     // 총 페이지 수 조회
     int getTotalPages(int pageSize);
 
+    // 특정 게시물 조회
     BoardDto getBoardById(Long boardId);
 
+    // 글 작성
     Long createBoard(BoardDto boardDto);
 
 
@@ -34,7 +33,26 @@ public interface BoardMapper {
     // 다중 멀티 파일 업로드
     void uploadMultiFiles(List<BoardMultiFile> fileList);
 
+    // 특정 게시글의 멀티파일 fileName 조회 쿼리
+    List<String> findAllMultiFilesName(Long boardId);
+
+    //멀티파일 삭제 (flagDel = "Y" 로)
+    void updateMultiFilesFlagDel(String fileName);
+
+    // 게시글 수정
     void updateBoard(BoardDto boardDto);
+
+    // 게시글 좋아요 후 업데이트
+    void updateBoardLikes(BoardDto boardDto);
+
+    // 게시글 좋아요 테이블에 인서트
+    void saveBoardLike(BoardLikeDto boardLikeDto);
+
+    // 게시글 좋아요 테이블에서 삭제 (좋아요 취소)
+    void deleteBoardLike(String username);
+
+    // 게시글 좋아요 되어있는지 확인
+    List<BoardLikeDto> findBoardLike(String username);
 
     void deleteBoard(Long boardId);
 
@@ -50,6 +68,8 @@ public interface BoardMapper {
     List<CommentDto> getAllCommentsByBoardId(Long boardId);
 
     List<CommentDto> getAllComments();
+
+    CommentDto findCommentByCommentId(Long commentId);
 
 
 

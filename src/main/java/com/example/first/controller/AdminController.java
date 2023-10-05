@@ -314,7 +314,6 @@ public class AdminController {
 
 
         return "admin/menu";
-
     }
 
     @GetMapping("/error")

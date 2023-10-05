@@ -28,10 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -90,7 +89,7 @@ public class BoardController {
     // 게시판 글 조회 (페이징 처리 된)
     @GetMapping
     public String getAllBoards(Model model, @RequestParam(defaultValue = "1") int currentPage) {
-        int pageSize = 10; // 페이지당 게시물 수
+        int pageSize = 15; // 페이지당 게시물 수
         List<BoardDto> boards = boardService.getBoardsByPage(currentPage, pageSize);
         int totalPages = boardService.getTotalPages(pageSize);
 
@@ -125,8 +124,6 @@ public class BoardController {
             // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
             model.addAttribute("username", "");
         }
-
-
         return "board";
     }
 
@@ -156,6 +153,7 @@ public class BoardController {
             }
             // 모델에 사용자 정보 추가
             model.addAttribute("username", username);
+            model.addAttribute("nickname", userDto.getNickname());
         }
 
         BoardDto boardDto = boardService.getBoardById(boardId);
@@ -164,6 +162,19 @@ public class BoardController {
 
         System.out.println("boardDto.getUsername() ============================== " + boardDto.getUsername());
         System.out.println("username ============================================ " + username);
+
+        // 현재 로그인 유저가 해당 게시물을 좋아요를 했다면 , 모델에 "like" = true 넣어주기
+        if (isAlreadyLiked(boardId, username)) {
+            model.addAttribute("like", true);
+        }else {
+            model.addAttribute("like", false);
+        }
+//        List<BoardLikeDto> boardLikeDtoList = boardMapper.findBoardLike(username);
+//        for (BoardLikeDto boardLikeDto : boardLikeDtoList) {
+//            if (boardLikeDto.getBoardId() == boardId) {
+//                model.addAttribute("likeY", "likeY");
+//            }
+//        }
 
         // 게시글의 멀티 파일 정보를 가져옵니다.
         List<BoardMultiFile> multiFiles = boardService.getBoardMultiFilesByBoardId(boardId);
@@ -230,6 +241,13 @@ public class BoardController {
             return "board/alert"; // 알림을 보여줄 JSP 페이지 경로
         }
 
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("role", userDto.getRole());
+
         return "board/create"; // 로그인한 사용자에게는 글 작성 폼을 보여줄 JSP 페이지 경로
     }
 
@@ -242,20 +260,18 @@ public class BoardController {
                               @RequestParam("files") List<MultipartFile> files,
                               Model model) throws IOException {
 
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("role", userDto.getRole());
+
         BoardDto boardDto = new BoardDto(title, content);
 
         Long boardId = boardService.createBoard2(boardDto, files);
         System.out.println(" 보드 컨트롤러 / 글 작성 / boardId = " + boardId);
 
-        String username = getUsername();
-        model.addAttribute("username", username);
-
-        UserDto userDto = getUserDto();
-        if (userDto != null) {
-            String role = userDto.getRole();
-            System.out.println("role ===== " + role);
-            model.addAttribute("role", role);
-        }
 
         return "redirect:/boards/" + boardId; // 게시글 생성 후 해당 게시글 상세 페이지로 리다이렉트
     }
@@ -267,17 +283,139 @@ public class BoardController {
     public String showEditForm(@PathVariable Long boardId, Model model) {
         BoardDto board = boardService.getBoardById(boardId);
         board.setBoardId(boardId);
-        if (board != null) {
-            model.addAttribute("board", board);
-            return "board/edit"; // "board/edit"는 게시글 수정 폼을 보여줄 JSP 페이지 경로입니다.
-        } else {
-            return "redirect:/boards"; // 게시글을 찾을 수 없으면 목록 페이지로 리다이렉트합니다.
-        }
+        model.addAttribute("board", board);
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("role", userDto.getRole());
+        // 게시글의 멀티 파일 정보를 가져옵니다.
+        List<BoardMultiFile> multiFiles = boardService.getBoardMultiFilesByBoardId(boardId);
+
+        System.out.println("multiFiles.toString() = " + multiFiles.toString());
+        System.out.println("multiFiles.size() = " + multiFiles.size());
+
+        model.addAttribute("multiFiles", multiFiles); // 멀티 파일 리스트를 모델에 추가합니다.
+        return "board/edit";
     }
 
-    // 글 수정
+    // 글 수정  TODO 멀티파일 수정 되도록 고치기  ( )
     @PostMapping("/{boardId}/edit")
-    public String updateBoard(@PathVariable Long boardId, @ModelAttribute BoardDto boardDto) {
+    public String updateBoard(@PathVariable Long boardId, @ModelAttribute BoardDto boardDto, @RequestParam("files") MultipartFile[] files) throws IOException {
+
+        System.out.println("files?????????????????? " + files.toString());
+
+        for (int i = 0; i < files.length; i++) {
+            System.out.println("files???????" + files[i]);
+        }
+
+
+        // 게시글의 멀티 파일 정보를 가져옵니다.
+        List<BoardMultiFile> multiFiles = boardService.getBoardMultiFilesByBoardId(boardId);
+
+        System.out.println("multiFiles.toString() = " + multiFiles.toString());
+        System.out.println("multiFiles.size() = " + multiFiles.size());
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String regDate = now.format(formatter);
+        boardDto.setCreatedAt(regDate);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserDto user = homeMapper.findByUsername(username);
+        String nickname = user.getNickname();
+        boardDto.setNickname(nickname);
+        boardDto.setUsername(username);
+
+        List<String> allMultiFilesOriginalNameByBoardId = boardMapper.findBoardMultiFileOriginalName(boardId); // boardId로 멀티파일 원본 이름 가져오기
+
+        List<String> newMultiFilesOriginalNameList;
+        newMultiFilesOriginalNameList = new ArrayList<>(); // 새로 수정된 멀티파일 원본이름 리스트 생성
+        for (MultipartFile newFiles : files) {
+            newMultiFilesOriginalNameList.add(newFiles.getOriginalFilename());
+        }
+
+
+        // 기존 멀티 첨부 파일에 없는 파일이 있으면 새로 첨부 파일 업로드 및 정보 저장
+//        for (int i = 0; i < files.size(); i++) {
+////          MultipartFile file = files.get(i);
+//            if (!allMultiFilesOriginalNameByBoardId.contains(files.get(i).getOriginalFilename())) { // 게시글의 기존 파일들 중에 새로운 파일명이 없으면
+//                if (files.get(i) != null && !files.get(i).isEmpty()) { // 파일이 존재하고 비어있지 않은 경우에만 처리
+//                    // 내가 업로드 파일을 저장할 경로
+//                    String originalName = files.get(i).getOriginalFilename();
+//                    String fileName = System.currentTimeMillis() + "_" + originalName;
+//
+//                    String saveRootPath =  "C:\\multifile"; // 업로드할 디렉토리 경로 설정
+//                    String savePath =  "C:\\multifile\\" + fileName; // 업로드할 디렉토리 경로 + 파일명 설정
+//
+//                    // 저장할 파일 경로와 파일명 생성
+//                    File saveFile = new File(saveRootPath, fileName);
+//
+////                    filesToRemove.add(files.get(i)); // 새로 생성한 새로운 멀티 파일은 제거할 파일 리스트에 추가
+//                    newMultiFilesOriginalNameList.remove(files.get(i).getOriginalFilename()); // 새로 만든 파일은 새로 수정된 멀티파일 원본이름 리스트에서 제거
+//
+//                    // 파일 업로드 및 정보 저장
+//                    try {
+//                        files.get(i).transferTo(saveFile);
+//
+//                        String fileExt = getFileExtension(fileName);
+//
+//
+//                        BoardMultiFile multiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
+//                        System.out.println("multiFile.getFlagDel() =============== " + multiFile.getFlagDel());
+//
+//                        boardMapper.storeBoardMultiFile(multiFile);
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        throw new IOException("파일 업로드 실패 ㅠㅠ");
+//                    }
+//                }
+//            }
+//        }
+
+        // 새로운 파일 업로드
+//        for (MultipartFile newFile : newFiles) {
+//            if (newFile != null && !newFile.isEmpty()) { // 파일이 존재하고 비어있지 않은 경우에만 처리
+//                // 내가 업로드 파일을 저장할 경로
+//                String originalName = newFile.getOriginalFilename();
+//                String fileName = System.currentTimeMillis() + "_" + originalName;
+//
+//                String saveRootPath =  "C:\\multifile"; // 업로드할 디렉토리 경로 설정
+//                String savePath =  "C:\\multifile\\" + fileName; // 업로드할 디렉토리 경로 + 파일명 설정
+//
+//                // 저장할 파일 경로와 파일명 생성
+//                File saveFile = new File(saveRootPath, fileName);
+//
+//                // 파일 업로드 및 정보 저장
+//                try {
+//                    newFile.transferTo(saveFile);
+//                    String fileExt = getFileExtension(fileName);
+//
+//                    BoardMultiFile multiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
+//                    System.out.println("multiFile.getFlagDel() =============== " + multiFile.getFlagDel());
+//                    boardMapper.storeBoardMultiFile(multiFile);
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    throw new IOException("파일 업로드 실패 ㅠㅠ");
+//                }
+//            }
+//
+//        }
+
+
+        // 제거할 파일 리스트가 있으면 for문 돌면서 FlagDel = "Y" 로 업데이트하기
+
+        if (!allMultiFilesOriginalNameByBoardId.isEmpty()) {
+            for (String fileOriginalName : allMultiFilesOriginalNameByBoardId) {
+                if (!allMultiFilesOriginalNameByBoardId.contains(fileOriginalName)){ // 기존 게시글의 파일명 중에, 수정된 게시글의 파일명이 포함되어 있지 않으면, flagDel = "Y" 설정
+                    boardMapper.updateMultiFilesFlagDel(fileOriginalName);
+                }
+            }
+        }
 
         boardDto.setBoardId(boardId);
         boardService.updateBoard(boardId, boardDto);
@@ -286,6 +424,7 @@ public class BoardController {
         System.out.println(" 보드 컨트롤러 / 게시글 수정 - board.getContent() = " + boardDto.getContent());
         System.out.println(" 보드 컨트롤러 / 게시글 수정 - board.getBoardId() = " + boardDto.getBoardId());
         return "redirect:/boards/" + boardId; // 게시글 수정 후 해당 게시글 상세 페이지로 리다이렉트합니다.
+//        return "boards/" + boardId;
     }
 
     // 글 삭제 (status 만 Y로 업데이트)
@@ -326,8 +465,47 @@ public class BoardController {
         model.addAttribute("currentPage", currentPage);
 
         return "board";
-
     }
+
+
+    // 좋아요 추가 / 취소 API
+    @RequestMapping("/likes/{boardId}")
+    public String addLike(@PathVariable Long boardId) {
+        String username = getUsername();
+        // 좋아요 수를 증가시키는 로직을 구현
+        BoardDto board = boardMapper.getBoardById(boardId);
+
+        // 현재 사용자가 해당 게시글에 좋아요를 누르지 않은 경우에만 좋아요 수를 증가시키고 좋아요를 추가
+        if (!isAlreadyLiked(boardId, username)) {
+            board.setCntLike(board.getCntLike() + 1);
+            boardMapper.updateBoardLikes(board);
+            boardMapper.saveBoardLike(new BoardLikeDto(boardId, username));
+        }else {
+            board.setCntLike(board.getCntLike() - 1);
+            boardMapper.updateBoardLikes(board);
+            boardMapper.deleteBoardLike(username);
+        }
+        return "redirect:/boards/" + boardId;
+    }
+
+    // 좋아요 되어있는지 확인하는 메소드 (좋아요 되어있으면 true, 안되어있으면 false)
+    public boolean isAlreadyLiked(Long boardId, String username) {
+        List<BoardLikeDto> boardLike = boardMapper.findBoardLike(username);
+        for (BoardLikeDto boardLikeDto : boardLike) {
+            if (Objects.equals(boardLikeDto.getBoardId(), boardId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+//    // 좋아요 삭제 API
+//    @PostMapping("/likes/{boardId}")
+//    public void removeLike(@PathVariable Long boardId) {
+//        boardMapper.removeLike(boardId);
+//    }
+
+
 
     //======== 댓글 ==========
 
@@ -350,6 +528,25 @@ public class BoardController {
 
 
         return "redirect:/boards/" + boardId; // 댓글 추가 후 게시글 상세 페이지로 리다이렉트
+    }
+
+    // 댓글 수정 폼
+    @GetMapping("/{boardId}/editComment/{commentId}")
+    public String editCommentForm(@PathVariable Long boardId, @PathVariable Long commentId, @RequestParam String content, Model model) {
+        CommentDto comment = boardMapper.findCommentByCommentId(commentId);
+
+        BoardDto board = boardService.getBoardById(boardId);
+        board.setBoardId(boardId);
+        model.addAttribute("board", board);
+        model.addAttribute("comment", comment);
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("role", userDto.getRole());
+
+        return "board/comment_edit"; // 댓글 수정 후 게시글 상세 페이지로 리다이렉트
     }
 
     // 댓글 수정 처리
