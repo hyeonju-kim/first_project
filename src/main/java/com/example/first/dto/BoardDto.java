@@ -20,6 +20,7 @@ public class BoardDto {
     private String nickname;
     private List<CommentDto> comments; // 댓글 목록
     private int cntLike; // 글의 총 좋아요 수
+    private boolean like = false; // 현재 사용자가 like를 했는지 임시로
 
     // 경로를 저장하기 (파일경로명)
     private String fileLocation;

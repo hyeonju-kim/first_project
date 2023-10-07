@@ -12,7 +12,7 @@ import java.util.Map;
 @Mapper
 public interface BoardMapper {
     // 토탈 게시판 글목록 조회 (페이징 x)
-    List<BoardDto> getAllBoards();
+//    List<BoardDto> getAllBoards();
 
     // 페이지 별 게시판 글목록 조회
     List<BoardDto> getBoardsByPage(Map<String, Integer> params);
@@ -49,7 +49,7 @@ public interface BoardMapper {
     void saveBoardLike(BoardLikeDto boardLikeDto);
 
     // 게시글 좋아요 테이블에서 삭제 (좋아요 취소)
-    void deleteBoardLike(String username);
+    void deleteBoardLike(Long boardId, String username);
 
     // 게시글 좋아요 되어있는지 확인
     List<BoardLikeDto> findBoardLike(String username);

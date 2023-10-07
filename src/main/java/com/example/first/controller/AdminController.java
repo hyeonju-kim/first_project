@@ -33,34 +33,64 @@ import java.util.*;
 @Slf4j
 @CrossOrigin
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController {// 🎯🎯🎯🎯🎯 7개 API
     private final AdminService adminService;
     private final HomeMapper homeMapper;
     private final AdminMapper adminMapper;
+    public String getUsername() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
 
-    // 사용자 정보가 모두 담긴 리스트 조회
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return username;
+    }
+
+    public UserDto getUserDto() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
+
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return userDto;
+    }
+
+
+    // 🎯 1. 사용자 정보가 모두 담긴 리스트 조회
     @GetMapping("/users")
     public String getAllUsers(Model model) {
         List<UserDto> users = adminService.getAllUsers(); // UserService에서 모든 사용자 정보 가져오기
 
 
         // ============== 현재 로그인한 사용자 정보 가져오기 ===============
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName(); // 사용자 이메일
-            UserDto userDto = homeMapper.findByUsername(username);
-            if (userDto != null) {
-                String role = userDto.getRole();
-                System.out.println("role ===== " + role);
-                model.addAttribute("role", role);
-            }
-            // 모델에 사용자 정보 추가
-            model.addAttribute("username", username);
-            model.addAttribute("nickname", userDto.getNickname());
-        } else {
-            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
-            model.addAttribute("username", "");
-        }
+        String username = getUsername();
+        UserDto userDto = getUserDto();
+
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("role", userDto.getRole());
         // ==============================================================
 
 
@@ -68,7 +98,7 @@ public class AdminController {
         return "admin/users";
     }
 
-    // 마이페이지 화면 - 사용자 이름 클릭 시 사용자 정보 보이도록
+    // 🎯 2. 마이페이지 화면 - 사용자 이름 클릭 시 사용자 정보 보이도록
     @GetMapping("/userDetails")
     public ModelAndView userDetails(Model model, @RequestParam String username) {
 
@@ -97,7 +127,7 @@ public class AdminController {
         return mv;
     }
 
-    // 사용자 정보 엑셀 다운로드
+    // 🎯 3. 사용자 정보 엑셀 다운로드
     @GetMapping("/downloadUsers")
     public AbstractXlsxView downloadUsers(HttpServletResponse response) throws IOException {
         // 사용자 목록을 데이터베이스 또는 서비스에서 가져오는 코드를 작성
@@ -212,7 +242,7 @@ public class AdminController {
         };
     }
 
-    // 사용자 정보 업로드
+    // 🎯 4. 사용자 정보 업로드
     @PostMapping("/uploadUsers")
     public String uploadUsers(@RequestParam("file") MultipartFile file) throws IOException {
         // 디비에 저장할 유저 리스트 만들어 놓기
@@ -255,7 +285,7 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    // 월별 가입자 수 통계 조회
+    // 🎯 5. 월별 가입자 수 통계 조회
     @GetMapping("/statistics")
     public String getUsersStatisticsPerMonth(Model model) {
         // 월별 가입자 수 통계 데이터를 서비스에서 가져옴
@@ -286,7 +316,7 @@ public class AdminController {
         return "admin/statistics";
     }
 
-    // 메뉴관리 조회
+    // 🎯 6. 메뉴관리 조회
     @GetMapping("/menu")
     public String viewMenuTable(Model model) {
         List<MenuDto> menuDtoList = adminService.getMenuTable();
@@ -316,6 +346,7 @@ public class AdminController {
         return "admin/menu";
     }
 
+    // 🎯 7. 에러 목록 조회
     @GetMapping("/error")
     public String viewError(Model model) {
         // ============== 현재 로그인한 사용자 정보 가져오기 ===============

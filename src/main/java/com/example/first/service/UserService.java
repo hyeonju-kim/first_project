@@ -9,25 +9,25 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface UserService {
-    // 회원가입
+    // 🔥 1. 회원가입
     UserDto signUp(UserDto userDto) throws UserException;
 
-    // 프로필 사진 업로드
+    // 🔥 4. 프로필 사진 경로 반환 및 업로드
     String storeProfilePicture(MultipartFile profilePicture, String fileName, String username, String originalName) throws IOException;
 
-    //이메일 인증
+    // 🔥 7. 회원가입 시 메일로 인증번호 발송
     void sendAuthNumToEmail(String username);
 
-    // 비번 찾기
+    // 🔥 9. 비밀번호 찾기 - 메일로 임시 비밀번호 전송
     void sendTempPwToEmail(String username);
 
-    // 비번 변경
+    // 🔥 10. 비밀번호 변경
     void changePw(PasswordDto passwordDto) throws UserException;
 
-    // 로그인
+    // 🔥 11. 로그인
     UserDetails login(UserDto userDto) throws UserException;
 
-    // 마이페이지 화면 보이기
+    // 🔥 12. 마이페이지 화면 보이기
 //    UserDto getUserInfo();
 
     // 개인정보 확인

@@ -26,12 +26,45 @@ public class BoardServiceImpl implements BoardService {
     private final BoardMapper boardMapper;
     private final HomeMapper homeMapper;
 
+    public String getUsername() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
 
-//    // 토탈 게시판 글목록 조회 (페이징 x)
-//    @Override
-//    public List<BoardDto> getAllBoards() {
-//        return boardMapper.getAllBoards();
-//    }
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return username;
+    }
+
+    public UserDto getUserDto() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
+
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return userDto;
+    }
 
     // 페이지 별 게시판 글목록 조회
     @Override
@@ -50,7 +83,6 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.getTotalPages(pageSize); // 총 게시물 수가 101이고, 페이지사이즈가 10이면 -> 총 페이지 수는 11
     }
 
-
     // 특정 게시글 조회
     @Override
     public BoardDto getBoardById(Long boardId) {
@@ -62,12 +94,7 @@ public class BoardServiceImpl implements BoardService {
             System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 / 댓글 내용 확인 - commentDto.getContent() = " + commentDto.getContent());
             System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 / 레벨 확인 - commentDto.getLevel() = " + commentDto.getLevel());
         }
-
         boardDto.setComments(hierarchicalCommentsByBoardId);
-        System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 - boardDto = " + boardDto);
-        System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 - boardDto.getTitle() = " + boardDto.getTitle());
-        System.out.println(" 보드 서비스 임플 / 특정 게시글 조회 - boardDto.getContent() = " + boardDto.getContent());
-
         return boardDto;
     }
 
@@ -118,19 +145,17 @@ public class BoardServiceImpl implements BoardService {
 
     // 글 작성 (다중 멀티 파일)
     @Override
-    public Long createBoard2(BoardDto boardDto, List<MultipartFile> files) throws IOException {
+    public Long createBoard(BoardDto boardDto, List<MultipartFile> files) throws IOException {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String regDate = now.format(formatter);
         boardDto.setCreatedAt(regDate);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        UserDto user = homeMapper.findByUsername(username);
+        String username = getUsername();
+        UserDto user = getUserDto();
         String nickname = user.getNickname();
         boardDto.setNickname(nickname);
         boardDto.setUsername(username);
-
 
         // 게시글 정보 저장
         Long boardId = boardMapper.createBoard(boardDto);
@@ -155,10 +180,7 @@ public class BoardServiceImpl implements BoardService {
 
                         String fileExt = getFileExtension(fileName);
 
-
                         BoardMultiFile multiFile = new BoardMultiFile(boardId, fileName, savePath, regDate, fileExt, username, originalName);
-                        System.out.println("multiFile.getStatus() =============== " + multiFile.getStatus());
-
                         boardMapper.storeBoardMultiFile(multiFile);
 
                     } catch (IOException e) {
@@ -168,7 +190,6 @@ public class BoardServiceImpl implements BoardService {
                 }
             }
         }
-
         return boardId;
     }
 
@@ -187,14 +208,12 @@ public class BoardServiceImpl implements BoardService {
     // 글 검색 (페이징 적용)
     @Override
     public List<BoardDto> getSearchBoardsByPage(String keyword, int currentPage, int pageSize) {
-
         int offset = (currentPage - 1) * pageSize; // 현재 2페이지고 페이지사이즈가 10이면 offset은 10
 
         Map<String, Object> params = new HashMap<>();
         params.put("pageSize", pageSize);
         params.put("offset", offset);
         params.put("keyword", keyword);
-
         return boardMapper.getSearchBoardsByPage(params);
     }
 
@@ -204,7 +223,6 @@ public class BoardServiceImpl implements BoardService {
         Map<String, Object> params = new HashMap<>();
         params.put("keyword", keyword);
         params.put("pageSize", pageSize);
-
         return boardMapper.getSearchBoardsTotalPages(params); // 총 게시물 수가 101이고, 페이지사이즈가 10이면 -> 총 페이지 수는 11
     }
 
@@ -217,7 +235,6 @@ public class BoardServiceImpl implements BoardService {
     // 댓글 생성
     @Override
     public CommentDto createComment(CommentDto commentDto) {
-
         // 작성일 및 닉네임 넣어주기
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -226,16 +243,13 @@ public class BoardServiceImpl implements BoardService {
         System.out.println(" 보드 서비스 임플 / 댓글 작성 / 작성일 - formattedDateTime =  " + formattedDateTime);
         commentDto.setCreatedAt(formattedDateTime);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        UserDto userDto = homeMapper.findByUsername(username);
+        String username = getUsername();
+        UserDto userDto = getUserDto();
         String nickname = userDto.getNickname();
         System.out.println(" 보드 서비스 임플 / 댓글 작성 / 닉네임 - nickname =  " + nickname);
 
-
         commentDto.setUsername(username);
         commentDto.setNickname(nickname);
-
         Long commentId = boardMapper.createComment(commentDto);
         commentDto.setCommentId(commentId);
 
@@ -264,30 +278,11 @@ public class BoardServiceImpl implements BoardService {
     // 식단 정보 저장
     @Override
     public void insertDietRecord(DietDto dietDto) {
-        String username = "";
-        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            username = authentication.getName(); // 사용자 이메일
+        String username = getUsername();
+        UserDto userDto = getUserDto();
 
-            UserDto userDto = homeMapper.findByUsername(username);
-            if (userDto != null) {
-                String role = userDto.getRole();
-                System.out.println("role ===== " + role);
-            }
-        } else {
-            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
-        }
-        // ==============================================================
-
-
-        System.out.println("dietDto.getIntakeDate() =================== " + dietDto.getIntakeDate());
-
-        UserDto userDto = homeMapper.findByUsername(username);
         double requiredCalories = userDto.getRequiredCalories();
-
         double totalIntake = dietDto.getIntakeCaloriesMorning() + dietDto.getIntakeCaloriesLunch() + dietDto.getIntakeCaloriesDinner();
-
         String intakeResult;
 
         //하루 권장 칼로리보다 15%이상 많이 섭취하면 과다 , 15% 미만으로 섭취하면 부족, 그 외에는 적정
@@ -299,16 +294,8 @@ public class BoardServiceImpl implements BoardService {
             intakeResult = "적정";
         }
 
-        DietDto dto = new DietDto(dietDto.getIntakeCaloriesMorning(), dietDto.getIntakeCaloriesLunch(), dietDto.getIntakeCaloriesDinner(), dietDto.getIntakeDate(), intakeResult, username);
-        System.out.println("하루 섭취 상태: " + intakeResult);
-        System.out.println("하루 권장 칼로리 :" + requiredCalories);
-        System.out.println("하루에 총 섭취한 칼로리 :" + totalIntake);
-
-        System.out.println("dietDto.getIntakeDate() : " + dietDto.getIntakeDate());
-        System.out.println("username = " + username);
-
+        DietDto dto = new DietDto(dietDto.getIntakeCaloriesMorning(), dietDto.getIntakeCaloriesLunch(),
+                                    dietDto.getIntakeCaloriesDinner(), dietDto.getIntakeDate(), intakeResult, username);
         boardMapper.insertDietRecord(dto);
     }
-
-
 }

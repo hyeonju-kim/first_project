@@ -5,7 +5,6 @@
 
 <!-- 게시판 -->
 <mapper namespace="com.example.first.mapper.BoardMapper">
-
     <resultMap id="boardResultMap" type="com.example.first.dto.BoardDto">
         <id property="boardId" column="board_id"/>
         <result property="userId" column="user_id"/>
@@ -13,8 +12,6 @@
         <result property="fileLocation" column="file_location"/>
         <result property="fileOriginalName" column="file_original_name"/>
         <result property="cntLike" column="cnt_like"/>
-        <result property="likeYN" column="like_yn"/>
-
     </resultMap>
 
     <resultMap id="CommentResultMap" type="com.example.first.dto.CommentDto">
@@ -68,6 +65,7 @@
         LIMIT #{pageSize} OFFSET #{offset};
     </select>
 
+
 <!--    총 페이지 수 조회-->
     <select id="getTotalPages" parameterType="int" resultType="int">
         SELECT CEIL(COUNT(*)::NUMERIC / #{pageSize})
@@ -102,9 +100,11 @@
     </select>
 
     <!-- 좋아요 다시 누르면 좋아요 테이블에서 삭제 -->
-    <select id="deleteBoardLike" parameterType="java.lang.String" >
-        DELETE FROM postgres.first_project.board_like
-        WHERE username = #{username};
+    <select id="deleteBoardLike" >
+        DELETE
+        FROM postgres.first_project.board_like
+        WHERE username = #{username}
+          AND board_id = #{boardId};
     </select>
 
     <!-- 게시글 좋아요 되어있는지 확인-->
@@ -208,9 +208,11 @@
         WHERE status = 'N';
     </select>
 
+
     <!-- 계층형 댓글 조회 쿼리 -->
     <select id="getHierarchicalCommentsByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.CommentDto">
         WITH RECURSIVE CommentHierarchy(commentId, boardId, content, createdAt, username, nickname, parentCommentId, status, level, path, cycle) AS (
+            -- 최상위 댓글을 시작으로 재귀적으로 댓글 계층을 조회합니다.
             SELECT
                 b.comment_id AS commentId,
                 b.board_id AS boardId,
@@ -220,18 +222,19 @@
                 b.nickname,
                 b.parent_comment_id AS parentCommentId,
                 b.status,
-                1,
-                array[comment_id],
-                false
+                1, -- 최상위 댓글의 레벨은 1로 시작합니다.
+                array[b.comment_id], -- 최상위 댓글의 경로(path)를 배열로 초기화합니다.
+                false -- 사이클 여부를 나타내는 변수를 초기화합니다.
             FROM
                 postgres.first_project.comments b
             WHERE
-                board_id = #{boardId}
+                board_id = #{boardId} -- 특정 게시글(board)에 속한 댓글들을 조회합니다.
               AND
-                parent_comment_id IS NULL -- 최상위 댓글만 시작점으로
+                parent_comment_id IS NULL -- 최상위 댓글만 시작점으로 설정합니다.
               AND
-                status = 'N'
-            UNION all
+                status = 'N' -- 활성화된 댓글만 조회합니다.
+            UNION ALL
+            -- 재귀적으로 하위 댓글을 조회합니다.
             SELECT
                 c.comment_id AS commentId,
                 c.board_id AS boardId,
@@ -241,19 +244,24 @@
                 c.nickname,
                 c.parent_comment_id AS parentCommentId,
                 c.status,
-                ch.level+1,
-                array_append(ch.path, c.comment_id),
-                c.comment_id = any(ch.path)
-            from postgres.first_project.comments c
-            INNER JOIN CommentHierarchy ch
-            ON c.parent_comment_id = ch.commentId
-            WHERE c.parent_comment_id  = ch.commentId
-            AND NOT CYCLE
+                ch.level + 1, -- 상위 댓글 레벨에 1을 더하여 하위 댓글의 레벨을 설정합니다.
+                array_append(ch.path, c.comment_id), -- 상위 댓글의 경로에 현재 댓글을 추가합니다.
+                c.comment_id = ANY(ch.path) -- 사이클 여부를 판단합니다.
+            FROM
+                postgres.first_project.comments c
+                    INNER JOIN
+                CommentHierarchy ch
+                ON
+                    c.parent_comment_id = ch.commentId
+            WHERE
+                c.parent_comment_id = ch.commentId -- 상위 댓글과 현재 댓글의 관계를 조인합니다.
+              AND
+                NOT CYCLE -- 사이클을 방지합니다.
         )
         SELECT DISTINCT ON (path)
             commentId,
             boardId,
-            lpad(' ', level) || content as content,
+            lpad(' ', level) || content AS content, -- 레벨에 따라 들여쓰기하여 댓글을 표시합니다.
             createdAt,
             username,
             nickname,
@@ -264,11 +272,11 @@
         FROM
             CommentHierarchy
         WHERE
-            status = 'N'
+            status = 'N' -- 활성화된 댓글만 선택합니다.
         ORDER BY
             path;
-
     </select>
+
 
     <!-- 테이블의 레벨 업데이트 쿼리 -->
     <update id="updateBoardLevel" parameterType="com.example.first.dto.CommentDto">
@@ -400,11 +408,4 @@
         ORDER BY result_good_count DESC;
         ]]>
     </select>
-
-
-
-
-
-
-
 </mapper>

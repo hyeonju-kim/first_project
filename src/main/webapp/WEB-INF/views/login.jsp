@@ -51,20 +51,15 @@
 
 <body>
 <div class="container">
-
     <div class="input-form-backgroud row">
         <div class="input-form col-md-5 mx-auto  text-center">
-            <%-- 로고 추가--%>
             <div class="logo-container">
-                <img src="images/diet-record_logo.png" alt="Diet Record 로고">
+                <img src="images/diet-record_logo.png" alt="Diet Record 로고"><%-- 로고 추가--%>
             </div>
-<%--            <h4 class="mb-3">로그인</h4>--%>
 
-            <%--   추가 !!! --%>
             <c:url value="/login" var="loginUrl"/>
             <form name="login_form" class="validation-form" action="/login" method="post">
                 <div class="mb-3">
-<%--                    <label for="username">이메일</label>--%>
                     <input type="email" class="form-control" id="username" name="username" placeholder="이메일" required>
                     <div class="invalid-feedback">
                         이메일을 입력해주세요.
@@ -72,7 +67,6 @@
                 </div>
 
                 <div class="mb-3">
-<%--                    <label for="password">비밀번호</label>--%>
                     <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호" required>
                     <div class="invalid-feedback">
                         비밀번호를 입력해주세요.
@@ -95,34 +89,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // window.addEventListener('load', () => {
-    //     const forms = document.getElementsByClassName('validation-form');
-    //
-    //     Array.prototype.filter.call(forms, (form) => {
-    //         form.addEventListener('submit', function (event) {
-    //             if (form.checkValidity() === false) {
-    //                 event.preventDefault();
-    //                 event.stopPropagation();
-    //             }
-    //
-    //             form.classList.add('was-validated');
-    //         }, false);
-    //     });
-    // }, false);
-
-
     function login() {
-        // document.login_form.submit();
-
-
         var username = $('#username').val()
         var password = $('#password').val()
-
-        console.log(username);
-        console.log(password);
-
-
-
 
         // 가져온 정보를 data로 묶기
         let data = {
@@ -132,8 +101,8 @@
 
         // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
         $.ajax({
-            type: 'POST',
             url: '/login',
+            type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
             success: function (response, status, xhr) {
@@ -157,13 +126,7 @@
                 alert('서버 요청 실패');
             }
         });
-
         return true;
-
-        // // 5. 모든 필드가 유효한 경우 폼을 서버로 제출할 수 있습니다.
-        // if (isValid) {
-        //     $("#registrationForm")[0].submit();
-        // }
     }
 
 </script>

@@ -75,7 +75,6 @@
                     <!-- 함수명이랑 id값이랑 같아서 계속 에러났었음.... -->
                     <button class="btn btn-primary" type="button" id="findAddress" onclick="findAddr()">주소 입력</button>
                 </div>
-
                 <div class="form-group">
                     <input type="text" name="zipcode" id="zipcode" class="form-control" placeholder="우편번호" readonly onclick="findAddr()">
                 </div>
@@ -85,7 +84,6 @@
                 <div class="form-group">
                     <input type="text" name="detailAdr" id="detailAdr" class="form-control" placeholder="상세주소">
                 </div>
-
                 <div class="mb-3">
                     <input type="email" class="form-control" id="username" placeholder="이메일" required >
                     <span id="usernameError" style="color: red;"></span>
@@ -102,23 +100,18 @@
                         인증번호를 입력해주세요.
                     </div>
                 </div>
-
                 <div class="mb-3">
                     <input type="password" class="form-control" id="password" placeholder="비밀번호(8~16자 영문, 숫자, 특수문자)" required>
                     <span id="passwordError" style="color: red;"></span>
                 </div>
-
                 <div class="mb-3">
                     <input type="password" class="form-control" id="passwordConfirm" placeholder="비밀번호 확인" required>
                     <span id="passwordConfirmError" style="color: red;"></span>
                 </div>
-
-
                 <div class="mb-3">
                     <input type="text" class="form-control" id="phoneNumber" placeholder="휴대폰번호" required>
                     <span id="phoneNumberError" style="color: red;"></span>
                 </div>
-
                 <div class="mb-3">
                     <label for="profilePicture">프로필 사진</label>
                     <input type="file" class="form-control-file" id="profilePicture" name="uploadFile"  accept=".jpg, .jpeg, .png">
@@ -147,8 +140,6 @@
                         </label>
                     </div>
                 </div>
-
-
                 <!-- 관리자 체크박스 -->
                 <div class="form-group">
                     <div class="form-check">
@@ -158,7 +149,6 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="mb-4"></div>
                 <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register(); storeProfilePicture()">가입 완료</button>
                 <div class="mt-3 text-center">
@@ -182,50 +172,32 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-
     // 1. 😊 가입완료 메서드
     function register() {
         // e.preventDefault(); // 폼 제출 방지
 
         // 1. 여기서 내가 화면에서 post 로 입력하는 정보를 하나하나 가져오기
-        var name = $('#name').val()
-        var nickname = $('#nickname').val()
-        var username = $('#username').val()
-        var password = $('#password').val()
-        var passwordConfirm = $('#passwordConfirm').val()
-        var phoneNumber = $('#phoneNumber').val()
-        var zipcode = $('#zipcode').val()
-        var streetAdr = $('#streetAdr').val()
-        var detailAdr = $('#detailAdr').val()
-        var authNumber = $('#authNumber').val()
-        var role = $('#role').val()
-        var weight = $('#weight').val()
-        var height = $('#height').val()
-        var gender = document.querySelector('input[name="gender"]:checked').value;
-
-        console.log(name);
-        console.log(nickname);
-        console.log(username);
-        console.log(password);
-        console.log(passwordConfirm);
-        console.log(phoneNumber);
-        console.log(zipcode);
-        console.log(streetAdr);
-        console.log(detailAdr);
-        console.log(authNumber);
-        console.log(role);
-        console.log(weight);
-        console.log(height);
-        console.log(gender);
+        let name = $('#name').val()
+        let nickname = $('#nickname').val()
+        let username = $('#username').val()
+        let password = $('#password').val()
+        let passwordConfirm = $('#passwordConfirm').val()
+        let phoneNumber = $('#phoneNumber').val()
+        let zipcode = $('#zipcode').val()
+        let streetAdr = $('#streetAdr').val()
+        let detailAdr = $('#detailAdr').val()
+        let authNumber = $('#authNumber').val()
+        let role = $('#role').val()
+        let weight = $('#weight').val()
+        let height = $('#height').val()
+        let gender = document.querySelector('input[name="gender"]:checked').value;
 
         // 2. 유효성 검사
-
         // 각 필드의 유효성을 검사합니다.
-        var isValid = true;
+        let isValid = true;
 
         // 비밀번호가 8~16자 영문, 숫자, 특수문자를 사용하도록 검증
-        var passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
-
+        let passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
         if (!passwordRegex.test(password)) {
             alert('비밀번호는 8~16자 영문, 숫자, 특수문자를 사용해야 합니다.');
             return;
@@ -251,7 +223,7 @@
         }
 
         // 이메일 유효성 검사 (이메일 형식 체크)
-        var emailPattern = /^(?:\w+\.?)*\w+@(?:\w+\.)+\w+$/;
+        let emailPattern = /^(?:\w+\.?)*\w+@(?:\w+\.)+\w+$/;
         if (!emailPattern.test(username)) {
             $("#usernameError").text("올바른 이메일 형식이 아닙니다.");
             isValid = false;
@@ -260,7 +232,7 @@
         }
 
         // 닉네임 유효성 검사
-        var nicknamePattern = /^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/;
+        let nicknamePattern = /^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/;
         if (!nicknamePattern.test(nickname)) {
             $("#nicknameError").text("닉네임은 특수문자를 제외한 2~10자리여야 합니다.");
             isValid = false;
@@ -281,7 +253,6 @@
             alert('키, 몸무게, 성별을 올바르게 입력하세요.');
             return false;
         }
-
         if (!isValid) {
             // 유효성 검사에 실패한 경우 경고 메시지만 표시하고 폼을 서버로 제출하지 않음
             return;
@@ -290,7 +261,6 @@
         // 3. 가져온 정보를 data로 묶기
         let fileInput = $("input[name=uploadFile]")[0];
         let fileObj = fileInput.files[0];
-
         let data = {
             "name" : name,
             "nickname" : nickname,
@@ -313,32 +283,24 @@
             let formData = new FormData();
             formData.append("uploadFile", fileObj);
 
-            console.log("fileObj: " + fileObj);
-            console.log("fileObj.name: " + fileObj.name);
-            console.log("fileObj.size: " + fileObj.size);
-            console.log("fileObj.type: " + fileObj.type);
-
             $.ajax({
                 url: '/upload-profilePicture',
                 processData: false,
                 contentType: false,
                 data: formData,
                 type: 'POST',
-                // dataType: 'json',
                 success: function (response) {
                     console.log(response);
-                    // 파일 업로드 성공 처리를 추가할 수 있습니다.
                 },
                 error: function (xhr, status, error) {
                     console.log(xhr);
                     console.log(status);
                     console.log(error);
-                    // 파일 업로드 실패 처리를 추가할 수 있습니다.
                 }
             });
         }
 
-        // 4. 클라에서 가져온 데이터를 서버로 전송 (이 예시에서는 URL이 '/register'로 가정)
+        // 4. 클라에서 가져온 데이터를 서버로 전송
         $.ajax({
             type: 'POST',
             url: '/register', // 가입완료 버튼을 누르면 이 URL로 매핑!!! 마지막에 가는게xx
@@ -371,30 +333,19 @@
                 alert('서버 요청 실패');
             }
         });
-
         return true;
-
-        // // 5. 모든 필드가 유효한 경우 폼을 서버로 제출할 수 있습니다.
-        // if (isValid) {
-        //     $("#registrationForm")[0].submit();
-        // }
     }
 
-    // 파일 업로드 메소드
+    // 2. 😊 파일 업로드 메소드
     function storeProfilePicture() {
         let fileInput = $("input[name=uploadFile]")[0];
         let fileObj = fileInput.files[0];
-        var username = $('#username').val()
+        let username = $('#username').val()
 
         if (fileObj) {
             let formData = new FormData();
             formData.append("uploadFile", fileObj);
             formData.append("username", username);
-
-            console.log("fileObj: " + fileObj);
-            console.log("fileObj.name: " + fileObj.name);
-            console.log("fileObj.size: " + fileObj.size);
-            console.log("fileObj.type: " + fileObj.type);
 
             $.ajax({
                 url: '/upload-profilePicture',
@@ -405,13 +356,11 @@
                 // dataType: 'json',
                 success: function (response) {
                     console.log(response);
-                    // 파일 업로드 성공 처리를 추가할 수 있습니다.
                 },
                 error: function (xhr, status, error) {
                     console.log(xhr);
                     console.log(status);
                     console.log(error);
-                    // 파일 업로드 실패 처리를 추가할 수 있습니다.
                 }
             });
         }
@@ -420,13 +369,10 @@
     // 파일 업로드 버튼(input[type=file])에 change 이벤트 핸들러 등록
     $("input[type=file]").on("change", storeProfilePicture);
 
-
-
-
-    // 3. 😊 메일전송 메소드
+    // 3. 😊 메일로 인증번호 전송 메소드
     function sendEmailVerification() {
         // 1. 작성한 이메일 주소 가져오기
-        var username = $('#username').val();
+        let username = $('#username').val();
         console.log(username);
 
         // 2. 가져온 정보를 data로 묶기
@@ -473,8 +419,8 @@
             oncomplete: function(data) {
                 // 각 주소의 노출 규칙에 따라 주소를 조합한다.
                 // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                var addr = ''; // 주소 변수
-                var extraAddr = ''; // 참고항목 변수
+                let addr = ''; // 주소 변수
+                let extraAddr = ''; // 참고항목 변수
 
                 //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
                 if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
@@ -515,9 +461,9 @@
                 document.getElementById("detailAdr").focus();
 
                 // 주소 정보를 JavaScript 변수에 저장
-                var zipcode = data.zonecode;
-                var streetAdr = data.roadAddress;
-                var detailAdr = $("#detailAdr").val();
+                let zipcode = data.zonecode;
+                let streetAdr = data.roadAddress;
+                let detailAdr = $("#detailAdr").val();
 
                 // 주소 정보를 서버로 전송
                 $.ajax({
@@ -541,7 +487,6 @@
             }
         }).open();
     }
-
 </script>
 
 </body>

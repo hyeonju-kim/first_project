@@ -83,45 +83,31 @@
             <br>
             <div class="card">
                 <div class="card-body">
-                    <%--                    <h5 class="card-title1">--%>
-                    <%--                        제목: ${board.title}--%>
-                    <%--                        <c:choose>--%>
-                    <%--                            <c:when test="${likeY == false}">--%>
-                    <%--                                <a href="/boards/likes/${board.boardId}" class="btn btn-sm btn-primary ml-2">좋아요</a>--%>
-                    <%--                            </c:when>--%>
-                    <%--                            <c:otherwise>--%>
-                    <%--                                <span class="btn btn-sm btn-primary ml-2" disabled>좋아요</span>--%>
-                    <%--                            </c:otherwise>--%>
-                    <%--                        </c:choose>--%>
-                    <%--                    </h5>--%>
-
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h5 class="card-title1">
                             제목: ${board.title}
                         </h5>
-
                         <!-- 좋아요 이미지 -->
-                        <form action="/boards/likes/${board.boardId}" method="post">
-                            <input type="hidden" name="boardId" value="${board.boardId}">
+                        <div id="likeButton">
                             <c:choose>
                                 <c:when test="${like}">
-                                    <img src="/images/icon/already_like.png" alt="좋아요 취소 이미지"
+                                    <img id="likeImage" src="/images/icon/already_like.png" alt="좋아요 취소 이미지"
                                          style="width: 50px; height: 50px; cursor: pointer;"
-                                         onclick="this.parentElement.submit();">
+                                         onclick="toggleLike(${board.boardId});">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="/images/icon/like.png" alt="좋아요 이미지"
+                                    <img id="likeImage" src="/images/icon/like.png" alt="좋아요 이미지"
                                          style="width: 50px; height: 50px; cursor: pointer;"
-                                         onclick="this.parentElement.submit();">
+                                         onclick="toggleLike(${board.boardId});">
                                 </c:otherwise>
                             </c:choose>
-                        </form>
+                        </div>
 
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <p class="card-text">작성자: ${board.nickname}</p>
-                        <div style="margin-right: 20px;">${board.cntLike}</div>
+                        <div id="cntLike" style="margin-right: 20px;">${board.cntLike}</div>
                     </div>
                         <p class="card-text">작성일: ${board.createdAt}</p>
                     <div class="card">
@@ -205,7 +191,36 @@
             </div>
         </div>
 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
+
+            function toggleLike(boardId) {
+                $.ajax({
+                    url: '/boards/likes/' + boardId,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (data) {
+                        // 좋아요 기능이 성공적으로 처리되면 추가 동작을 수행할 수 있습니다.
+                        // 예를 들어, 좋아요 이미지 업데이트 및 좋아요 수 업데이트 등을 할 수 있습니다.
+                        var likeImage = $("#likeImage");
+
+                        if (data.like) {
+                            likeImage.attr("src", "/images/icon/already_like.png");
+                        } else {
+                            likeImage.attr("src", "/images/icon/like.png");
+                        }
+
+                        // 좋아요 수 업데이트
+                        var cntLikeElement = $("#cntLike");
+                        cntLikeElement.html(data.cntLike);
+                    },
+                    error: function () {
+                        // 에러 처리
+                        alert('좋아요 처리 중 오류가 발생했습니다.');
+                    }
+                });
+            }
+
 
             function deleteBoard() {
                 // 게시글 삭제를 위한 AJAX 요청 또는 서버로의 요청을 수행합니다.
@@ -214,7 +229,6 @@
                 // 여기에서 삭제 동작을 수행하세요.
                 window.location.reload();
             }
-
 
             function deleteComment(commentId) {
                 if (confirm('댓글을 삭제하시겠습니까?')) {
@@ -245,13 +259,6 @@
                 var replyForm = document.getElementById(`replyForm_` + commentId);
                 replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
             }
-
-            // // 대댓글 입력 폼 토글 함수
-            // function toggleReplyForm(commentId, recommentId) {
-            //     var replyForm = document.getElementById(`replyForm_` + commentId + `_` + recommentId);
-            //     replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
-            // }
-
         </script>
 
 

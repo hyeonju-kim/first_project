@@ -5,79 +5,93 @@ import com.example.first.dto.TempAuthInfo;
 import com.example.first.dto.UserDto;
 import com.example.first.exception.UserException;
 import com.example.first.mapper.HomeMapper;
-import com.example.first.service.UserDetailsImpl;
 import com.example.first.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
-@Slf4j
-@CrossOrigin
-public class HomeController {
+public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
     private final UserService userService;
     private final HomeMapper homeMapper;
     private final AuthenticationManager authenticationManager;
-    @Autowired
-    private UserDetailsService userDetailsService;
+    public String getUsername() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
 
-    private UserDto user;
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return username;
+    }
+    public UserDto getUserDto() {
+        String username = null;
+        UserDto userDto = null;
+        // ============== 현재 로그인한 사용자 정보 가져오기 ===============
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            username = authentication.getName(); // 사용자 이메일
 
-    // 홈 화면 (로그인/ 회원가입 버튼 있는)
-    @GetMapping
-    public String home() {
-        return "home";
+            userDto = homeMapper.findByUsername(username);
+            if (userDto != null) {
+                String role = userDto.getRole();
+                System.out.println("role ===== " + role);
+            }
+        } else {
+            // 로그인하지 않은 경우, username을 비워두거나 다른 값을 넣어서 전달
+        }
+        // ==============================================================
+        return userDto;
     }
 
-    // 1. 회원가입 화면
+    // 🎯 1. 회원가입 폼
     @GetMapping("/register")
     public String signupForm() {
         return "register";
     }
 
-    // 2. 회원가입
+    //🎯  2. 회원가입
     @PostMapping("/register")
     @ResponseBody
     public UserDto signup(@RequestBody UserDto userDto) throws UserException, IOException {
-
-        System.out.println("*************************   "+userDto.getRole());
-        System.out.println("*************************   "+userDto.getNickname());
         return userService.signUp(userDto);
     }
 
-    // 프로필 사진 업로드
+    // 🎯 3. 프로필 사진 업로드
     @PostMapping("/upload-profilePicture")
     public ResponseEntity<String> uploadProfilePicture(@RequestParam("uploadFile") MultipartFile profilePicture,
                                                        @RequestParam("username") String username) throws IOException {
-
-        System.out.println("컨트롤러/파일업로드 - profilePicture = " + profilePicture);
-        System.out.println("컨트롤러/파일업로드 - profilePicture.getName() = " + profilePicture.getName());
-        System.out.println("컨트롤러/파일업로드 - username = " + username);
-
         // 내가 업로드 파일을 저장할 경로
         String originalName = profilePicture.getOriginalFilename();
         String fileName = System.currentTimeMillis() + "_" + originalName;
-
-//        String profilePictureLocation = userService.storeProfilePicture(profilePicture, fileName);
-//        userDto.setProfilePictureLocation(profilePictureLocation);
-
 
         // 업로드 할 디렉토리 경로 설정
         String savePath = "C:\\profile_picture";
@@ -85,8 +99,6 @@ public class HomeController {
         File saveFile = new File(savePath, fileName);
 
         userService.storeProfilePicture(profilePicture, fileName, username, originalName);
-
-
         try {
             // void transferTo(File dest) throws IOException 업로드한 파일 데이터를 지정한 파일에 저장
             profilePicture.transferTo(saveFile);
@@ -98,7 +110,7 @@ public class HomeController {
         }
     }
 
-    // 3. 이메일로 인증번호 전송
+    // 🎯 4. 이메일로 인증번호 전송
     @ResponseBody
     @PostMapping("/email-confirm")
     public void sendAuthNumToEmail(@RequestBody TempAuthInfo tempAuthInfo) {
@@ -107,89 +119,65 @@ public class HomeController {
         userService.sendAuthNumToEmail(tempAuthInfo.getUsername());
     }
 
-    // 비밀번호 찾기 화면
+
+    //////////////////// 1~4 api 가 회원가입 !!
+
+    // 🎯 5. 비밀번호 찾기 화면
     @GetMapping("/forgot-password")
     public String forgotPassword() {
         return "forgot-password";
     }
 
-
-    // 4. 이메일로 임시 비밀번호 전송
+    // 🎯 6. 이메일로 임시 비밀번호 전송
     @ResponseBody
     @PostMapping("/forgot-password")
     public void forgotId(@RequestBody TempAuthInfo tempAuthInfo) {
-        // 메일로 임시 비밀번호 발송
-        System.out.println("컨트롤러 --- tempAuthInfo.getUsername() = " + tempAuthInfo.getUsername());
         userService.sendTempPwToEmail(tempAuthInfo.getUsername());
     }
 
-    // 비밀번호 변경 화면
+    // 🎯 7. 비밀번호 변경 폼
     @GetMapping("/change-password")
     public String changePasswordForm() {
         return "change-password";
     }
 
-
-    // 비밀번호 변경
+    // 🎯 8. 비밀번호 변경
     @ResponseBody
     @PostMapping("/change-password")
     public void changePassword(@RequestBody PasswordDto passwordDto) throws UserException {
-        String test = user.getUsername();
-        System.out.println("test!! = " + test);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal1 = authentication.getPrincipal();
-        System.out.println("principal1 = " + principal1);
-        System.out.println("authentication.getName() = " + authentication.getName());
-//        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-//       String userName = principal.getUsername();
-//        System.out.println("userName = " + userName);
-        System.out.println("user.getUsername() = " + user.getUsername());
-        passwordDto.setUsername(user.getUsername());
-
-        // 왜 static 유저에 저장이 안될까ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ.........
-
-//        passwordDto.setUsername("yocu1784@naver.com");
+        String username = getUsername();
+        passwordDto.setUsername(username);
         userService.changePw(passwordDto);
-
     }
 
 
-    // 4. 로그인 화면
+    // 🎯 9. 로그인 화면
     @GetMapping("/login")
     public String loginForm() {
         return "login";
     }
 
-
-    // 4. 로그인
+    // 🎯 10. 로그인
     @ResponseBody
     @PostMapping("/login")
     public UserDto login(@RequestBody UserDto userDto) throws UserException {
-//        Object a = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("TEST");
         System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getUsername());
         System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getPassword());
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-
 
         userService.login(userDto);
         return userDto;
     }
 
-//    // 게시판 화면 (메인 화면)
-//    @GetMapping("/board")
-//    public String board() {
-//        return "boards";
-//    }
-
-    // 로그아웃
+    // 🎯 11. 로그아웃
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // 현재 사용자를 로그아웃 처리
+
+        // SecurityContextLogoutHandler를 사용하여 현재 사용자를 로그아웃합니다.
+        // 이 클래스는 Spring Security에서 제공하는 로그아웃 처리 도우미입니다.
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
 
@@ -197,5 +185,37 @@ public class HomeController {
         return "redirect:/boards";
     }
 
+    // 🎯 12. 마이페이지 화면 조회
+    @GetMapping("/mypage")
+    public ModelAndView mypage(Model model) {
+        String username = getUsername();
+        UserDto userDto = getUserDto();
 
+        // 프로필 사진 경로 가져와서 저장하기 (미리 저장 못해서 일단 이렇게 가져와서 넣어주자,,)
+        String originalName = homeMapper.findProfilePictureOriginalName(username);
+        String profilePictureSavePath = homeMapper.findProfilePictureSavePath(username);
+        String profilePictureFileName = homeMapper.findProfilePictureFileName(username);
+
+        userDto.setOriginalName(originalName);
+        userDto.setProfilePictureLocation(profilePictureSavePath);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("savePath", profilePictureSavePath);
+        params.put("userDto", userDto);
+
+        homeMapper.updateUserInsertSavePath(params);
+
+        //solution /img/ 아래 쓰고싶은 파일 이름만 적어줍니다.
+        File file = new File("/img/"+profilePictureFileName);
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("mypage");
+        mv.addObject("file", file);
+        mv.addObject("user", userDto);
+
+        model.addAttribute("username", username);
+        model.addAttribute("nickname", userDto.getNickname());
+        model.addAttribute("role", userDto.getRole());
+        return mv;
+    }
 }

@@ -106,7 +106,6 @@
                 // 서버 요청 실패 시 실행
                 console.log('실패했다...')
                 console.log(response); // 응답 body의 데이터
-
                 alert('서버 요청 실패');
             }
         });

@@ -39,7 +39,6 @@
 
     <div class="row justify-content-center">
         <div class="col-md-8">
-
             <form action="/boards/create" method="post" enctype="multipart/form-data">
                 <div class="form-group mt-4">
                     <label for="title"><strong>제목</strong></label>
@@ -71,7 +70,6 @@
                 <!-- smart Editor 위해 추가 ( onclick="submitPost();" 부분만)-->
                 <button type="submit" onclick="submitPost();" class="btn btn-primary mt-4">게시글 생성</button>
             </form>
-
         </div>
     </div>
 
@@ -128,11 +126,11 @@
         element.parentElement.remove();
     }
 
-
     // smart Editor 위해 추가
-    // 4. 스마트 에디터 설정 함수
+    //  4. 스마트 에디터 설정을 위한 전역 변수 및 함수
     let oEditors = [];
 
+    // Naver SmartEditor 설정 함수
     function smartEditor() {
         console.log("Naver SmartEditor");
 
@@ -156,14 +154,17 @@
     // smart Editor 위해 추가
     // 5. 에디터에 입력한 내용 가져오기
     function submitPost() {
+        // 에디터 내용 업데이트
         oEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", [])
         let content = document.getElementById("editorTxt").value
 
         if(content == '') {
+            // 내용이 비어있는 경우 경고 메시지 출력
             alert("내용을 입력해주세요.")
             oEditors.getById["editorTxt"].exec("FOCUS")
             return
         } else {
+            // 내용이 입력되었을 경우 내용을 콘솔에 출력
             console.log(content)
         }
     }

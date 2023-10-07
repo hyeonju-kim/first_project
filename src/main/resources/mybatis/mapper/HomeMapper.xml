@@ -43,17 +43,18 @@
 
     <!--회원가입-->
     <select id="signUp" parameterType="com.example.first.dto.UserDto" resultType="com.example.first.dto.UserDto"  resultMap="userResultMap">
-        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location, zipcode, street_adr, detail_adr, role, reg_date, weight, height, gender, bmi, required_calories)
-        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode}, #{streetAdr}, #{detailAdr}, #{role}, #{regDate}, #{weight}, #{height}, #{gender}, #{bmi}, #{requiredCalories})
+        INSERT INTO postgres.first_project.users ( name, username, nickname, password, phone_number, profile_picture_location,
+                                                  zipcode, street_adr, detail_adr, role, reg_date, weight, height, gender, bmi, required_calories)
+        VALUES ( #{name}, #{username}, #{nickname}, #{password},#{phoneNumber}, #{profilePictureLocation} , #{zipcode},
+                #{streetAdr}, #{detailAdr}, #{role}, #{regDate}, #{weight}, #{height}, #{gender}, #{bmi}, #{requiredCalories})
     </select>
 
-    <!--    사용자 메일로 사용자 가져오기-->
+    <!--사용자 메일로 사용자 가져오기-->
     <select id="findByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.UserDto"  resultMap="userResultMap">
         SELECT *
         FROM postgres.first_project.users
         WHERE username = #{username}
     </select>
-
 
     <!--프로필 사진 업로드-->
     <select id="storeProfilePicture" parameterType="com.example.first.dto.ProfilePicture" >
@@ -61,13 +62,13 @@
         VALUES ( #{fileName}, #{savePath}, #{regDate}, #{fileSize}, #{flagDel}, #{fileExt}, #{username}, #{originalName})
     </select>
 
-<!--인증 번호 저장-->
+    <!--인증 번호 저장-->
     <select id="setAuth" parameterType="com.example.first.dto.TempAuthInfo" >
         INSERT INTO postgres.first_project.auth (username, auth_number, created_at)
         VALUES ( #{username}, #{authNumber}, #{createdAt})
     </select>
 
-<!-- 인증번호 가져오기-->
+    <!-- 인증번호 가져오기-->
     <select id="findAuthNumberByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.TempAuthInfo"  resultMap="userResultMap">
         SELECT * FROM postgres.first_project.auth
         WHERE username = #{username}
@@ -75,7 +76,7 @@
         LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
     </select>
 
-<!--비밀번호 변경-->
+    <!--비밀번호 변경-->
     <select id="changePw" parameterType="com.example.first.dto.PasswordDto">
         UPDATE postgres.first_project.users
         SET password = #{newPassword}
@@ -131,14 +132,14 @@
     </update>
 
 
-    <!--    모든 유저 객체 조회 (스케줄링 용)-->
+    <!-- 모든 유저 객체 조회 (스케줄링 용)-->
     <select id="findAllUsers" parameterType="com.example.first.dto.UserDto" resultMap="userResultMap">
         SELECT *
         FROM postgres.first_project.users
     </select>
 
 
-    <!--    마지막 로그인 일시 업데이트-->
+    <!-- 마지막 로그인 일시 업데이트-->
     <select id="updateUserLastLoginDate"  parameterType="com.example.first.dto.UserDto" >
         UPDATE postgres.first_project.users
         SET last_login_date = #{lastLoginDate}
@@ -155,7 +156,7 @@
 
 
 
-<!--    계정 중복확인-->
+    <!-- 계정 중복확인-->
     <select id="isUsernameUnique" parameterType="java.lang.String" resultType="java.lang.Boolean">
     <![CDATA[
         SELECT COUNT(*) = 0

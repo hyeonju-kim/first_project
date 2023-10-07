@@ -15,7 +15,6 @@
     <style>
         body {
             min-height: 100vh;
-
             background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));
             background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
             background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
@@ -25,10 +24,8 @@
 
         .input-form {
             max-width: 680px;
-
             margin-top: 80px;
             padding: 32px;
-
             background: #fff;
             -webkit-border-radius: 10px;
             -moz-border-radius: 10px;
@@ -53,10 +50,8 @@
                         이메일을 입력해주세요.
                     </div>
                 </div>
-
                 <hr class="mb-4">
                 <button class="btn btn-primary btn-lg btn-block" type="button" onclick="sendTempPwToEmail()">임시 비밀번호 전송</button>
-
             </form>
         </div>
     </div>
@@ -67,22 +62,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // window.addEventListener('load', () => {
-    //     const forms = document.getElementsByClassName('validation-form');
-    //
-    //     Array.prototype.filter.call(forms, (form) => {
-    //         form.addEventListener('submit', function (event) {
-    //             if (form.checkValidity() === false) {
-    //                 event.preventDefault();
-    //                 event.stopPropagation();
-    //             }
-    //
-    //             form.classList.add('was-validated');
-    //         }, false);
-    //     });
-    // }, false);
-
-
     // 임시 비밀번호 메일전송 메소드
     function sendTempPwToEmail() {
         // 1. 작성한 이메일 주소 가져오기
@@ -111,7 +90,6 @@
 
                     // 인증번호 입력 칸 표시
                     $('#verificationCodeDiv').show();
-
                 } else {
                     // 실패 처리
                     alert('서버에서 오류가 발생했습니다.');
@@ -121,7 +99,6 @@
                 // 서버 요청 실패 시 실행
                 console.log('실패했다...')
                 console.log(response); //응답 body부 데이터
-
                 alert('서버 요청 실패');
             }
         });

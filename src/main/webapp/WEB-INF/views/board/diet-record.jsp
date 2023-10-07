@@ -53,32 +53,24 @@
             <div class="text-center mt-3" style="font-size: 20px; font-weight: bold; text-align: center; color: dodgerblue;">
                 나의 하루 권장 칼로리: ${user.requiredCalories} kcal
             </div>
-
         </div>
     </div>
     <!-- 모델에서 담아온 dietRecordMap -->
-
     <%--    날짜와 섭취상태(적정/과다/부족)--%>
     <div id="dietRecordMap" data-diet-map="${dietRecordMap}" ></div>
     <%--    날짜와 하루 총 섭취 칼로리--%>
     <div id="dietRecordMap2" data-diet-map2="${dietRecordMap2}" ></div>
-
 </div>
 
 <script>
     // JavaScript로 달력을 생성하고 표시하는 코드
     document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-
-        <%--// JavaScript 코드 내에서 JSP 모델의 requiredCalories 값을 사용--%>
-        <%--var requiredCalories = <c:out value="${requiredCalories}" />;--%>
-        <%--console.log('requiredCalories: ' + requiredCalories);--%>
-
+        let calendarEl = document.getElementById('calendar');
 
         // 😊 1) jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
         console.log(' map들을 파싱해보자~~')
-        var dietRecordMap = JSON.parse('${dietRecordMap}');
-        var dietRecordMap2 = JSON.parse('${dietRecordMap2}');
+        let dietRecordMap = JSON.parse('${dietRecordMap}');
+        let dietRecordMap2 = JSON.parse('${dietRecordMap2}');
         console.log(' dietRecordMap을 파싱한 다음에 찍어보자')
         console.log(dietRecordMap)
         console.log(' dietRecordMap2를 파싱한 다음에 찍어보자')
@@ -111,26 +103,7 @@
             console.log(key + ': ' + value);
         }
 
-        // // 키 배열을 모두 출력
-        // console.log('모든 키 값을 출력해보자')
-        // console.log(keys);
-
-        // // JavaScript 객체를 Map 객체로 변환
-        // console.log(' dietRecordMap2 를 찍어보자')
-        // const dietRecordMap2 = new Map(Object.entries(dietRecordMap));
-        // console.log(dietRecordMap2)
-        //
-        // // 모든 key 값 출력
-        // const keysArray = Array.from(dietRecordMap2.keys()); // 키 값(날짜) 모두 가져오기
-        //
-        // for (const key of keysArray) {
-        //     console.log('모든 키 값 반복문으로 출력')
-        //     console.log(key);
-        //
-        // }
-
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        let calendar = new FullCalendar.Calendar(calendarEl, {
             // 달력 옵션 설정
             // height: 1000, // 달력의 높이 설정 (픽셀 단위)
             initialView: 'dayGridMonth', // 월별 달력
@@ -141,34 +114,23 @@
             },
             selectable: true,
             selectMirror: true,
-
             navLinks: true, // can click day/week names to navigate views
             editable: true,
 
             // 😊 2) 해당 날짜에 있는 value 값을 달력에 넣어주기
             dayCellContent: function (arg) {
-                var dateHtml = '<span class="fc-daygrid-day-number">' + arg.dayNumberText + '</span>';
-                var isoDate = arg.date.toISOString();
-                // var dateStr = isoDate.split('T')[0];
-
-                var date = new Date(isoDate);
+                let dateHtml = '<span class="fc-daygrid-day-number">' + arg.dayNumberText + '</span>';
+                let isoDate = arg.date.toISOString();
+                // let dateStr = isoDate.split('T')[0];
+                let date = new Date(isoDate);
                 date.setDate(date.getDate());
-                var year = date.getFullYear();
-                var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월을 2자리로 표시
-                var day = date.getDate().toString().padStart(2, '0'); // 일을 2자리로 표시
-                var formattedDate = year + '-' + month + '-' + day;
-
-                var value = dietRecordMap[formattedDate];
-                var value2 = dietRecordMap2[formattedDate];
-
-                console.log('==============');
-                console.log(formattedDate);
-                console.log(arg.dayNumberText);
-                console.log(value); // 적정
-                console.log(value2); // 하루 총 섭취 칼로리
-                console.log('==============');
-
-                var imageHtml = '';
+                let year = date.getFullYear();
+                let month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월을 2자리로 표시
+                let day = date.getDate().toString().padStart(2, '0'); // 일을 2자리로 표시
+                let formattedDate = year + '-' + month + '-' + day;
+                let value = dietRecordMap[formattedDate];
+                let value2 = dietRecordMap2[formattedDate];
+                let imageHtml = '';
 
                 if (value === '적정') {
                     imageHtml = '<img src="/images/good.png" alt="적정" class="diet-image" style="width: 50%;" />';
@@ -177,14 +139,12 @@
                 } else if (value === '과다') {
                     imageHtml = '<img src="/images/over.png" alt="과다" class="diet-image" style="width: 50%;" />';
                 }
-
                 // 토탈 칼로리 계산
-                var totalCalories = parseFloat(value2) || 0; // value2를 숫자로 파싱, 실패하면 0으로 처리
+                let totalCalories = parseFloat(value2) || 0; // value2를 숫자로 파싱, 실패하면 0으로 처리
 
                 // 칼로리 정보 표시
-                var caloriesHtml = '<div class="calories-info" style="font-size: 12px; font-weight: bold; text-align: center; color: darkgray;">' + totalCalories + 'kcal </div>';
-
-
+                let caloriesHtml = '<div class="calories-info" style="font-size: 12px; font-weight: bold; text-align: center; color: darkgray;">' + totalCalories + 'kcal </div>';
+                
                 return {
                     html: '<div style="width: 100%; height: 100%;">' +
                         dateHtml +
@@ -193,26 +153,20 @@
                         '</div>'
                 };
             },
-
-
-
-
-            // Create new event (달력 숫자 클릭 시, 아침/점심/저녁 정보 입력)
+            
+            // 😊 3) Create new event (달력 숫자 클릭 시, 아침/점심/저녁 정보 입력)
             select: function (arg) {
-
-                var dateStart = arg.start; // arg.date 대신 arg.start를 사용합니다.
-                var isoDate = dateStart.toISOString();
-                var date = new Date(isoDate);
+                let dateStart = arg.start; // arg.date 대신 arg.start를 사용합니다.
+                let isoDate = dateStart.toISOString();
+                let date = new Date(isoDate);
                 date.setDate(date.getDate());
-                var year = date.getFullYear();
-                var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월을 2자리로 표시
-                var day = date.getDate().toString().padStart(2, '0'); // 일을 2자리로 표시
-                var formattedDate = year + '-' + month + '-' + day;
-
-                var value = dietRecordMap[formattedDate];
-                var value2 = dietRecordMap2[formattedDate];
-
-
+                let year = date.getFullYear();
+                let month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월을 2자리로 표시
+                let day = date.getDate().toString().padStart(2, '0'); // 일을 2자리로 표시
+                let formattedDate = year + '-' + month + '-' + day;
+                let value = dietRecordMap[formattedDate];
+                let value2 = dietRecordMap2[formattedDate];
+                
                 if (value) {
                     // 해당 날짜에 기록한 값이 있으면 그 날의 입력 값을 노출
                     Swal.fire({
@@ -253,17 +207,17 @@
                         }
                     }).then(function (result) {
                         if (result.value) {
-                            // var title = document.querySelector("input[name='event_name']").value;
-                            var morning = document.querySelector("input[name='intakeCaloriesMorning']").value;
-                            var lunch = document.querySelector("input[name='intakeCaloriesLunch']").value;
-                            var dinner = document.querySelector("input[name='intakeCaloriesDinner']").value;
+                            // let title = document.querySelector("input[name='event_name']").value;
+                            let morning = document.querySelector("input[name='intakeCaloriesMorning']").value;
+                            let lunch = document.querySelector("input[name='intakeCaloriesLunch']").value;
+                            let dinner = document.querySelector("input[name='intakeCaloriesDinner']").value;
 
                             // 폼을 서버로 제출!!!!
                             document.getElementById("dietForm").submit();
                             console.log('폼을 서버로 제출 성공!')
 
                             // 시간대 정보를 포함한 이벤트 생성
-                            var eventTitle = title + `\n아침: ${morning}\n점심: ${lunch}\n저녁: ${dinner}`;
+                            let eventTitle = title + `\n아침: ${morning}\n점심: ${lunch}\n저녁: ${dinner}`;
                             if (title) {
                                 calendar.addEvent({
                                     title: eventTitle,
@@ -273,24 +227,9 @@
                                 })
                             }
                             calendar.unselect()
-                        } else if (result.dismiss === "cancel") {
-                            // Swal.fire({
-                            // text: "Event creation was declined!.",
-                            // icon: "error",
-                            // buttonsStyling: false,
-                            // confirmButtonText: "Ok, got it!",
-                            // customClass: {
-                            //     confirmButton: "btn btn-primary",
-                            // }
-                            // });
-                        }
+                        } 
                     });
                 }
-
-
-
-
-
             },
             // Delete event
             eventClick: function (arg) {

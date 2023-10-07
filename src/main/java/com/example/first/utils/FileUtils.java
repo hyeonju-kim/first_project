@@ -16,12 +16,12 @@ import java.util.List;
 
 @Component
 public class FileUtils {
-    /**
-     * 다운로드할 첨부파일(리소스) 조회 (as Resource)
+    private static final Tika tika = new Tika();
+    /* 다운로드할 첨부파일(리소스) 조회 (as Resource)
      * @param file - 첨부파일 상세정보
-     * @return 첨부파일(리소스)
-     */
+     * @return 첨부파일(리소스) */
     public Resource readFileAsResource(final BoardMultiFile file) {
+        // 첨부파일의 저장 경로를 가져옵니다.
         String savePath = file.getSavePath();
         Path filePath = Paths.get(savePath);
 
@@ -29,23 +29,21 @@ public class FileUtils {
         System.out.println("filePath = " + filePath);
 
         try {
+            // 파일 경로를 이용하여 리소스 객체를 생성합니다.
             Resource resource = new UrlResource(filePath.toUri());
+
+            // 리소스가 존재하지 않거나 파일이 아닌 경우 예외를 발생시킵니다.
             if (!resource.exists() || !resource.isFile()) {
                 throw new RuntimeException("file not found : " + filePath.toString());
             }
+
             return resource;
         } catch (MalformedURLException e) {
+            // 파일 경로가 잘못된 경우 예외를 발생시킵니다.
             throw new RuntimeException("file not found : " + filePath.toString());
         }
     }
 
-
-
-
-
-
-
-    private static final Tika tika = new Tika();
 
     // 파일 업로드 시, 확장자 검사
     public static boolean validImgFile(InputStream inputStream) {
