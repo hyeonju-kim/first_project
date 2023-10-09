@@ -52,7 +52,7 @@ public interface HomeMapper {
     ProfilePicture getRecentProfilePicture();
 
     // 회원가입 시 프로필사진 가져와서 username 업데이트
-    void updateProfilePicture(ProfilePicture picture);
+    void updateProfilePicture(UserDto userDto);
 
     // 마이페이지 접근 시 , 유저 객체 가져와서 save_path 업데이트
     void updateUserInsertSavePath(Map map);

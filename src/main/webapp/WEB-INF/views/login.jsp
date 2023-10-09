@@ -106,24 +106,32 @@
             data: JSON.stringify(data),
             contentType: 'application/json',
             success: function (response, status, xhr) {
-                console.log(response);
-                console.log(status);
-                console.log(xhr);
+                console.log('response' , response); // json 형태
+                console.log('response.status = '+ response.status); // Y
+                console.log('status = ' + status); // success
+                console.log('xhr',  xhr); // json 형태
+                console.log('xhr.status = '+ xhr.status); // 200
+
                 if (xhr.status === 200) {
                     // 서버 응답의 상태 코드가 200일 때만 실행
                     alert(username + '님 환영합니다!');
                     location.href = "/boards";
-                } else {
-                    // 가입 실패 처리
+                }else {
                     alert('서버에서 오류가 발생했습니다.');
                 }
             },
             error: function (response, status, xhr) {
                 // 서버 요청 실패 시 실행
-                console.log('실패했다...')
-                console.log(response); //응답 body부 데이터
-
-                alert('서버 요청 실패');
+                console.log('response.status = '+ response.status); // 401
+                console.log('status = ' + status); // error
+                console.log('xhr = ' + xhr); // ''
+                console.log('**************************');
+                if (response.status === 401) {
+                    // 가입 실패 처리
+                    alert('비밀번호가 일치하지 않습니다.');
+                }else {
+                    alert('서버로 요청이 실패했습니다.');
+                }
             }
         });
         return true;

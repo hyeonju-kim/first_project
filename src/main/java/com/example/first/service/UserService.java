@@ -1,6 +1,7 @@
 package com.example.first.service;
 
 import com.example.first.dto.PasswordDto;
+import com.example.first.dto.TempAuthInfo;
 import com.example.first.dto.UserDto;
 import com.example.first.exception.UserException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +17,7 @@ public interface UserService {
     String storeProfilePicture(MultipartFile profilePicture, String fileName, String username, String originalName) throws IOException;
 
     // 🔥 7. 회원가입 시 메일로 인증번호 발송
-    void sendAuthNumToEmail(String username);
+    void sendAuthNumToEmail(TempAuthInfo tempAuthInfo);
 
     // 🔥 9. 비밀번호 찾기 - 메일로 임시 비밀번호 전송
     void sendTempPwToEmail(String username);

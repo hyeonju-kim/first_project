@@ -192,35 +192,27 @@
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
+
             function toggleLike(boardId) {
                 $.ajax({
-                    url: '/boards/likes/' + boardId,
+                    url: 'boards/likes/' + boardId,
                     type: 'POST',
                     dataType: 'json',
                     success: function (data) {
-                        console.log('data??==', data);
-
-                        // id가 likeImage인 부분을 변수로 지정
-                        var likeImage = $("#likeImage");
-
-                        // json으로 받아온 BoardDto의 like값이 true/false일 경우에 이미지를 다르게 조건문 지정
+                        let likeImage = $("#likeImage");
                         if (data.like) {
-                            console.log(data.like)
                             likeImage.attr("src", "/images/icon/already_like.png");
-                        } else {
-                            console.log(data.like)
+                        }else {
                             likeImage.attr("src", "/images/icon/like.png");
                         }
 
-                        // 좋아요 수 업데이트
-                        var cntLikeElement = $("#cntLike");
+                        let cntLikeElement = $("#cntLike");
                         cntLikeElement.html(data.cntLike);
                     },
                     error: function () {
-                        // 에러 처리
-                        alert('좋아요 처리 중 오류가 발생했습니다.');
-                    }
-                });
+                        alert('에러가 발생했어요!');
+                    },
+                })
             }
 
             function deleteBoard() {

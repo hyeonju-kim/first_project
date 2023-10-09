@@ -121,7 +121,9 @@ public class UserServiceImpl implements UserService{ // 🔥 11개 메소드 정
         String fileExt = getFileExtension(fileName);
 
         ProfilePicture picture = new ProfilePicture(fileName, savePath, regDate, profilePicture.getBytes(), fileExt, username, originalName);
+        // 회원 가입 시, 비어있는 프로필 사진 경로를 업데이트
         homeMapper.storeProfilePicture(picture);
+//        homeMapper.updateProfilePicture(new UserDto(savePath, username));
 
         return savePath;
     }
@@ -149,13 +151,11 @@ public class UserServiceImpl implements UserService{ // 🔥 11개 메소드 정
 
     // 🔥 7. 회원가입 시 메일로 인증번호 발송
     @Override
-    public void sendAuthNumToEmail(String username) {
+    public void sendAuthNumToEmail(TempAuthInfo tempAuthInfo) {
         // 인증번호 생성
         String authNumber = generatorAuthNumber();
 
         // 임시 유저 정보 생성
-        TempAuthInfo tempAuthInfo = new TempAuthInfo();
-        tempAuthInfo.setUsername(username);
         tempAuthInfo.setAuthNumber(authNumber);
         tempAuthInfo.setCreatedAt(LocalDateTime.now());
 
@@ -164,6 +164,18 @@ public class UserServiceImpl implements UserService{ // 🔥 11개 메소드 정
 
         // 메일 전송 이벤트 퍼블리싱(비동기)
         eventPublisher.publishEvent(tempAuthInfo);
+
+        /* ApplicationEventPublisher`는 스프링 프레임워크에서 제공하는 인터페이스로, 이벤트를 발행(publish)하는 역할을 합니다.
+            주로 스프링 애플리케이션 컨텍스트(ApplicationContext)에서 주입되며, 이를 통해 이벤트를 발행할 수 있습니다.
+            `ApplicationEventPublisher`를 사용하면 컴포넌트나 서비스에서 이벤트를 발행하고, 해당 이벤트를 수신하는 리스너(Listener)나 다른 부분에서 이벤트를 처리할 수 있습니다.
+
+        일반적으로 다음과 같은 순서로 `ApplicationEventPublisher`를 사용합니다
+            1. 스프링 빈(Bean)에 `ApplicationEventPublisher`를 주입받습니다. 주로 생성자 주입(Constructor Injection)
+            2. 이벤트를 발행하고자 하는 메서드에서 `ApplicationEventPublisher`를 사용하여 이벤트 객체를 발행합니다. 이때 이벤트 객체는 `ApplicationEvent` 클래스를 상속받아야 합니다.
+            3. 이벤트를 처리하고자 하는 리스너를 정의하고, 해당 이벤트를 수신할 수 있도록 리스너를 등록합니다.
+            4. 이벤트가 발생하면 등록된 리스너에서 해당 이벤트를 처리합니다.
+        이렇게 하면 애플리케이션 내에서 각 컴포넌트 간에 느슨한 결합을 유지하면서 이벤트를 통해 특정 상황을 처리할 수 있습니다.
+        예를 들어 사용자 등록 이벤트, 주문 생성 이벤트, 댓글 작성 이벤트 등을 처리할 때 사용할 수 있습니다.*/
     }
 
     ////////////////////////////////// 여기까지 회원가입 시 사용하는 메서드 /////////////////////////////////////
@@ -171,13 +183,13 @@ public class UserServiceImpl implements UserService{ // 🔥 11개 메소드 정
 
     // 🔥 8. 임시 비밀번호 생성 메서드
     public static String instancePasswordGenerator() {
-        int passwordLength = RANDOM.nextInt(9) + 8; // 8에서 16 사이의 랜덤 길이
+        int passwordLength = RANDOM.nextInt(9) + 8; // 0에서 8까지의 랜덤한 정수를 생성하고, 거기에 8을 더하면 최소 8에서 최대 16 사이의 랜덤한 정수가 생성
 
         StringBuilder password = new StringBuilder();
 
         for (int i = 0; i < passwordLength; i++) {
-            int randomIndex = RANDOM.nextInt(PASSWORD_ALLOW_BASE.length());
-            char randomChar = PASSWORD_ALLOW_BASE.charAt(randomIndex);
+            int randomIndex = RANDOM.nextInt(PASSWORD_ALLOW_BASE.length()); //PASSWORD_ALLOW_BASE 길이까지 중에서 랜덤 정수 구하기
+            char randomChar = PASSWORD_ALLOW_BASE.charAt(randomIndex); // 해당 정수가 가리키는 문자를 password에 더하기
             password.append(randomChar);
         }
 
@@ -199,7 +211,7 @@ public class UserServiceImpl implements UserService{ // 🔥 11개 메소드 정
         //디비에 인증정보 저장
         homeMapper.setAuth(tempAuthInfo);
 
-        // 메일 전송 이벤트 퍼블리싱(비동기)
+        // 메일 전송 이벤트 퍼블리싱
         eventPublisher.publishEvent(tempAuthInfo);
     }
 

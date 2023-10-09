@@ -82,7 +82,11 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
     @PostMapping("/register")
     @ResponseBody
     public UserDto signup(@RequestBody UserDto userDto) throws UserException, IOException {
-        return userService.signUp(userDto);
+        try {
+            return userService.signUp(userDto);
+        } catch (UserException e) {
+            throw new RuntimeException("서버에서 에러가 발생했습니다.");
+        }
     }
 
     // 🎯 3. 프로필 사진 업로드
@@ -115,10 +119,8 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
     @PostMapping("/email-confirm")
     public void sendAuthNumToEmail(@RequestBody TempAuthInfo tempAuthInfo) {
         // 메일로 인증번호 발송
-        System.out.println("email === " + tempAuthInfo.getUsername());
-        userService.sendAuthNumToEmail(tempAuthInfo.getUsername());
+        userService.sendAuthNumToEmail(tempAuthInfo);
     }
-
 
     //////////////////// 1~4 api 가 회원가입 !!
 
@@ -161,9 +163,8 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
     @ResponseBody
     @PostMapping("/login")
     public UserDto login(@RequestBody UserDto userDto) throws UserException {
-        System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getUsername());
-        System.out.println("  홈 컨트롤러 / 로그인 -  " + userDto.getPassword());
 
+        // 아래 코드는 없어도 되지만, 명시적으로 userDto를 사용해서 인증객체를 만들어 주기 위해서 지정함
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);

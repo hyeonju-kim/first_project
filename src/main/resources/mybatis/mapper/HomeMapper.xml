@@ -118,11 +118,12 @@
         LIMIT 1 -- 결과를 하나만 가져오도록 제한합니다.
     </select>
 
-    <!--회원가입 시 프로필사진 가져와서 업데이트 -->
-    <select id="updateProfilePicture" parameterType="com.example.first.dto.ProfilePicture">
-        UPDATE postgres.first_project.profile_picture
-        SET username = #{username}
-    </select>
+<!--    &lt;!&ndash;회원가입 시 프로필사진 가져와서 UserDto 에 사진 경로 업데이트 &ndash;&gt;-->
+<!--    <select id="updateProfilePicture" parameterType="com.example.first.dto.UserDto" >-->
+<!--        UPDATE postgres.first_project.users-->
+<!--        SET profile_picture_location = #{profilePictureLocation}-->
+<!--        WHERE username = #{username}-->
+<!--    </select>-->
 
     <!--마이페이지 접근 시 유저 객체 가져와서 save_path 업데이트 -->
     <update id="updateUserInsertSavePath" parameterType="map">

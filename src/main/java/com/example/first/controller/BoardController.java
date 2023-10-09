@@ -398,7 +398,7 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
 //        return "redirect:/boards/" + boardId;
 //    }
 
-    // 🎯 11. 좋아요 추가 / 취소 API  // TODO form 형식이 아닌 ajax로 수정!!!
+    // 🎯 11. 좋아요 추가 / 취소 API
     @ResponseBody
     @PostMapping("/likes/{boardId}")
     public BoardDto addLike(@PathVariable Long boardId) {

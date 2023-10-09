@@ -150,7 +150,7 @@
                     </div>
                 </div>
                 <div class="mb-4"></div>
-                <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register(); storeProfilePicture()">가입 완료</button>
+                <button class="btn btn-primary btn-lg btn-block" type="button" id="registrationForm" onclick="register()">가입 완료</button>
                 <div class="mt-3 text-center">
                     계정이 있으신가요? <a href="/login" class="text-primary">로그인</a>
                 </div>
@@ -259,8 +259,8 @@
         }
 
         // 3. 가져온 정보를 data로 묶기
-        let fileInput = $("input[name=uploadFile]")[0];
-        let fileObj = fileInput.files[0];
+        // let fileInput = $("input[name=uploadFile]")[0];
+        // let fileObj = fileInput.files[0];
         let data = {
             "name" : name,
             "nickname" : nickname,
@@ -279,31 +279,10 @@
             "gender": gender
         }
 
-        if (fileObj) {
-            let formData = new FormData();
-            formData.append("uploadFile", fileObj);
-
-            $.ajax({
-                url: '/upload-profilePicture',
-                processData: false,
-                contentType: false,
-                data: formData,
-                type: 'POST',
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (xhr, status, error) {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        }
-
         // 4. 클라에서 가져온 데이터를 서버로 전송
         $.ajax({
             type: 'POST',
-            url: '/register', // 가입완료 버튼을 누르면 이 URL로 매핑!!! 마지막에 가는게xx
+            url: '/register',
 
             // 사용자가 입력한 정보들이 위에 변수로 수집되고, 그 정보는 아래의 data라는 객체에 저장된다.
             // 이 객체는 json 데이터형식을 가지며, 각 입력필드의 값을 해당 필드의 이름으로 매핑한다!!
@@ -338,8 +317,10 @@
 
     // 2. 😊 파일 업로드 메소드
     function storeProfilePicture() {
-        let fileInput = $("input[name=uploadFile]")[0];
-        let fileObj = fileInput.files[0];
+        // 파일 업로드 입력 필드를 선택합니다.
+        let fileInput = $("input[name=uploadFile]");
+        // 선택한 파일 업로드 입력 필드에서 첫 번째 파일을 가져옵니다.
+        let fileObj = fileInput.prop('files')[0];
         let username = $('#username').val()
 
         if (fileObj) {
@@ -366,8 +347,12 @@
         }
     }
 
-    // 파일 업로드 버튼(input[type=file])에 change 이벤트 핸들러 등록
-    $("input[type=file]").on("change", storeProfilePicture);
+    // 가입 완료 버튼 클릭 시 바로 파일 업로드 함수 호출하는 이벤트 핸들러
+    $("#registrationForm").click(function() {
+        // 가입 완료 버튼 클릭 시 파일 업로드 함수 호출
+        storeProfilePicture();
+    });
+
 
     // 3. 😊 메일로 인증번호 전송 메소드
     function sendEmailVerification() {

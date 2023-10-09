@@ -28,4 +28,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // UserDetailsImpl 클래스는 UserDetails 인터페이스를 구현하고, 사용자 정보를 포함하고 있습니다.
         return new UserDetailsImpl(foundUser);
     }
+
+    /*
+    사용자 인증은 /login 엔드포인트의 ⭐ authenticationManager ⭐ 를 통해 이루어집니다.
+
+    로그인 시 개발자가 🎁 UserDetails 🎁 를 반환하면, Spring Security의 authenticationManager가 해당 사용자를 인증하고,
+    이 사용자의 인증 정보를 관리하며, 인가 및 권한 검사에 활용합니다.
+
+    개발자는 단순히 UserDetails만 반환하면 됩니다 ❗❗❗❗❗
+     */
 }
