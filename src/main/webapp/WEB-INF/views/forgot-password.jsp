@@ -79,7 +79,7 @@
     // 임시 비밀번호 메일전송 메소드
     function sendTempPwToEmail() {
         // 1. 작성한 이메일 주소 가져오기
-        var username = $('#username').val();
+        let username = $('#username').val();
         console.log(username);
 
         // 2. 가져온 정보를 data로 묶기

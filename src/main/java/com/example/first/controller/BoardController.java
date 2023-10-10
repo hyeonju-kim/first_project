@@ -1,7 +1,10 @@
 package com.example.first.controller;
 
 
-import com.example.first.dto.*;
+import com.example.first.dto.BoardDto;
+import com.example.first.dto.BoardLikeDto;
+import com.example.first.dto.BoardMultiFile;
+import com.example.first.dto.UserDto;
 import com.example.first.mapper.BoardMapper;
 import com.example.first.mapper.HomeMapper;
 import com.example.first.service.BoardService;
@@ -83,9 +86,9 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
     // 🎯 1. 게시판 글 조회 (페이징 처리 된)
     @GetMapping
     public String getAllBoards(Model model, @RequestParam(defaultValue = "1") int currentPage) {
-        int pageSize = 15; // 페이지당 게시물 수
-        int totalPages = boardService.getTotalPages(pageSize);
-        List<BoardDto> boards = boardService.getBoardsByPage(currentPage, pageSize);
+        int pageSize = 10; // 페이지당 게시물 수
+        int totalPages = boardService.getTotalPages(pageSize); // 총 페이지수 계산 (총 게시물 수 / pageSize -> 올림하여 계산)
+        List<BoardDto> boards = boardService.getBoardsByPage(currentPage, pageSize); // 해당 페이지의 게시글 10개 목록
 
         model.addAttribute("boards", boards);
         model.addAttribute("totalPages", totalPages);
@@ -104,7 +107,6 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
     public String getBoardById(@PathVariable Long boardId, Model model) {
         String username = getUsername();
         UserDto userDto = getUserDto();
-
         model.addAttribute("username", username);
         model.addAttribute("nickname", userDto.getNickname());
         model.addAttribute("role", userDto.getRole());
@@ -148,10 +150,10 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
 
             // 파일 크기를 계산하고, 파일 다운로드 응답을 구성합니다.
             return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\";")  //이를 통해 브라우저는 파일을 다운로드하도록 지시
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // 응답의 컨텐츠 타입을 지정. 여기서 MediaType.APPLICATION_OCTET_STREAM은 이진 데이터(바이너리 데이터)를 나타냅니다. 이렇게 설정하면 브라우저는 이진 데이터로 처리하고 파일을 다운로드합니다.
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\";")  //CONTENT_DISPOSITION 헤더를 설정하여 브라우저에게 파일을 첨부(attachment)하도록 지시합니다.
 //                    .header(HttpHeaders.CONTENT_LENGTH, fileSize + "")
-                    .body(resource);
+                    .body(resource); // 응답의 본문(body)으로 파일의 리소스(resource)를 설정. 이 부분은 클라이언트에게 전송되는 파일 데이터를 포함합니다.
 
         } catch (UnsupportedEncodingException e) {
             // 파일 이름 인코딩 오류 시 예외 처리합니다.
@@ -164,11 +166,11 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
 
 
     // 🎯 4. 특정 게시글의 댓글 조회 - Test용
-    @ResponseBody
-    @GetMapping("/onlyComment/{boardId}")
-    public List<CommentDto> getAllComments(@PathVariable Long boardId) {
-        return boardMapper.getHierarchicalCommentsByBoardId(boardId);
-    }
+//    @ResponseBody
+//    @GetMapping("/onlyComment/{boardId}")
+//    public List<CommentDto> getAllComments(@PathVariable Long boardId) {
+//        return boardMapper.getHierarchicalCommentsByBoardId(boardId);
+//    }
 
     // 🎯 5. 글 작성 폼
     @GetMapping("/create")
@@ -222,7 +224,7 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
         return "board/edit";
     }
 
-    // 🎯 8. 글 수정  TODO 멀티파일 수정 되도록 고치기  ( )
+    // 🎯 8. 글 수정
     @PostMapping("/{boardId}/edit")
     public String updateBoard(@PathVariable Long boardId, @ModelAttribute BoardDto boardDto, @RequestParam("files") MultipartFile[] files) throws IOException {
 
@@ -357,7 +359,7 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
     // 🎯 10. 글 검색
     @GetMapping("/search")
     public String searchBoard(@RequestParam String keyword, Model model, @RequestParam(defaultValue = "1") int currentPage) {
-        int pageSize = 15; // 페이지당 게시물 수
+        int pageSize = 10; // 페이지당 게시물 수
         List<BoardDto> boards = boardService.getSearchBoardsByPage(keyword, currentPage, pageSize);
         int totalPages = boardService.getSearchBoardsTotalPages(keyword, pageSize);
 
@@ -377,26 +379,6 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
         return "board";
     }
 
-
-//    // 🎯 11. 좋아요 추가 / 취소 API  // TODO form 형식이 아닌 ajax로 수정!!!
-//    @RequestMapping("/likes/{boardId}")
-//    public String addLike(@PathVariable Long boardId) {
-//        String username = getUsername();
-//        // 좋아요 수를 증가시키는 로직을 구현
-//        BoardDto board = boardMapper.getBoardById(boardId);
-//
-//        // 현재 사용자가 해당 게시글에 좋아요를 누르지 않은 경우에만 좋아요 수를 증가시키고 좋아요를 추가
-//        if (!isAlreadyLiked(boardId, username)) {
-//            board.setCntLike(board.getCntLike() + 1);
-//            boardMapper.updateBoardLikes(board);
-//            boardMapper.saveBoardLike(new BoardLikeDto(boardId, username));
-//        }else {
-//            board.setCntLike(board.getCntLike() - 1);
-//            boardMapper.updateBoardLikes(board);
-//            boardMapper.deleteBoardLike(boardId, username);
-//        }
-//        return "redirect:/boards/" + boardId;
-//    }
 
     // 🎯 11. 좋아요 추가 / 취소 API
     @ResponseBody
@@ -418,7 +400,12 @@ public class BoardController { // 🎯🎯🎯🎯🎯 11개 API
             boardMapper.updateBoardLikes(boardDto);
             boardMapper.deleteBoardLike(boardId, username);
         }
-        return boardDto;
+
+        try {
+            return boardDto;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // 좋아요 되어있는지 확인하는 메소드 (좋아요 되어있으면 true, 안되어있으면 false)

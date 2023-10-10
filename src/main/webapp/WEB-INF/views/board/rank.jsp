@@ -60,11 +60,11 @@
 <script>
 
     // 모델에 담은 rankingMap 데이터를 가져옵니다.
-    var rankingMap = ${rankingMap}
+    let rankingMap = ${rankingMap}
         console.log(rankingMap);
 
     // 차트 데이터를 담을 배열
-    var chartData = [];
+    let chartData = [];
 
     // 자바스크립트 객체가 아닌 자바 객체의 문자열 표현을 출력한다.
     <%--console.log('맵을 그냥 찍어보자')--%>
@@ -72,16 +72,22 @@
 
     // jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
     // console.log('맵을 파싱한 다음에 찍어보자');
-    // var rankingMap = JSON.parse(document.getElementById('rankingMap').getAttribute('data-ranking-map'));
+    // let rankingMap = JSON.parse(document.getElementById('rankingMap').getAttribute('data-ranking-map'));
     // console.log(rankingMap);
 
 
     // rankingMap의 데이터를 차트 데이터 형식으로 변환
-    for (var nickname in rankingMap) {
+    for (let nickname in rankingMap) {
         if (rankingMap.hasOwnProperty(nickname)) {
+            let barColor = '#3e5ccf'; // 기본 막대 색상
+            if (nickname == '${nickname}') {
+                // user.nickname과 닉네임이 같으면 형광색으로 변경
+                barColor = '#00f194';
+            }
             chartData.push({
                 name: nickname,
-                y: rankingMap[nickname]
+                y: rankingMap[nickname],
+                color: barColor // 해당 막대의 색상 설정
             });
         }
     }
@@ -104,7 +110,7 @@
                 // categories: chartData.map(function(item) { return item.nickname; }),
                 type: 'category',
                 title: {
-                    text: '닉네임'
+                    text: ''
                 },
                 labels: {
                     rotation: 0,
@@ -132,12 +138,12 @@
             // },
             series: [{
                 name: '적정 식사 횟수',
-                colors: [
-                    '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
-                    '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
-                    '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
-                    '#03c69b',  '#00f194'
-                ],
+                // colors: [
+                //     '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
+                //     '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
+                //     '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
+                //     '#03c69b',  '#00f194'
+                // ],
                 colorByPoint: true,
                 groupPadding: 0,
                 data: chartData,

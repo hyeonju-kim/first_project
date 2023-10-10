@@ -197,24 +197,24 @@
                     url: '/boards/likes/' + boardId,
                     type: 'POST',
                     dataType: 'json',
-                    success: function (data) {
-                        console.log('data??==', data);
+                    success: function (board) {
+                        console.log('board??==', board);
 
                         // id가 likeImage인 부분을 변수로 지정
-                        var likeImage = $("#likeImage");
+                        let likeImage = $("#likeImage");
 
                         // json으로 받아온 BoardDto의 like값이 true/false일 경우에 이미지를 다르게 조건문 지정
-                        if (data.like) {
-                            console.log(data.like)
+                        if (board.like) {
+                            console.log(board.like)
                             likeImage.attr("src", "/images/icon/already_like.png");
                         } else {
-                            console.log(data.like)
+                            console.log(board.like)
                             likeImage.attr("src", "/images/icon/like.png");
                         }
 
                         // 좋아요 수 업데이트
-                        var cntLikeElement = $("#cntLike");
-                        cntLikeElement.html(data.cntLike);
+                        let cntLikeElement = $("#cntLike");
+                        cntLikeElement.html(board.cntLike);
                     },
                     error: function () {
                         // 에러 처리
@@ -236,7 +236,7 @@
                     // 확인 버튼을 눌렀을 때만 아래 코드가 실행됩니다.
 
                     // AJAX를 사용하여 삭제 요청을 서버로 보냅니다. todo 고치기 ajax로 error 처리하기
-                    var xhr = new XMLHttpRequest();
+                    let xhr = new XMLHttpRequest();
                     xhr.open('GET', '/boards/${board.boardId}/deleteComment/' + commentId, true);
                     xhr.onreadystatechange = function () {
                         if (xhr.readyState === 4) {
@@ -257,7 +257,7 @@
 
             // 대댓글 입력 폼 토글 함수
             function toggleReplyForm(commentId) {
-                var replyForm = document.getElementById(`replyForm_` + commentId);
+                let replyForm = document.getElementById(`replyForm_` + commentId);
                 replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
             }
         </script>

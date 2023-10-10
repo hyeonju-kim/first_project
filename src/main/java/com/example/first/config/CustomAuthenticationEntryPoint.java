@@ -19,28 +19,51 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint { // 인증되지 않은 사용자가 보호된 리소스에 액세스하려고 할 때 실행
+
+    // 231009 이건 없어도 되지 않나? 굳이 왜 넣어준거지 ???
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
                                                                                         throws IOException, ServletException {
-        if(request.getMethod().equals(HttpMethod.POST.toString()) || request.getMethod().equals(HttpMethod.PUT.toString())
-                                                                    || request.getMethod().equals(HttpMethod.PATCH.toString())) {
+        // HTTP 요청 메서드가 POST, PUT, 또는 PATCH일 때 처리합니다.
+        if(request.getMethod().equals(HttpMethod.POST.toString()) ||
+                request.getMethod().equals(HttpMethod.PUT.toString())||
+                request.getMethod().equals(HttpMethod.PATCH.toString())) {
+
+            // 로그에 인증 예외 메시지를 기록합니다.
             log.error(authException.getMessage());
+
+            // HTTP 응답 상태 코드를 401 (Unauthorized)로 설정합니다.
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+            // 응답의 컨텐츠 타입을 JSON으로 설정합니다.
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+            // 응답 출력 스트림을 가져와서 ObjectMapper를 사용하여 JSON 응답을 작성합니다.
             OutputStream outputStream = response.getOutputStream();
             ObjectMapper mapper = new ObjectMapper();
+
+            // 오류 메시지를 JSON 형식으로 변환하여 클라이언트에게 반환합니다.
             mapper.writeValue(outputStream, errorMessageBox());
+
+            // 출력 스트림을 플러시하여 응답을 전송합니다.
             outputStream.flush();
         }else{
+            // HTTP 응답 상태 코드를 401 (Unauthorized)로 설정합니다.
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+            // 클라이언트에게 "비정상적인 접근입니다."라는 오류 메시지를 보냅니다.
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "비정상적인 접근입니다.");
         }
     }
 
+    // 오류 메시지를 포함하는 맵을 생성하는 메서드입니다.
     private static Map<String,String> errorMessageBox(){
         return Collections.singletonMap("message", "비밀번호가 틀립니다.");
     }
+
+
 
     /* 이 Java 클래스는 Spring Security에서 사용되는 AuthenticationEntryPoint 인터페이스를 구현한 클래스로,
     * 인증되지 않은 사용자가 보호된 리소스에 액세스하려고 할 때 실행됩니다. 이 클래스는 다음과 같은 주요 기능을 수행합니다:

@@ -172,7 +172,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-    // 1. 😊 가입완료 메서드
+    // 1. 😊 회원가입 완료 메서드
     function register() {
         // e.preventDefault(); // 폼 제출 방지
 

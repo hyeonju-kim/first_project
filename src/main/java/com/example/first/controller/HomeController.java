@@ -169,7 +169,11 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
                 new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        userService.login(userDto);
+        try {
+            userService.login(userDto);
+        } catch (UserException e) {
+            throw new RuntimeException("서버에서 에러가 발생했습니다.");
+        }
         return userDto;
     }
 
@@ -180,9 +184,15 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
         // SecurityContextLogoutHandler를 사용하여 현재 사용자를 로그아웃합니다.
         // 이 클래스는 Spring Security에서 제공하는 로그아웃 처리 도우미입니다.
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+
+        // 로그아웃 핸들러를 사용하여 현재 요청의 사용자를 로그아웃 처리합니다.
+        //이 핸들러는 현재 사용자의 보안 컨텍스트를 로그아웃하고, 세션을 만료시킵니다.
+        // 실제 로그아웃 과정은 logoutHandler.logout() 메서드를 호출하여 이루어집니다.
+        // 이 메서드는 현재 요청의 HttpServletRequest와 HttpServletResponse를 받아서 로그아웃을 수행하며,
+        // SecurityContextHolder.getContext().getAuthentication()를 통해 현재 사용자의 인증 정보를 가져와서 로그아웃 처리합니다.
         logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
 
-        // 로그아웃 후 리다이렉트할 페이지를 지정 (예: 홈 페이지)
+        // 로그아웃 후 게시판으로 리다이렉트
         return "redirect:/boards";
     }
 
@@ -192,6 +202,7 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
         String username = getUsername();
         UserDto userDto = getUserDto();
 
+        // 231009 가입할때 사진 경로 저장하도록 수정..
         // 프로필 사진 경로 가져와서 저장하기 (미리 저장 못해서 일단 이렇게 가져와서 넣어주자,,)
         String originalName = homeMapper.findProfilePictureOriginalName(username);
         String profilePictureSavePath = homeMapper.findProfilePictureSavePath(username);
@@ -204,6 +215,7 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
         params.put("savePath", profilePictureSavePath);
         params.put("userDto", userDto);
 
+        // 마이페이지를 호출할 때 사진경로를 업데이트 ..
         homeMapper.updateUserInsertSavePath(params);
 
         //solution /img/ 아래 쓰고싶은 파일 이름만 적어줍니다.

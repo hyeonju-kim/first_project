@@ -82,11 +82,10 @@ public class DietController { // 🎯🎯🎯🎯🎯 4개 API
         String username = getUsername();
         UserDto userDto = getUserDto();
 
-        // 그냥 map 으로 받자... List<Map<컬럼명, 값>>  -> 한 row씩 하나의 map으로 읽어온다.
+        // map 으로 받자.. List<Map<컬럼명, 값>>  -> 한 row씩 하나의 map으로 읽어온다.
         List<HashMap<String, Object>> hashMapList = boardMapper.findDietListByUsername(username);
-        System.out.println("hashMapList.size() =************************** " + hashMapList.size());
-        System.out.println("hashMapList = " + hashMapList);
 
+        // dietMap 생성 - 날짜와 섭취결과(적정/부족/과다)
         Map<LocalDate, String> dietMap = new HashMap<>();
         for (HashMap<String, Object> map : hashMapList) {
             System.out.println("map.entrySet() =***************** " + map.entrySet());
@@ -100,30 +99,20 @@ public class DietController { // 🎯🎯🎯🎯🎯 4개 API
                 LocalDate intakeDate = localDate.toLocalDate();
                 dietMap.put(intakeDate, (String) intakeResult);
             } else {
-                throw new IllegalArgumentException("날짜가 널이에요~~~~~~~~~ㅠㅠ");
+                throw new IllegalArgumentException("날짜가 널");
             }
         }
 
-        // 날짜별로 총 섭취량을 map으로 . 달력 날짜마다 칼로리 나오도록
+        // // dietMap2 생성 - 날짜와 하루 섭취 칼로리
         Map<LocalDate, Integer> dietMap2 = new HashMap<>();
         for (HashMap<String, Object> map : hashMapList) {
-
             Object intakeCaloriesMorning = map.get("intake_calories_morning");
             Object intakeCaloriesLunch = map.get("intake_calories_lunch");
             Object intakeCaloriesDinner = map.get("intake_calories_dinner");
-            Object intakeCaloriesSnack = map.get("intake_calories_snack");
-
             double intakeCaloriesMorning1 = (double)intakeCaloriesMorning;
             double intakeCaloriesLunch1 = (double) intakeCaloriesLunch;
             double intakeCaloriesDinner1 = (double) intakeCaloriesDinner;
-//            double intakeCaloriesSnack1 = (double) intakeCaloriesSnack;
 
-//            double morning = (int)intakeCaloriesMorning1 != null ? intakeCaloriesMorning1 : (int) 0.0;
-//            double lunch = intakeCaloriesLunch1 != null ? intakeCaloriesLunch1 : (int) 0.0;
-//            double dinner = intakeCaloriesDinner1 != null ? intakeCaloriesDinner1 : (int) 0.0;
-//            double snack = intakeCaloriesSnack1 != null ? intakeCaloriesSnack1 : (int) 0.0;
-
-//            double totalIntake = intakeCaloriesMorning1 + intakeCaloriesLunch1 + intakeCaloriesDinner1 + intakeCaloriesSnack1;
             double totalIntake = intakeCaloriesMorning1 + intakeCaloriesLunch1 + intakeCaloriesDinner1;
 
             Date localDate = (Date) map.get("intake_date");
@@ -132,7 +121,6 @@ public class DietController { // 🎯🎯🎯🎯🎯 4개 API
             dietMap2.put( intakeDate, (int) totalIntake);
             System.out.println("intakeDate : totalIntake ===============🤣 " + intakeDate + " ✨: " + totalIntake);
         }
-
         System.out.println("userDto.getRequiredCalories() =🤣🤣 " + userDto.getRequiredCalories());
 
         model.addAttribute("user", userDto);
@@ -201,6 +189,7 @@ public class DietController { // 🎯🎯🎯🎯🎯 4개 API
         // 랭킹에 보여줄 해시맵 생성 (닉네임, 적정 식사 횟수를 담은 맵)
         HashMap<String, Integer> rankMap = new HashMap<>();
 
+        // dietList를 돌면서 rankMap에 닉네임과 유저네임만 넣어주기
         for (HashMap<String, Object> map : dietList) {
             String mapUsername = (String) map.get("username");
             UserDto mapUser = homeMapper.findByUsername(mapUsername);

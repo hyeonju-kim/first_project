@@ -209,15 +209,15 @@
     }
 
     function handleFileUpload() {
-        var fileInput = document.getElementById('fileInput');
+        let fileInput = document.getElementById('fileInput');
         if (fileInput.files.length > 0) {
-            var file = fileInput.files[0]; // 선택된 파일 가져오기
+            let file = fileInput.files[0]; // 선택된 파일 가져오기
 
             // 파일을 서버로 업로드하는 AJAX 요청을 보냅니다.
-            var formData = new FormData();
+            let formData = new FormData();
             formData.append('file', file); // 'file'은 서버에서 파일을 받을 이름입니다.
 
-            var xhr = new XMLHttpRequest();
+            let xhr = new XMLHttpRequest();
             xhr.open('POST', '/admin/uploadUsers', true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) { // 요청이 완료되었을 때

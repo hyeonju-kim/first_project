@@ -90,8 +90,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function login() {
-        var username = $('#username').val()
-        var password = $('#password').val()
+        let username = $('#username').val()
+        let password = $('#password').val()
 
         // 가져온 정보를 data로 묶기
         let data = {

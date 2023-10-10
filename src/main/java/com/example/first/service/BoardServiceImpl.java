@@ -176,7 +176,7 @@ public class BoardServiceImpl implements BoardService {
 
                     // 파일 업로드 및 정보 저장
                     try {
-                        file.transferTo(saveFile);
+                        file.transferTo(saveFile); // 실제로 로컬 메모리에 저장
 
                         String fileExt = getFileExtension(fileName);
 

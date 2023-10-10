@@ -48,19 +48,20 @@
         <div class="col-md-8 text-center">
 
             <!-- 섭취량 선택 라디오 버튼 -->
-            <form id="caloriesForm">
-                <label class="mr-3">
-                    <input type="radio" name="caloriesType" value="today" checked> 오늘 섭취량
-                </label>
-                <label class="mr-3">
-                    <input type="radio" name="caloriesType" value="thisWeek"> 이번 주 섭취량
-                </label>
-                <label>
-                    <input type="radio" name="caloriesType" value="thisMonth"> 이번 달 섭취량
-                </label>
-            </form>
+<%--            <form id="caloriesForm">--%>
+<%--                <label class="mr-3">--%>
+<%--                    <input type="radio" name="caloriesType" value="today" checked> 오늘 섭취량--%>
+<%--                </label>--%>
+<%--                <label class="mr-3">--%>
+<%--                    <input type="radio" name="caloriesType" value="thisWeek"> 이번 주 섭취량--%>
+<%--                </label>--%>
+<%--                <label>--%>
+<%--                    <input type="radio" name="caloriesType" value="thisMonth"> 이번 달 섭취량--%>
+<%--                </label>--%>
+<%--            </form>--%>
 
             <!-- 아침, 점심, 저녁 섭취량 조회 -->
+            <h3>오늘의 섭취량</h3>
             <div class="mt-3">
                 <p><strong>아침 섭취량:</strong> ${dietDaily.intakeCaloriesMorning} kcal</p>
                 <p><strong>점심 섭취량:</strong> ${dietDaily.intakeCaloriesLunch} kcal</p>
@@ -95,25 +96,25 @@
 
    // jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
     console.log('리스트를 파싱한 다음에 찍어보자')
-    var dietWeeklyList = JSON.parse('${dietWeeklyList}');
+    let dietWeeklyList = JSON.parse('${dietWeeklyList}');
     console.log(dietWeeklyList)
 
-    var requiredCalories = $('#dietWeeklyList').data('required-calories');
+    let requiredCalories = $('#dietWeeklyList').data('required-calories');
     console.log('requiredCalories 는 얼마인가??')
     console.log(requiredCalories)
 
     // Create an array to hold the chart data
-    var chartData = [];
+    let chartData = [];
 
     // Populate chartData with the diet data
     dietWeeklyList.forEach(function(item) {
-        var intakeDate = item.intakeDate;
-        var totalCalories = item.intakeCaloriesMorning + item.intakeCaloriesLunch + item.intakeCaloriesDinner;
+        let intakeDate = item.intakeDate;
+        let totalCalories = item.intakeCaloriesMorning + item.intakeCaloriesLunch + item.intakeCaloriesDinner;
 
         // Push data for each date
         chartData.push({
-            name: intakeDate,
-            y: totalCalories
+            name: intakeDate, // 가로축은 날짜
+            y: totalCalories // 세로축은 섭취 칼로리
         });
     });
 
@@ -158,7 +159,7 @@
                     },
                     colorByPoint: true,
                     colors: chartData.map(function(item) {
-                        var totalCalories = item.y;
+                        let totalCalories = item.y;
                         //하루 권장 칼로리보다 15%이상 많이 섭취하면 과다 , 15% 미만으로 섭취하면 부족, 그 외에는 적정
                         if (totalCalories >= requiredCalories * 1.15) {
                             return 'purple'; // 2000 칼로리 이상은 보라색

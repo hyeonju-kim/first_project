@@ -212,7 +212,7 @@
     <!-- 계층형 댓글 조회 쿼리 -->
     <select id="getHierarchicalCommentsByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.CommentDto">
         WITH RECURSIVE CommentHierarchy(commentId, boardId, content, createdAt, username, nickname, parentCommentId, status, level, path, cycle) AS (
-            -- 최상위 댓글을 시작으로 재귀적으로 댓글 계층을 조회합니다.
+            --🔥 1. 계층구조의 시작조건 쿼리 🔥 (최상위 댓글을 시작으로 재귀적으로 댓글 계층을 조회합니다.)
             SELECT
                 b.comment_id AS commentId,
                 b.board_id AS boardId,
@@ -234,7 +234,8 @@
               AND
                 status = 'N' -- 활성화된 댓글만 조회합니다.
             UNION ALL
-            -- 재귀적으로 하위 댓글을 조회합니다.
+
+            --🔥 2. 하위 데이터를 찾아가기위한 반복조건 쿼리 🔥 (재귀적으로 하위 댓글을 조회합니다.)
             SELECT
                 c.comment_id AS commentId,
                 c.board_id AS boardId,
@@ -246,18 +247,19 @@
                 c.status,
                 ch.level + 1, -- 상위 댓글 레벨에 1을 더하여 하위 댓글의 레벨을 설정합니다.
                 array_append(ch.path, c.comment_id), -- 상위 댓글의 경로에 현재 댓글을 추가합니다.
-                c.comment_id = ANY(ch.path) -- 사이클 여부를 판단합니다.
+                c.comment_id = ANY(ch.path) -- PATH 배열에 자신의 ID값이 있는 지를 검사하여, 이미 찾은 값에 대해서는 더 이상 데이터 검색을 수행하지 않도록 함.
             FROM
                 postgres.first_project.comments c
-                    INNER JOIN
+                INNER JOIN
                 CommentHierarchy ch
                 ON
                     c.parent_comment_id = ch.commentId
             WHERE
                 c.parent_comment_id = ch.commentId -- 상위 댓글과 현재 댓글의 관계를 조인합니다.
               AND
-                NOT CYCLE -- 사이클을 방지합니다.
+                NOT CYCLE -- 사이클(루프발생)을 방지합니다.
         )
+        --🔥 3. View 쿼리 🔥
         SELECT DISTINCT ON (path)
             commentId,
             boardId,
@@ -276,6 +278,17 @@
         ORDER BY
             path;
     </select>
+
+    <!-- 1. 최상위 댓글 선택: 시작 조건 쿼리는 최상위 댓글(부모 댓글이 없는 댓글)을 선택합니다. 이것들은 댓글 계층 구조의 가장 높은 레벨에 해당합니다.
+         2. 재귀적인 하위 댓글 선택: 재귀 쿼리 파트는 선택한 최상위 댓글에서부터 시작하여 하위 댓글을 재귀적으로 찾아냅니다.
+            이 단계에서는 각 하위 댓글의 레벨을 증가시키고, 상위 댓글의 경로에 하위 댓글을 추가하여 계층 구조를 구성합니다.
+            또한 사이클(무한 루프)을 방지하기 위해 이미 선택한 댓글은 다시 선택하지 않도록 합니다.
+         3. View 쿼리 및 결과 반환: 마지막 단계에서는 계층 구조를 재구성하여 사용자에게 제공할 최종 결과를 선택합니다.
+            레벨에 따라 들여쓰기를 적용하여 댓글을 표시하고, 활성화된 댓글만 선택합니다.
+            경로(path)를 기준으로 중복된 결과를 제거하여 최종 결과를 반환합니다.
+
+            이렇게 하면 최상위 댓글부터 시작하여 하위 댓글까지 모두 가져와서 계층형 구조로 표시하며, 사이클을 방지하여 무한 반복을 피할 수 있습니다.
+            이 쿼리를 사용하면 계층형 댓글 시스템을 구축하고 사용자에게 이해하기 쉽게 표시할 수 있습니다.-->
 
 
     <!-- 테이블의 레벨 업데이트 쿼리 -->
@@ -376,7 +389,7 @@
         ORDER BY intake_date;
     </select>
 
-    <!-- username으로 오늘의 식이 리스트 가져오기 -->
+    <!-- username으로 오늘의 식이 리스트 가져오기 !-->
     <select id="findDietListByUsernameDaily" parameterType="java.lang.String" resultType="com.example.first.dto.DietDto" resultMap="DietResultMap">
         SELECT *
         FROM postgres.first_project.diet
@@ -384,19 +397,19 @@
           AND DATE(intake_date) = CURRENT_DATE;
     </select>
 
-    <!-- username으로 일주일치 식이 리스트 가져오기 -->
+    <!-- username으로 일주일치 식이 리스트 가져오기 ! -->
     <select id="findDietListByUsernameWeekly" parameterType="java.lang.String" resultType="com.example.first.dto.DietDto" resultMap="DietResultMap">
         <![CDATA[
         SELECT *
         FROM postgres.first_project.diet
         WHERE username = #{username}
-          AND DATE(intake_date) >= CURRENT_DATE - INTERVAL '7 days'
+          AND DATE(intake_date) >= CURRENT_DATE - INTERVAL '6 days'
           AND DATE(intake_date) <= CURRENT_DATE
         ORDER BY intake_date;
         ]]>
     </select>
 
-    <!-- 모든 유저 식이 기록 최근 7일 조회 (적정 횟수 카운트, 유저네임, 적정 횟수가 많은 순으로 조회) -->
+    <!-- 랭킹 페이지 - 모든 유저 식이 기록 최근 7일 조회 (적정 횟수 카운트, 유저네임 조회 -  적정 횟수가 많은 순으로 ) -->
     <select id="findAllUserDietListWeekly" resultType="hashmap">
         <![CDATA[
         SELECT COUNT(intake_result) AS result_good_count, username

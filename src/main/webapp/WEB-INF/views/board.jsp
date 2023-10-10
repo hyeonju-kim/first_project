@@ -100,21 +100,21 @@
             <!-- 페이징 처리 -->
             <div class="text-center">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <c:choose>
-                            <c:when test="${currentPage > 1}">
-                                <c:if test="${empty keyword}">
-                                    <a class="page-link" href="/boards?currentPage=${currentPage - 1}">이전</a>
-                                </c:if>
-                                <c:if test="${not empty keyword}">
-                                    <a class="page-link" href="/boards/search?keyword=${keyword}&currentPage=${currentPage - 1}">이전</a>
-                                </c:if>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="page-link">이전</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </li>
+<%--                    <li class="page-item">--%>
+<%--                        <c:choose>--%>
+<%--                            <c:when test="${currentPage > 1}">--%>
+<%--                                <c:if test="${empty keyword}">--%>
+<%--                                    <a class="page-link" href="/boards?currentPage=${currentPage - 1}">이전</a>--%>
+<%--                                </c:if>--%>
+<%--                                <c:if test="${not empty keyword}">--%>
+<%--                                    <a class="page-link" href="/boards/search?keyword=${keyword}&currentPage=${currentPage - 1}">이전</a>--%>
+<%--                                </c:if>--%>
+<%--                            </c:when>--%>
+<%--                            <c:otherwise>--%>
+<%--                                <span class="page-link">이전</span>--%>
+<%--                            </c:otherwise>--%>
+<%--                        </c:choose>--%>
+<%--                    </li>--%>
                     <c:forEach begin="1" end="${totalPages}" var="pageNumber">
                         <li class="page-item">
                             <c:choose>
@@ -132,21 +132,21 @@
                             </c:choose>
                         </li>
                     </c:forEach>
-                    <li class="page-item">
-                        <c:choose>
-                            <c:when test="${currentPage < totalPages}">
-                                <c:if test="${empty keyword}">
-                                    <a class="page-link" href="/boards?currentPage=${currentPage + 1}">다음</a>
-                                </c:if>
-                                <c:if test="${not empty keyword}">
-                                    <a class="page-link" href="/boards/search?keyword=${keyword}&currentPage=${currentPage + 1}">다음</a>
-                                </c:if>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="page-link">다음</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </li>
+<%--                    <li class="page-item">--%>
+<%--                        <c:choose>--%>
+<%--                            <c:when test="${currentPage < totalPages}">--%>
+<%--                                <c:if test="${empty keyword}">--%>
+<%--                                    <a class="page-link" href="/boards?currentPage=${currentPage + 1}">다음</a>--%>
+<%--                                </c:if>--%>
+<%--                                <c:if test="${not empty keyword}">--%>
+<%--                                    <a class="page-link" href="/boards/search?keyword=${keyword}&currentPage=${currentPage + 1}">다음</a>--%>
+<%--                                </c:if>--%>
+<%--                            </c:when>--%>
+<%--                            <c:otherwise>--%>
+<%--                                <span class="page-link">다음</span>--%>
+<%--                            </c:otherwise>--%>
+<%--                        </c:choose>--%>
+<%--                    </li>--%>
                 </ul>
             </div>
 

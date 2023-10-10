@@ -68,12 +68,16 @@
         let calendarEl = document.getElementById('calendar');
 
         // 😊 1) jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
+        console.log(' map들을 그냥 찍어보자~~')
+        console.log(${dietRecordMap})
+        console.log(${dietRecordMap2})
+
         console.log(' map들을 파싱해보자~~')
         let dietRecordMap = JSON.parse('${dietRecordMap}');
         let dietRecordMap2 = JSON.parse('${dietRecordMap2}');
+
         console.log(' dietRecordMap을 파싱한 다음에 찍어보자')
         console.log(dietRecordMap)
-        console.log(' dietRecordMap2를 파싱한 다음에 찍어보자')
         console.log(dietRecordMap2)
 
         // 특정 키에 대한 값을 가져오기
@@ -128,19 +132,20 @@
                 let month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월을 2자리로 표시
                 let day = date.getDate().toString().padStart(2, '0'); // 일을 2자리로 표시
                 let formattedDate = year + '-' + month + '-' + day;
-                let value = dietRecordMap[formattedDate];
-                let value2 = dietRecordMap2[formattedDate];
+
+                let intakeResult = dietRecordMap[formattedDate]; // 섭취 결과 (적정/부족/과다)
+                let totalIntake = dietRecordMap2[formattedDate]; // 하루 섭취 칼로리 (kcal)
                 let imageHtml = '';
 
-                if (value === '적정') {
+                if (intakeResult === '적정') {
                     imageHtml = '<img src="/images/good.png" alt="적정" class="diet-image" style="width: 50%;" />';
-                } else if (value === '부족') {
+                } else if (intakeResult === '부족') {
                     imageHtml = '<img src="/images/low.png" alt="부족" class="diet-image" style="width: 50%;" />';
-                } else if (value === '과다') {
+                } else if (intakeResult === '과다') {
                     imageHtml = '<img src="/images/over.png" alt="과다" class="diet-image" style="width: 50%;" />';
                 }
                 // 토탈 칼로리 계산
-                let totalCalories = parseFloat(value2) || 0; // value2를 숫자로 파싱, 실패하면 0으로 처리
+                let totalCalories = parseFloat(totalIntake) || 0; // value2를 숫자로 파싱, 실패하면 0으로 처리
 
                 // 칼로리 정보 표시
                 let caloriesHtml = '<div class="calories-info" style="font-size: 12px; font-weight: bold; text-align: center; color: darkgray;">' + totalCalories + 'kcal </div>';

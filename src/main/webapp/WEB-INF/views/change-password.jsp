@@ -84,8 +84,8 @@
 <script>
     function changePassword() {
         // 1. 입력한 임시 비밀번호와 새로운 비밀번호 가져오기
-        var password = $('#password').val();
-        var newPassword = $('#newPassword').val();
+        let password = $('#password').val();
+        let newPassword = $('#newPassword').val();
 
         // 2. 가져온 정보를 data로 묶기
         let data = {
