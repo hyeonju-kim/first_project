@@ -59,7 +59,7 @@
 <!--    페이지 별 게시판 글목록 조회-->
     <select id="getBoardsByPage" parameterType="map" resultType="com.example.first.dto.BoardDto" resultMap="boardResultMap">
         SELECT *
-        FROM postgres.first_project.boards
+        FROM postgres.public.boards
         WHERE status = 'N'
         ORDER BY created_at DESC
         LIMIT #{pageSize} OFFSET #{offset};
@@ -69,60 +69,60 @@
 <!--    총 페이지 수 조회-->
     <select id="getTotalPages" parameterType="int" resultType="int">
         SELECT CEIL(COUNT(*)::NUMERIC / #{pageSize})
-        FROM postgres.first_project.boards;
+        FROM postgres.public.boards;
     </select>
 
 
     <!-- 특정 게시글 조회 쿼리 -->
     <select id="getBoardById" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardDto" resultMap="boardResultMap">
-        SELECT * FROM postgres.first_project.boards
+        SELECT * FROM postgres.public.boards
         WHERE board_id = #{boardId};
     </select>
 
     <!-- 게시글 생성 쿼리 -->
     <select id="createBoard" parameterType="com.example.first.dto.BoardDto" resultType="java.lang.Long">
-        INSERT INTO postgres.first_project.boards (title, content, status, created_at, user_id, username, nickname)
+        INSERT INTO postgres.public.boards (title, content, status, created_at, user_id, username, nickname)
         VALUES (#{title}, #{content}, #{status}, #{createdAt}, #{userId}, #{username}, #{nickname})
         RETURNING board_id;
     </select>
 
     <!-- 좋아요 시 게시글 좋아요 수 업데이트 쿼리 -->
     <update id="updateBoardLikes" parameterType="com.example.first.dto.BoardDto">
-        UPDATE postgres.first_project.boards
+        UPDATE postgres.public.boards
         SET cnt_like = #{cntLike}
         WHERE board_id = #{boardId};
     </update>
 
     <!-- 좋아요 시 좋아요 테이블에 인서트 -->
     <select id="saveBoardLike" parameterType="com.example.first.dto.BoardLikeDto" >
-        INSERT INTO postgres.first_project.board_like (board_id, username)
+        INSERT INTO postgres.public.board_like (board_id, username)
         VALUES ( #{boardId}, #{username})
     </select>
 
     <!-- 좋아요 다시 누르면 좋아요 테이블에서 삭제 -->
     <select id="deleteBoardLike" >
         DELETE
-        FROM postgres.first_project.board_like
+        FROM postgres.public.board_like
         WHERE username = #{username}
           AND board_id = #{boardId};
     </select>
 
     <!-- 게시글 좋아요 되어있는지 확인-->
     <select id="findBoardLike" parameterType="java.lang.String" resultType="com.example.first.dto.BoardLikeDto" resultMap="BoardLikeResultMap">
-        SELECT * FROM postgres.first_project.board_like
+        SELECT * FROM postgres.public.board_like
         WHERE username = #{username};
     </select>
 
 
     <!--멀티파일 업로드 (단일) - 반복문 돌면서 저장할 때 필요함 -->
     <select id="storeBoardMultiFile" parameterType="com.example.first.dto.BoardMultiFile" >
-        INSERT INTO postgres.first_project.board_multi_file (board_id, file_name, save_path, reg_date, flag_del, file_ext, username, file_original_name, status)
+        INSERT INTO postgres.public.board_multi_file (board_id, file_name, save_path, reg_date, flag_del, file_ext, username, file_original_name, status)
         VALUES ( #{boardId}, #{fileName}, #{savePath}, #{regDate}, #{flagDel}, #{fileExt}, #{username}, #{fileOriginalName}, #{status})
     </select>
 
     <!-- 멀티파일 업로드 (다중) -->
     <insert id="storeBoardMultiFiles" parameterType="list">
-        INSERT INTO postgres.first_project.board_multi_file (
+        INSERT INTO postgres.public.board_multi_file (
         board_id, file_name, save_path, reg_date, flag_del, file_ext, username, file_original_name, status
         )
         VALUES
@@ -143,7 +143,7 @@
 
     <!-- 멀티파일 삭제 (flagDel = "Y" 로) -->
     <update id="updateMultiFilesFlagDel" parameterType="com.example.first.dto.BoardMultiFile"  >
-        UPDATE postgres.first_project.board_multi_file
+        UPDATE postgres.public.board_multi_file
         SET flag_del = 'Y'
         WHERE file_original_name = #{file_original_name};
     </update>
@@ -152,7 +152,7 @@
     <!-- 특정 게시글의 모든 멀티파일 file_original_name 조회 쿼리 -->
     <select id="findAllMultiFilesName" parameterType="java.lang.Long" resultType="String" >
         SELECT file_original_name
-        FROM postgres.first_project.board_multi_file
+        FROM postgres.public.board_multi_file
         WHERE board_id = #{boardId}
         AND flag_del = 'N';
     </select>
@@ -163,7 +163,7 @@
 
     <!-- 게시글 수정 쿼리 -->
     <update id="updateBoard" parameterType="com.example.first.dto.BoardDto">
-        UPDATE postgres.first_project.boards
+        UPDATE postgres.public.boards
         SET title = #{title}, content = #{content}, status = #{status}, created_at = #{createdAt}, user_id = #{userId}
         WHERE board_id = #{boardId};
     </update>
@@ -171,7 +171,7 @@
 
     <!-- 게시글 삭제 쿼리 -->
     <delete id="deleteBoard" parameterType="java.lang.Long">
-        UPDATE postgres.first_project.boards
+        UPDATE postgres.public.boards
         SET status = 'Y'
         WHERE board_id = #{boardId};
     </delete>
@@ -179,7 +179,7 @@
     <!-- 게시글 검색  (페이징 적용) -->
     <select id="getSearchBoardsByPage" parameterType="map" resultType="com.example.first.dto.BoardDto" resultMap="boardResultMap">
         SELECT *
-        FROM postgres.first_project.boards
+        FROM postgres.public.boards
         WHERE status = 'N'
         AND
             (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'))
@@ -190,7 +190,7 @@
     <!--   검색된 글의 총 페이지 수 조회 (페이징 적용) -->
     <select id="getSearchBoardsTotalPages" parameterType="map" resultType="int">
         SELECT CEIL(COUNT(*)::NUMERIC / #{pageSize})
-        FROM postgres.first_project.boards
+        FROM postgres.public.boards
         WHERE status = 'N'
           AND
             (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'));
@@ -198,13 +198,13 @@
 
     <!-- 특정 게시글의 댓글 조회 쿼리 -->
     <select id="getAllCommentsByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.CommentDto" resultMap="CommentResultMap">
-        SELECT * FROM postgres.first_project.comments
+        SELECT * FROM postgres.public.comments
         WHERE board_id = #{boardId};
     </select>
 
     <!-- 모든 게시글의 댓글 조회 쿼리 -->
     <select id="getAllComments"  resultType="com.example.first.dto.CommentDto" resultMap="CommentResultMap">
-        SELECT * FROM postgres.first_project.comments
+        SELECT * FROM postgres.public.comments
         WHERE status = 'N';
     </select>
 
@@ -226,7 +226,7 @@
                 array[b.comment_id], -- 최상위 댓글의 경로(path)를 배열로 초기화합니다.
                 false -- 사이클 여부를 나타내는 변수를 초기화합니다.
             FROM
-                postgres.first_project.comments b
+                postgres.public.comments b
             WHERE
                 board_id = #{boardId} -- 특정 게시글(board)에 속한 댓글들을 조회합니다.
               AND
@@ -249,7 +249,7 @@
                 array_append(ch.path, c.comment_id), -- 상위 댓글의 경로에 현재 댓글을 추가합니다.
                 c.comment_id = ANY(ch.path) -- PATH 배열에 자신의 ID값이 있는 지를 검사하여, 이미 찾은 값에 대해서는 더 이상 데이터 검색을 수행하지 않도록 함.
             FROM
-                postgres.first_project.comments c
+                postgres.public.comments c
                 INNER JOIN
                 CommentHierarchy ch
                 ON
@@ -293,7 +293,7 @@
 
     <!-- 테이블의 레벨 업데이트 쿼리 -->
     <update id="updateBoardLevel" parameterType="com.example.first.dto.CommentDto">
-        UPDATE postgres.first_project.comments
+        UPDATE postgres.public.comments
         SET level = #{level}
         WHERE comment_id = #{commentId};
     </update>
@@ -301,21 +301,21 @@
 
     <!-- 댓글 생성 쿼리 -->
     <insert id="createComment" parameterType="com.example.first.dto.CommentDto" >
-        INSERT INTO postgres.first_project.comments (board_id, content, username,nickname, created_at, parent_comment_id, status)
+        INSERT INTO postgres.public.comments (board_id, content, username,nickname, created_at, parent_comment_id, status)
         VALUES (#{boardId}, #{content}, #{username}, #{nickname}, #{createdAt}, #{parentCommentId}, #{status})
             RETURNING comment_id;
     </insert>
 
     <!-- 댓글 수정 쿼리 -->
     <update id="updateComment" parameterType="java.lang.Long">
-        UPDATE postgres.first_project.comments
+        UPDATE postgres.public.comments
         SET content = #{content}
         WHERE comment_id = #{commentId}
     </update>
 
     <!-- 댓글 삭제 쿼리 -->
     <delete id="deleteComment" parameterType="java.lang.Long">
-        UPDATE postgres.first_project.comments
+        UPDATE postgres.public.comments
         SET status = 'Y'
         WHERE comment_id = #{commentId};
     </delete>
@@ -323,7 +323,7 @@
     <!--특정 댓글 하나 select-->
     <select id="findCommentByCommentId" parameterType="java.lang.Long" resultType="com.example.first.dto.CommentDto" >
         SELECT *
-        FROM postgres.first_project.comments
+        FROM postgres.public.comments
         WHERE comment_id = #{commentId}
           AND status = 'N'
     </select>
@@ -332,7 +332,7 @@
     <!-- boardId로 멀티파일 원본 이름 가져오기 -->
     <select id="findBoardMultiFileOriginalName" parameterType="java.lang.Long" resultType="java.lang.String" >
         SELECT file_original_name
-        FROM postgres.first_project.board_multi_file
+        FROM postgres.public.board_multi_file
         WHERE board_id = #{boardId}
         AND status = 'N'
         ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
@@ -342,7 +342,7 @@
     <!-- boardId로 멀티파일 경로 가져오기 -->
     <select id="findBoardMultiFileSavePath" parameterType="java.lang.Long" resultType="java.lang.String" >
         SELECT save_path
-        FROM postgres.first_project.board_multi_file
+        FROM postgres.public.board_multi_file
         WHERE board_id = #{boardId}
           AND status = 'N'
         ORDER BY reg_date DESC -- created_at 열을 내림차순으로 정렬합니다.
@@ -352,7 +352,7 @@
     <!-- boardId로 멀티파일 파일명 가져오기 -->
     <select id="findBoardMultiFileFileName" parameterType="java.lang.Long" resultType="java.lang.String" >
         SELECT file_name
-        FROM postgres.first_project.board_multi_file
+        FROM postgres.public.board_multi_file
         WHERE board_id = #{boardId}
           AND status = 'N'
     </select>
@@ -360,7 +360,7 @@
     <!-- boardId로 멀티파일 객체 리스트 가져오기 -->
     <select id="findBoardMultiFileByBoardId" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
         SELECT *
-        FROM postgres.first_project.board_multi_file
+        FROM postgres.public.board_multi_file
         WHERE board_id = #{boardId}
           AND status = 'N'
     </select>
@@ -368,14 +368,14 @@
     <!-- fileId로 멀티파일 객체 가져와서 다운로드 (게시물에서 클릭 시 )-->
     <select id="findBoardMultiFileBySeq" parameterType="java.lang.Long" resultType="com.example.first.dto.BoardMultiFile" resultMap="BoardMultiFileResultMap">
         SELECT *
-        FROM postgres.first_project.board_multi_file
+        FROM postgres.public.board_multi_file
         WHERE seq = #{fileId}
           AND status = 'N'
     </select>
 
     <!-- 식이 저장 쿼리 -->
     <select id="insertDietRecord" parameterType="com.example.first.dto.DietDto" >
-        INSERT INTO postgres.first_project.diet (intake_date, intake_calories_morning, intake_calories_lunch, intake_calories_dinner, intake_result, intake_total, username)
+        INSERT INTO postgres.public.diet (intake_date, intake_calories_morning, intake_calories_lunch, intake_calories_dinner, intake_result, intake_total, username)
         VALUES (#{intakeDate}, #{intakeCaloriesMorning}, #{intakeCaloriesLunch}, #{intakeCaloriesDinner},#{intakeResult}, #{intakeTotal}, #{username})
     </select>
 
@@ -384,7 +384,7 @@
     <!-- username으로 모든 식이 리스트 가져오기 -->
     <select id="findDietListByUsername" parameterType="java.lang.String" resultType="hashmap">
         SELECT *
-        FROM postgres.first_project.diet
+        FROM postgres.public.diet
         WHERE username = #{username}
         ORDER BY intake_date;
     </select>
@@ -392,7 +392,7 @@
     <!-- username으로 오늘의 식이 리스트 가져오기 !-->
     <select id="findDietListByUsernameDaily" parameterType="java.lang.String" resultType="com.example.first.dto.DietDto" resultMap="DietResultMap">
         SELECT *
-        FROM postgres.first_project.diet
+        FROM postgres.public.diet
         WHERE username = #{username}
           AND DATE(intake_date) = CURRENT_DATE;
     </select>
@@ -401,7 +401,7 @@
     <select id="findDietListByUsernameWeekly" parameterType="java.lang.String" resultType="com.example.first.dto.DietDto" resultMap="DietResultMap">
         <![CDATA[
         SELECT *
-        FROM postgres.first_project.diet
+        FROM postgres.public.diet
         WHERE username = #{username}
           AND DATE(intake_date) >= CURRENT_DATE - INTERVAL '6 days'
           AND DATE(intake_date) <= CURRENT_DATE
@@ -413,7 +413,7 @@
     <select id="findAllUserDietListWeekly" resultType="hashmap">
         <![CDATA[
         SELECT COUNT(intake_result) AS result_good_count, username
-        FROM postgres.first_project.diet
+        FROM postgres.public.diet
         WHERE DATE (intake_date) >= CURRENT_DATE - INTERVAL '6 days'
           AND DATE (intake_date) <= CURRENT_DATE
           AND intake_result = '적정'

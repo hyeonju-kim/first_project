@@ -42,18 +42,18 @@
 
 
     <select id="getAllUsers" resultType="com.example.first.dto.UserDto" resultMap="userResultMap">
-        SELECT * FROM postgres.first_project.users
+        SELECT * FROM postgres.public.users
         ORDER BY reg_date desc
     </select>
 
     <select id="getUserCountByMonth" resultType="int">
         SELECT COUNT(*)
-        FROM postgres.first_project.users
+        FROM postgres.public.users
         WHERE SUBSTRING(reg_date, 6, 2) = #{formattedMonth}
     </select>
 
     <select id="insertUploadUsers" parameterType="java.util.List">
-        INSERT INTO postgres.first_project.users (name, username, nickname, phone_number, zipcode, street_adr, detail_adr, reg_date)
+        INSERT INTO postgres.public.users (name, username, nickname, phone_number, zipcode, street_adr, detail_adr, reg_date)
         VALUES
         <foreach collection="list" item="user" separator=",">
             (#{user.name}, #{user.username}, #{user.nickname}, #{user.phoneNumber}, #{user.zipcode}, #{user.streetAdr}, #{user.detailAdr}, #{user.regDate})
@@ -62,12 +62,12 @@
 
     <select id="getMenuTable" resultType="com.example.first.dto.MenuDto" resultMap="menuResultMap">
         SELECT *
-        FROM postgres.first_project.menu
+        FROM postgres.public.menu
     </select>
 
     <select id="getAllError" resultType="com.example.first.dto.ErrorDto" resultMap="errorResultMap">
         SELECT *
-        FROM postgres.first_project.error
+        FROM postgres.public.error
     </select>
 
 
