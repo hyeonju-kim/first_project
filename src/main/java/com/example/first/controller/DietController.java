@@ -124,9 +124,13 @@ public class DietController { // 🎯🎯🎯🎯🎯 4개 API
         System.out.println("userDto.getRequiredCalories() =🤣🤣 " + userDto.getRequiredCalories());
 
         model.addAttribute("user", userDto);
+        System.out.println("userDto.getNickname() === "+userDto.getNickname());
         model.addAttribute("role", userDto.getRole());
         model.addAttribute("username", username);
         model.addAttribute("nickname", userDto.getNickname());
+
+        model.addAttribute("dietMap", dietMap);
+        model.addAttribute("dietMap2", dietMap2);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -135,6 +139,7 @@ public class DietController { // 🎯🎯🎯🎯🎯 4개 API
 
         model.addAttribute("dietRecordMap", dietRecordMap);
         model.addAttribute("dietRecordMap2", dietRecordMap2);
+
         return "board/diet-record";
     }
 

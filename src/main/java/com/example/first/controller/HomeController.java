@@ -82,6 +82,7 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
     @PostMapping("/register")
     @ResponseBody
     public UserDto signup(@RequestBody UserDto userDto) throws UserException, IOException {
+        System.out.println("userDto.getRole()===============================================" + userDto.getRole());
         try {
             return userService.signUp(userDto);
         } catch (UserException e) {

@@ -68,10 +68,6 @@
         let calendarEl = document.getElementById('calendar');
 
         // 😊 1) jsp에서 문자열로 전달된 데이터를 드디어 자바스크립트 객체로 변환한다.
-        console.log(' map들을 그냥 찍어보자~~')
-        console.log(${dietRecordMap})
-        console.log(${dietRecordMap2})
-
         console.log(' map들을 파싱해보자~~')
         let dietRecordMap = JSON.parse('${dietRecordMap}');
         let dietRecordMap2 = JSON.parse('${dietRecordMap2}');
@@ -149,7 +145,7 @@
 
                 // 칼로리 정보 표시
                 let caloriesHtml = '<div class="calories-info" style="font-size: 12px; font-weight: bold; text-align: center; color: darkgray;">' + totalCalories + 'kcal </div>';
-                
+
                 return {
                     html: '<div style="width: 100%; height: 100%;">' +
                         dateHtml +
@@ -158,7 +154,7 @@
                         '</div>'
                 };
             },
-            
+
             // 😊 3) Create new event (달력 숫자 클릭 시, 아침/점심/저녁 정보 입력)
             select: function (arg) {
                 let dateStart = arg.start; // arg.date 대신 arg.start를 사용합니다.
@@ -171,7 +167,7 @@
                 let formattedDate = year + '-' + month + '-' + day;
                 let value = dietRecordMap[formattedDate];
                 let value2 = dietRecordMap2[formattedDate];
-                
+
                 if (value) {
                     // 해당 날짜에 기록한 값이 있으면 그 날의 입력 값을 노출
                     Swal.fire({
@@ -232,7 +228,7 @@
                                 })
                             }
                             calendar.unselect()
-                        } 
+                        }
                     });
                 }
             },

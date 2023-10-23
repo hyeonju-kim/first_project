@@ -65,12 +65,6 @@ public class UserServiceImpl implements UserService{ // 🔥 11개 메소드 정
         String encodedPassword = encoder.encode(userDto.getPassword());
         userDto.setPassword(encodedPassword);
 
-        // 관리자 지정
-        if (userDto.getRole() != null && userDto.getRole().equals("admin")) {
-            userDto.setRole("admin");
-        } else {
-            userDto.setRole("user");
-        }
         return homeMapper.signUp(userDto);
     }
 

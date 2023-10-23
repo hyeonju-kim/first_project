@@ -17,12 +17,6 @@
             min-height: 100vh;
             background: url("/images/background_salad.png"); /* 이미지 폴더에 있는 이미지를 사용 */
             background-size: cover;
-
-            /*background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));*/
-            /*background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
-            /*background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
-            /*background: -o-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
-            /*background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);*/
         }
 
         .input-form {
@@ -143,10 +137,10 @@
                 <!-- 관리자 체크박스 -->
                 <div class="form-group">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="role" name="role" value="admin">
-                        <label class="form-check-label" for="role">
-                            관리자
-                        </label>
+                        <input class="form-check-input" type="checkbox" id="roleUser" name="role" value="user" checked>
+                        <label class="form-check-label" for="roleUser">사용자</label>
+                        <input class="form-check-input" type="checkbox" id="roleAdmin" name="role" value="admin">
+                        <label class="form-check-label" for="roleAdmin">관리자</label>
                     </div>
                 </div>
                 <div class="mb-4"></div>
@@ -172,6 +166,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+
     // 1. 😊 회원가입 완료 메서드
     function register() {
         // e.preventDefault(); // 폼 제출 방지
@@ -187,7 +182,7 @@
         let streetAdr = $('#streetAdr').val()
         let detailAdr = $('#detailAdr').val()
         let authNumber = $('#authNumber').val()
-        let role = $('#role').val()
+        let role = $('input[name="role"]:checked').val();  //name 속성이 "role"인 체크된(선택된) 체크박스의 값을 role 변수에 저장
         let weight = $('#weight').val()
         let height = $('#height').val()
         let gender = document.querySelector('input[name="gender"]:checked').value;
@@ -283,12 +278,6 @@
         $.ajax({
             type: 'POST',
             url: '/register',
-
-            // 사용자가 입력한 정보들이 위에 변수로 수집되고, 그 정보는 아래의 data라는 객체에 저장된다.
-            // 이 객체는 json 데이터형식을 가지며, 각 입력필드의 값을 해당 필드의 이름으로 매핑한다!!
-            // 이 요청은 /register url로 보내지며, 서버의 컨트롤러 중에 @PostMappling("/register")가 달린 메소드가 호출된다.
-            // 이 메서드는 json형식의 데이터인 'userDto' 객체를 파라미터로 받는다.
-
             data: JSON.stringify(data),
             contentType: 'application/json', // JSON 형식의 데이터를 전송
             success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
