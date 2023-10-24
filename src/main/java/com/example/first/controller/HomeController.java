@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Controller
@@ -121,6 +122,18 @@ public class HomeController {  // 🎯🎯🎯🎯🎯 12개 API
     public void sendAuthNumToEmail(@RequestBody TempAuthInfo tempAuthInfo) {
         // 메일로 인증번호 발송
         userService.sendAuthNumToEmail(tempAuthInfo);
+    }
+
+    // 🎯 4. 이메일 중복확인 (0이면 사용가능, 1이면 사용중 이메일)
+    @ResponseBody
+    @PostMapping("/checkValidEmail")
+    public int checkValidEmail(@RequestBody UserDto userDto) {
+        // 메일 중복확인
+        if (Objects.equals(userDto.getUsername(), "")) {
+            return -1; // 이메일을 작성하지 않았다면
+        }else {
+            return userService.checkValidEmail(userDto);
+        }
     }
 
     //////////////////// 1~4 api 가 회원가입 !!

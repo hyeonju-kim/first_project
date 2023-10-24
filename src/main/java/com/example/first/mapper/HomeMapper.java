@@ -36,6 +36,9 @@ public interface HomeMapper {
     // 메일로 인증번호 발송시 auth 테이블에 이메일, 인증번호 저장
     void setAuth(TempAuthInfo tempAuthInfo);
 
+    //  메일 중복확인
+    String checkValidEmail(UserDto userDto);
+
     // 사용자아이디로 사용자 가져오는 메서드
     UserDto findByUserId(Long userId);
 

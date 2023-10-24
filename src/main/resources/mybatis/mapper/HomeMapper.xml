@@ -68,6 +68,12 @@
         VALUES ( #{username}, #{authNumber}, #{createdAt})
     </select>
 
+    <!--메일 중복확인 -->
+    <select id="checkValidEmail" parameterType="com.example.first.dto.UserDto" resultType="java.lang.String">
+        SELECT username FROM postgres.public.users
+        WHERE username = #{username}
+    </select>
+
     <!-- 인증번호 가져오기-->
     <select id="findAuthNumberByUsername" parameterType="java.lang.String" resultType="com.example.first.dto.TempAuthInfo"  resultMap="userResultMap">
         SELECT * FROM postgres.public.auth

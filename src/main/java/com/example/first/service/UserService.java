@@ -19,6 +19,9 @@ public interface UserService {
     // 🔥 7. 회원가입 시 메일로 인증번호 발송
     void sendAuthNumToEmail(TempAuthInfo tempAuthInfo);
 
+    // 🔥 7. 메일 중복확인 메소드
+    int checkValidEmail(UserDto userDto);
+
     // 🔥 9. 비밀번호 찾기 - 메일로 임시 비밀번호 전송
     void sendTempPwToEmail(String username);
 

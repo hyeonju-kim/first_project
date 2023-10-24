@@ -40,6 +40,10 @@
             margin-bottom: 40px;
 
         }
+        /* 남자, 여자 / 사용자, 관리자 사이의 간격 조정 */
+        .form-check-label {
+            margin-right: 30px; /* 원하는 간격으로 조정 */
+        }
     </style>
 </head>
 
@@ -79,8 +83,13 @@
                     <input type="text" name="detailAdr" id="detailAdr" class="form-control" placeholder="상세주소">
                 </div>
                 <div class="mb-3">
-                    <input type="email" class="form-control" id="username" placeholder="이메일" required >
+                    <div class="mb-3" style="display: flex; align-items: center;">
+                        <input type="email" class="form-control username_input" id="username" placeholder="이메일" check_result="fail" required style="flex: 1; margin-right: 5px;">
+                        <button class="btn btn-primary" type="button" id="checkValidEmailButton" onclick="checkValidEmail()">중복확인</button>
+                    </div>
                     <span id="usernameError" style="color: red;"></span>
+                    <span id="usernameUnusable" style="color: red;"></span>
+                    <span id="usernameUsable" style="color: blue;"></span>
                 </div>
                 <!-- 이메일 인증 버튼 추가 -->
                 <div class="mb-3">
@@ -116,30 +125,31 @@
                 <!-- 키, 몸무게, 성별 추가 -->
                 <div class="mb-3">
                     <input type="number" class="form-control" id="height" placeholder="키 (cm)" required>
+                    <span id="heightError" style="color: red;"></span>
                 </div>
                 <div class="mb-3">
                     <input type="number" class="form-control" id="weight" placeholder="몸무게 (kg)" required>
+                    <span id="weightError" style="color: red;"></span>
                 </div>
-                <div class="mb-3">
+                <div class="mb-6">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="male" checked>
                         <label class="form-check-label" for="male">
                             남자
                         </label>
-                    </div>
-                    <div class="form-check">
                         <input class="form-check-input" type="radio" name="gender" id="female" value="female">
                         <label class="form-check-label" for="female">
                             여자
                         </label>
                     </div>
+
                 </div>
                 <!-- 관리자 체크박스 -->
                 <div class="form-group">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="roleUser" name="role" value="user" checked>
+                        <input class="form-check-input" type="radio" id="roleUser" name="role" value="user" checked>
                         <label class="form-check-label" for="roleUser">사용자</label>
-                        <input class="form-check-input" type="checkbox" id="roleAdmin" name="role" value="admin">
+                        <input class="form-check-input" type="radio" id="roleAdmin" name="role" value="admin">
                         <label class="form-check-label" for="roleAdmin">관리자</label>
                     </div>
                 </div>
@@ -194,8 +204,11 @@
         // 비밀번호가 8~16자 영문, 숫자, 특수문자를 사용하도록 검증
         let passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}$/;
         if (!passwordRegex.test(password)) {
-            alert('비밀번호는 8~16자 영문, 숫자, 특수문자를 사용해야 합니다.');
-            return;
+            // alert('비밀번호는 8~16자 영문, 숫자, 특수문자를 사용해야 합니다.');
+            $("#passwordError").text("비밀번호는 8~16자 영문, 숫자, 특수문자를 사용해야 합니다.");
+            isValid = false;
+        }else {
+            $("#passwordError").text("");
         }
 
         // 비밀번호 확인 유효성 검사
@@ -217,15 +230,6 @@
             $("#nameError").text("");
         }
 
-        // 이메일 유효성 검사 (이메일 형식 체크)
-        let emailPattern = /^(?:\w+\.?)*\w+@(?:\w+\.)+\w+$/;
-        if (!emailPattern.test(username)) {
-            $("#usernameError").text("올바른 이메일 형식이 아닙니다.");
-            isValid = false;
-        } else {
-            $("#usernameError").text("");
-        }
-
         // 닉네임 유효성 검사
         let nicknamePattern = /^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/;
         if (!nicknamePattern.test(nickname)) {
@@ -244,13 +248,23 @@
         }
 
         // 키, 몸무게, 성별 유효성 검사
-        if (!height || isNaN(height) || !weight || isNaN(weight) || !gender) {
-            alert('키, 몸무게, 성별을 올바르게 입력하세요.');
-            return false;
+        if (!height || isNaN(height)) {
+            $("#heightError").text("키를 입력하세요.");
+            isValid = false;
+        }else {
+            $("#heightError").text("");
         }
-        if (!isValid) {
-            // 유효성 검사에 실패한 경우 경고 메시지만 표시하고 폼을 서버로 제출하지 않음
-            return;
+        if ( !weight || isNaN(weight)) {
+            $("#weightError").text("몸무게를 입력하세요.");
+            isValid = false;
+        }else {
+            $("#weightError").text("");
+        }
+        if (!gender) {
+            $("#gender").text("성별을 선택하세요.");
+            isValid = false;
+        }else {
+            $("#gender").text("");
         }
 
         // 3. 가져온 정보를 data로 묶기
@@ -281,26 +295,33 @@
             data: JSON.stringify(data),
             contentType: 'application/json', // JSON 형식의 데이터를 전송
             success: function (response, status, xhr) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
-                console.log(response); //응답 body부 데이터
-                console.log(status); //"succes"로 고정인듯함
-                console.log(xhr);
-                if (xhr.status === 200) {
-                    // 서버 응답의 상태 코드가 200일 때만 실행
-                    alert('가입이 완료되었습니다!');
-                    location.href = "/login";
-                } else {
-                    // 가입 실패 처리
-                    alert('서버에서 오류가 발생했습니다.');
-                }
-            },
-            error: function (response, status, xhr) {
-                // 서버 요청 실패 시 실행
-                console.log('실패했다...')
-                console.log(response); //응답 body부 데이터
+                console.log(response); //서버에서 반환된 응답 body부 데이터. {readyState: 4, getResponseHeader: ƒ, getAllResponseHeaders: ƒ, setRequestHeader: ƒ, overrideMimeType: ƒ, …}
+                console.log(status); //  success
+                console.log(xhr.status); // 2xx
 
-                alert('서버 요청 실패');
+                //서버 응답의 상태 코드가 2xx일 때만 실행
+                alert('가입이 완료되었습니다!');
+                location.href = "/login";
+            },
+            error: function (jqXHR) { // 서버 요청 실패 시 실행 (4xx, 5xx)
+                console.log(jqXHR); //{readyState: 4, getResponseHeader: ƒ, getAllResponseHeaders: ƒ, setRequestHeader: ƒ, overrideMimeType: ƒ, …}
+                console.log(jqXHR.statusText); // "error" . console.log(status);도 같은 결과.
+                console.log(jqXHR.status); // 500
+
+                if (jqXHR.status === 400) {
+                    alert("400 에러")
+                }else if (jqXHR.status === 500 && $('.username_input').attr("check_result") === "success") {
+                    alert("가입 정보를 모두 작성해주세요.")
+                }else {
+
+                }
             }
         });
+        if ($('.username_input').attr("check_result") === "fail"){
+            $("#usernameError").text("아이디 중복체크를 해주세요.");
+            $('.username_input').focus();
+            return false;
+        }
         return true;
     }
 
@@ -386,9 +407,64 @@
         });
     }
 
-    // 4. 😊 카카오 주소 api 사용해서 우편번호로 주소찾기 메서드
+    //4 . 😊 메일 중복확인 메소드
+    function checkValidEmail() {
+        // 중복확인을 했더라도 아이디를 다시 수정한다면, check_result를 fail 로 바꿔서 뒤에서 제출을 못하게 막습니다.
+        $('.username_input').change(function () {
+            $('.username_input').attr("check_result", "fail");
+        })
+
+        // 1. 작성한 이메일 주소 가져오기
+        let username = $('#username').val();
+
+        // 2. 가져온 정보를 data로 묶기
+        let data = {
+            "username" : username
+        }
+
+        // 3. 클라에서 가져온 데이터를 서버로 전송
+        $.ajax({
+
+            type: 'POST',
+            url: '/checkValidEmail',
+            data: JSON.stringify(data),
+            contentType: 'application/json', // JSON 형식의 데이터를 전송
+            success: function (response) { // response 객체에 success, msg가 json형식으로 존재함(컨트롤러에서 반환한 값이 json으로 들어옴)
+                console.log("response= " , response); // -1, 0, 1, 2
+
+                if (response === 1) {
+                    $('#usernameUnusable').text("이미 사용중인 이메일입니다.");
+                    $('#usernameUsable').text(""); // 다른 메시지를 제거합니다.
+                    $('#usernameError').text("");
+                } else if(response === 0) {
+                    $('#usernameUnusable').text(""); // 이미 사용 중인 이메일 메시지를 제거합니다.
+                    $('#usernameUsable').text("사용가능한 이메일입니다.");
+                    $('.username_input').attr("check_result", "success"); //check_result 를 success로 바꿔줘서 후에 submit 시 통과 하도록 해줍니다.
+                } else if(response === -1){
+                    $('#usernameUsable').text("");
+                    $('#usernameUnusable').text("");
+                    $("#usernameError").text("이메일을 입력해주세요.");
+                } else if(response === 2){
+                    $('#usernameUsable').text("");
+                    $('#usernameUnusable').text("");
+                    $('#usernameError').text("");
+                    $("#usernameError").text("올바른 이메일 형식이 아닙니다.");
+                } else {
+                    alert("알 수 없는 에러");
+                }
+            },
+            error: function (response) {
+                // 서버 요청 실패 시 실행
+                console.log('실패했다...')
+                console.log(response); //응답 body부 데이터
+
+                alert('서버 요청 실패');
+            }
+        });
+    }
+
+    // 5. 😊 카카오 주소 api 사용해서 우편번호로 주소찾기 메서드
     function findAddr() {
-        console.log('주소찾기 메서드 findAddr() 실행')
         new daum.Postcode({
             oncomplete: function(data) {
                 // 각 주소의 노출 규칙에 따라 주소를 조합한다.

@@ -172,6 +172,25 @@ public class UserServiceImpl implements UserService{ // 🔥 11개 메소드 정
         예를 들어 사용자 등록 이벤트, 주문 생성 이벤트, 댓글 작성 이벤트 등을 처리할 때 사용할 수 있습니다.*/
     }
 
+    // 메일 중복확인
+    @Override
+    public int checkValidEmail(UserDto userDto) {
+        String username = userDto.getUsername();
+
+        // 이메일 유효성 검사 (이메일 형식 체크)
+        String emailPattern = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$";
+        if (!username.matches(emailPattern)) {
+            return 2; // 올바르지 않은 이메일 형식인 경우
+        }
+
+        String existingUsername = homeMapper.checkValidEmail(userDto);
+        if (existingUsername != null) {
+            return 1; // 사용 중인 이메일이면
+        }else {
+            return 0; // 사용 가능한 이메일이면
+        }
+    }
+
     ////////////////////////////////// 여기까지 회원가입 시 사용하는 메서드 /////////////////////////////////////
 
 
